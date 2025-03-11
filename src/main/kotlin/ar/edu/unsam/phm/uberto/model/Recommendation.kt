@@ -5,4 +5,3 @@ data class Recommendation(val driver: Driver, val rating: Int, val comment: Stri
 
 //es el chofer, solo la creo para que no explote
 //borrar cuando se implemente chofer
-class Driver{}
