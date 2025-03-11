@@ -7,12 +7,15 @@ class User(
     override var lastName: String,
     override var username: String,
     override var password: String,
-    var age: Int,
-    var phone: Int
+    override var age: Int,
+    override var celNumber: String,
+    override var money: Double,
+    override var isDriver: Boolean,
+
 ) : Person {
     var balance: Double = 0.0
-    override val performedTrips: MutableList<String> = mutableListOf()
-    override val pendingTrips: MutableList<String> = mutableListOf()
+    override val performedTrips: MutableList<Travel> = mutableListOf()
+    override val pendingTrips: MutableList<Travel> = mutableListOf()
 
     // Se le pasa por parametro un viaje y se añade a la lista
     fun addPerformedTrip() {}
