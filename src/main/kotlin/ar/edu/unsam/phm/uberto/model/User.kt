@@ -9,7 +9,9 @@ class User(
     override var password: String,
     override var age: Int,
     override var celNumber: String,
-    override var money: Double
+    override var money: Double,
+    override var isDriver: Boolean,
+
 ) : Person {
     var balance: Double = 0.0
     override val performedTrips: MutableList<Travel> = mutableListOf()

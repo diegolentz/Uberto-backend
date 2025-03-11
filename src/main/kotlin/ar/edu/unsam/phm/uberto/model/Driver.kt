@@ -10,6 +10,7 @@ class Driver(
     override var age: Int,
     override var celNumber: String,
     override var money: Double,
+    override var isDriver: Boolean,
 
     var vehicle: Vehicle,
 ) : Person {
