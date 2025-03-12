@@ -3,19 +3,24 @@ package ar.edu.unsam.phm.uberto.model
 import ar.edu.unsam.phm.uberto.BusinessException
 
 class User(
-    override var firstName: String,
-    override var lastName: String,
-    override var username: String,
-    override var password: String,
-    override var age: Int,
-    override var celNumber: String,
-    override var money: Double,
-    override var isDriver: Boolean,
+    firstName: String,
+    lastName: String,
+    username: String,
+    password: String,
+    age: Int,
+    celNumber: Int,
+    money: Double,
 
-) : Person {
+) : Person(
+    firstName,
+    lastName,
+    username,
+    password,
+    age,
+    money
+) {
+    override var isDriver: Boolean = false
     var balance: Double = 0.0
-    override val performedTrips: MutableList<Travel> = mutableListOf()
-    override val pendingTrips: MutableList<Travel> = mutableListOf()
 
     // Se le pasa por parametro un viaje y se añade a la lista
     fun addPerformedTrip() {}
