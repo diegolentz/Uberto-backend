@@ -18,7 +18,7 @@ object UserService {
     }
 
     fun validateLogin(loginRequest: LoginRequest): LoginResponse {
-        if (loginRequest.password!="root" || loginRequest.username!="root"){
+        if (loginRequest.password!="rooot" || loginRequest.username!="rooot"){
             throw NotFoundException(loginErrorMessageMock)
         }
         return LoginResponse(1)
