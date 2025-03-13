@@ -3,15 +3,15 @@ package ar.edu.unsam.phm.uberto.model
 import ar.edu.unsam.phm.uberto.BusinessException
 
 class User(
-    firstName: String,
-    lastName: String,
-    username: String,
-    password: String,
-    age: Int,
-    celNumber: Int,
-    money: Double,
+    firstName: String = "",
+    lastName: String = "",
+    username: String = "",
+    password: String = "",
+    age: Int = 0,
+    celNumber: Int = 0,
+    money: Double = 0.0,
 
-) : Person(
+    ) : Person(
     firstName,
     lastName,
     username,
@@ -19,7 +19,12 @@ class User(
     age,
     money
 ) {
+    override var id: Int = -1
     override var isDriver: Boolean = false
+    override fun cumpleCriterioBusqueda(texto: String): Boolean {
+        TODO("Not yet implemented")
+    }
+
     var balance: Double = 0.0
 
     // Se le pasa por parametro un viaje y se añade a la lista
