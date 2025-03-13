@@ -6,9 +6,7 @@ import io.kotest.matchers.shouldBe
 
 class TypeDriverSpec : DescribeSpec( {
     isolationMode = IsolationMode.InstancePerTest
-    val simpleDriver = SimpleDriver()
-    val premiumDriver = PremiumDrive()
-    val motorbikeDriver = MotorbikeDriver()
+
     describe("Dado un tipo SimpleDriver") {
         it("Cuando el tiempo de viaje es de 10 min y un pasajero") {
             simpleDriver.calculatePlus(10,1) shouldBe 10000.00
