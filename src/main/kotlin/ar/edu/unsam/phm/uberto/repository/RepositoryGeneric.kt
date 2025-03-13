@@ -14,7 +14,7 @@ interface AvaliableInstance {
 }
 
 @Component
-class Repositorio<T : AvaliableInstance> {
+class Repository<T : AvaliableInstance> {
     var instances: MutableSet<T> = mutableSetOf()
 
     fun create(objeto: T): Boolean {

@@ -4,23 +4,27 @@ import java.time.LocalDate
 import java.util.Date
 
 class Driver(
-    firstName: String,
-    lastName: String,
-    username: String,
-    password: String,
-    age: Int,
-    money: Double,
-    vehicle: Vehicle,
-    var BASE_PRICE: Double
+    firstName: String = "",
+    lastName: String = "",
+    username: String = "",
+    password: String = "",
+    age: Int = 0,
+    money: Double = 0.0,
+    vehicle: Vehicle = Vehicle(),
+    var BASE_PRICE: Double = 0.0
 ) : Person(
     firstName,
     lastName,
     username,
     password,
     age,
-    money) {
-
+    money)
+{
+    override var id: Int = -1
     override var isDriver = true
+    override fun cumpleCriterioBusqueda(texto: String): Boolean {
+        TODO("Not yet implemented")
+    }
 
     val ratings: MutableList<Double> = mutableListOf()
     val typeDriver: TypeDriver = vehicle.typeOf()
