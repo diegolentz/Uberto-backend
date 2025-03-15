@@ -40,7 +40,7 @@ class Driver(
     }
 
     fun travelPrice(travel : Travel): Double =
-        BASE_PRICE + typeDriver.calculatePlus(travel.time, travel.numberPassengers)
+        BASE_PRICE + vehicle.calculatePlus(travel.time, travel.numberPassengers)
 
     fun commission(travel: Travel): Double = travelPrice(travel) * 0.5
 
