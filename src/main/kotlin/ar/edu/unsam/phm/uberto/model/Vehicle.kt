@@ -15,7 +15,7 @@ class SimpleDriver(
     Vehicle(brand, model, isCar, licensePlate) {
 
     override var K_PLUS = 1000.00
-    override fun calculatePlus(time: Int, numberPassengers: Int): Double = K_PLUS
+    override fun calculatePlus(time: Int, numberPassengers: Int): Double = K_PLUS * time
 }
 
 class PremiumDrive(
