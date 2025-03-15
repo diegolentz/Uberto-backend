@@ -10,7 +10,7 @@ class Driver(
     password: String = "",
     age: Int = 0,
     money: Double = 0.0,
-    vehicle: Vehicle = Vehicle(),
+    var vehicle: Vehicle = SimpleDriver(),
     var BASE_PRICE: Double = 0.0
 ) : Person(
     firstName,
@@ -27,7 +27,6 @@ class Driver(
     }
 
     val ratings: MutableList<Double> = mutableListOf()
-    val typeDriver: TypeDriver = vehicle.typeOf()
     val travelRealizated : MutableList<String> = mutableListOf()
 
 
@@ -40,13 +39,14 @@ class Driver(
     }
 
     fun travelPrice(travel : Travel): Double =
-        BASE_PRICE + typeDriver.calculatePlus(travel.time, travel.numberPassengers)
+        BASE_PRICE + vehicle.calculatePlus(travel.time, travel.numberPassengers)
 
     fun commission(travel: Travel): Double = travelPrice(travel) * 0.5
 
     fun addRecaudation(travel: Travel){
         money += travelPrice(travel) - commission(travel)
     }
+
 
 
 //    el pica debe implementar el date en travel para ver como terminar este metodo

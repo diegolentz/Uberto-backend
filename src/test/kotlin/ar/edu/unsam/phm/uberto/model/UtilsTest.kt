@@ -8,9 +8,9 @@ val premiumDriver = PremiumDrive()
 val motorbikeDriver = MotorbikeDriver()
 
 //Vehiculos
-val carPremium = Vehicle(VehicleBrand.FIAT, LocalDate.now().year, true, "ABC123")
-val carSimple = Vehicle(VehicleBrand.FIAT, 1910, true, "ABC123")
-val moto = Vehicle(VehicleBrand.FIAT, 1910, false, "ABC123")
+val carPremium = PremiumDrive(VehicleBrand.FIAT, LocalDate.now().year, true, "ABC123")
+val carSimple = SimpleDriver(VehicleBrand.FIAT, 1910, true, "ABC123")
+val moto = MotorbikeDriver(VehicleBrand.FIAT, 1910, false, "ABC123")
 
 //Chofer
 val driverPremium = Driver("ChoferPremium","Premium","test1","pass123",18,0.0, carPremium,100.0)
