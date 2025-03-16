@@ -15,15 +15,15 @@ abstract class Person(
     val pendingTrips: MutableList<Travel> = mutableListOf()
     val ratings: MutableList<Double> = mutableListOf()
 
-    fun addPerformedTravel(travel: Travel) {
+    fun addPerformedTrip(travel: Travel) {
         performedTrips.add(travel)
     }
 
-    fun addPendingTravel(travel: Travel) {
+    fun addPendingTrip(travel: Travel) {
         pendingTrips.add(travel)
     }
 
-    fun removePendingTravel(travel: Travel) {
+    fun removePendingTrip(travel: Travel) {
         pendingTrips.remove(travel)
     }
 }
