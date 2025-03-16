@@ -3,14 +3,14 @@ package ar.edu.unsam.phm.uberto.model
 import java.time.LocalDate
 
 //Tipos de vehiculos
-val simpleDriver = SimpleDriver()
-val premiumDriver = PremiumDrive()
-val motorbikeDriver = MotorbikeDriver()
+val simpleDriver = SimpleVehicle()
+val premiumDriver = PremiumVehicle()
+val motorbikeDriver = MotorbikeVehicle()
 
 //Vehiculos
-val carPremium = PremiumDrive(VehicleBrand.FIAT, LocalDate.now().year, true, "ABC123")
-val carSimple = SimpleDriver(VehicleBrand.FIAT, 1910, true, "ABC123")
-val moto = MotorbikeDriver(VehicleBrand.FIAT, 1910, false, "ABC123")
+val carPremium = PremiumVehicle(VehicleBrand.FIAT, LocalDate.now().year, true, "ABC123")
+val carSimple = SimpleVehicle(VehicleBrand.FIAT, 1910, true, "ABC123")
+val moto = MotorbikeVehicle(VehicleBrand.FIAT, 1910, false, "ABC123")
 
 //Chofer
 val driverPremium = Driver("ChoferPremium","Premium","test1","pass123",18,0.0, carPremium,100.0)
