@@ -1,9 +1,9 @@
 package ar.edu.unsam.phm.uberto.builder
 
 import ar.edu.unsam.phm.uberto.model.Driver
-import ar.edu.unsam.phm.uberto.model.MotorbikeDriver
-import ar.edu.unsam.phm.uberto.model.PremiumDrive
-import ar.edu.unsam.phm.uberto.model.SimpleDriver
+import ar.edu.unsam.phm.uberto.model.MotorbikeVehicle
+import ar.edu.unsam.phm.uberto.model.PremiumVehicle
+import ar.edu.unsam.phm.uberto.model.SimpleVehicle
 
 
 class DriverBuilder(val newDriver: Driver = Driver()) {
@@ -25,15 +25,15 @@ class DriverBuilder(val newDriver: Driver = Driver()) {
     }
 
     fun simple(moneyBalance: Double): DriverBuilder = apply {
-        newDriver.vehicle = SimpleDriver()
+        newDriver.vehicle = SimpleVehicle()
     }
 
     fun premium(moneyBalance: Double): DriverBuilder = apply {
-        newDriver.vehicle = PremiumDrive()
+        newDriver.vehicle = PremiumVehicle()
     }
 
     fun moto(moneyBalance: Double): DriverBuilder = apply {
-        newDriver.vehicle = MotorbikeDriver()
+        newDriver.vehicle = MotorbikeVehicle()
     }
 
     fun build(): Driver = newDriver

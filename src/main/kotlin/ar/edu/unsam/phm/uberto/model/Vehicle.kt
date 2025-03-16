@@ -1,13 +1,11 @@
 package ar.edu.unsam.phm.uberto.model
 
-import java.time.LocalDate
-
 abstract class Vehicle(val brand: VehicleBrand = VehicleBrand.FIAT, val model: Int = 0, val isCar: Boolean = true, var licensePlate : String = "") {
     abstract val K_PLUS: Double
     abstract fun calculatePlus(time: Int, numberPassengers: Int): Double
 }
 
-class SimpleDriver(
+class SimpleVehicle(
     brand: VehicleBrand =VehicleBrand.FIAT,
     model: Int = 0,
     isCar: Boolean = true,
@@ -18,7 +16,7 @@ class SimpleDriver(
     override fun calculatePlus(time: Int, numberPassengers: Int): Double = K_PLUS * time
 }
 
-class PremiumDrive(
+class PremiumVehicle(
     brand: VehicleBrand =VehicleBrand.FIAT,
     model: Int = 0,
     isCar: Boolean = true,
@@ -31,7 +29,7 @@ class PremiumDrive(
     override fun calculatePlus(time: Int, numberPassengers: Int): Double = if ( numberPassengers > 1) PRICE_MORE_PASSENGERS * time else K_PLUS * time
 }
 
-class  MotorbikeDriver(
+class  MotorbikeVehicle(
     brand: VehicleBrand =VehicleBrand.FIAT,
     model: Int = 0,
     isCar: Boolean = true,

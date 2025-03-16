@@ -10,7 +10,7 @@ class Driver(
     password: String = "",
     age: Int = 0,
     money: Double = 0.0,
-    var vehicle: Vehicle = SimpleDriver(),
+    var vehicle: Vehicle = SimpleVehicle(),
     var BASE_PRICE: Double = 0.0
 ) : Person(
     firstName,
