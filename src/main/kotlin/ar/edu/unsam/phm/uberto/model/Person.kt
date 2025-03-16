@@ -9,15 +9,21 @@ abstract class Person(
     var password: String,
     var age: Int,
     var money: Double,
-): AvaliableInstance {
+) : AvaliableInstance {
     abstract var isDriver: Boolean
     val performedTrips: MutableList<Travel> = mutableListOf()
     val pendingTrips: MutableList<Travel> = mutableListOf()
     val ratings: MutableList<Double> = mutableListOf()
 
-    fun addPerformedTravel(travel: Travel) {performedTrips.add(travel)}
+    fun addPerformedTravel(travel: Travel) {
+        performedTrips.add(travel)
+    }
 
-    fun addPendingTravel(travel: Travel) {pendingTrips.add(travel)}
+    fun addPendingTravel(travel: Travel) {
+        pendingTrips.add(travel)
+    }
 
-    fun removePendingTravel(travel: Travel) {pendingTrips.remove(travel)}
+    fun removePendingTravel(travel: Travel) {
+        pendingTrips.remove(travel)
+    }
 }
