@@ -8,8 +8,8 @@ class User(
     username: String = "",
     password: String = "",
     age: Int = 0,
-    celNumber: Int = 0,
     money: Double = 0.0,
+    var phone: Int = 0,
 
     ) : Person(
     firstName,
@@ -27,24 +27,18 @@ class User(
 
     var balance: Double = 0.0
 
-    // Se le pasa por parametro un viaje y se añade a la lista
-    fun addPerformedTrip() {}
-
-    // Se le pasa por parametro un viaje y se añade a la lista
-    fun addPendingTrip() {}
-
-    // Se le pasa por parametro un viaje y se lo remueve a la lista
-    fun removePendingTrip() {}
 
     //Recibe por parametro el conductor con el cual se va a reservar y el saldo que se va a debitar
-    fun bookTrip() {
+    fun bookTrip(driver: Driver, balance: Double) {
         // driver.checkin Se le reserva el horario al conductor
         // removeBalance se resta el saldo
+        // agregar a la alista de viajes pendientes
     }
 
     //Recibe por parametro el conductor del viaje y la calificacion
-    fun rateDriver() {
-        //driver.AddRating(rating) se agrega en el Array del chofer la calificacion
+    fun rateDriver(driver: Driver, rating: Double) {
+        driver.addRating(rating)
+        ratings.add(rating)
     }
 
     fun addBalance(money: Double) {

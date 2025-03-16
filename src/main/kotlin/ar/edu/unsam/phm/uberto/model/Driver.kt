@@ -1,7 +1,6 @@
 package ar.edu.unsam.phm.uberto.model
 
 import java.time.LocalDate
-import java.util.Date
 
 class Driver(
     firstName: String = "",
@@ -26,9 +25,7 @@ class Driver(
         TODO("Not yet implemented")
     }
 
-    val ratings: MutableList<Double> = mutableListOf()
     val typeDriver: TypeDriver = vehicle.typeOf()
-    val travelRealizated : MutableList<String> = mutableListOf()
 
 
     fun addRating(rating: Double) = ratings.add(rating)
@@ -50,7 +47,7 @@ class Driver(
 
 
 //    el pica debe implementar el date en travel para ver como terminar este metodo
-    fun busy(date : LocalDate): Boolean = pendingTrips.any{ it.date.equals(date) }
+    fun busy(date : LocalDate): Boolean = pendingTravels.any{ it.date.equals(date) }
 
 
 }
