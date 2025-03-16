@@ -47,7 +47,7 @@ class Driver(
 
 
 //    el pica debe implementar el date en travel para ver como terminar este metodo
-    fun busy(date : LocalDate): Boolean = pendingTravels.any{ it.date.equals(date) }
+    fun busy(date : LocalDate): Boolean = pendingTrips.any{ it.date.equals(date) }
 
 
 }
