@@ -18,7 +18,7 @@ val driverSimple = Driver("ChoferSimple","Simple","test2","pass123",18,0.0, carS
 val driverMotor = Driver("ChoferMoto","Moto","test3","pass123",18,0.0, moto,100.0)
 
 //usuario
-val usuario1 = User("nombre1", "apellido1", "usuario1", "1234", 18, 1234, 100.00)
+val usuario1 = User("nombre1", "apellido1", "usuario1", "1234", 18, 1234.0, 100)
 
 //viaje
 val viaje10min1pasajero = Travel(10,1, LocalDate.now(), "origen", "destino", usuario1)

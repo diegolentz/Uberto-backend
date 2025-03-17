@@ -9,20 +9,24 @@ import org.springframework.web.bind.annotation.*
 
 @CrossOrigin(origins = ["http://localhost:8080", "http://localhost:5173"])
 @RestController
-class UserController(private val userService: UserService,private val driverService: DriverService) {
+class UserController(private val userService: UserService, private val driverService: DriverService) {
 
     @GetMapping("/users")
-    fun getAllUsers() : List<User>{
+    fun getAllUsers(): List<User> {
         return userService.getAllUsers()
     }
 
+    @GetMapping("/users/{id}")
+    fun getUserById(@PathVariable("id") id: Int): UserProfileDto = userService.getProfile(id)
+
     @GetMapping("/drivers")
-    fun getAllDrivers() : List<Driver>{
+    fun getAllDrivers(): List<Driver> {
         return driverService.getAllDrivers()
     }
 
     @PostMapping("/login")
-    fun authLogin(@RequestBody loginRequestBody: LoginRequest) : LoginResponse {
+    fun authLogin(@RequestBody loginRequestBody: LoginRequest): LoginResponse {
         return userService.validateLogin(loginRequestBody)
     }
+
 }

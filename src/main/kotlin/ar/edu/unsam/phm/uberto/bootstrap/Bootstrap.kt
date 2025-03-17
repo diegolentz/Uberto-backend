@@ -18,7 +18,7 @@ object Bootstrap : CommandLineRunner {
     }
 
     private fun createUsers() {
-        val user02 = User("Adrian", "Perez", "","",5, 20)
+        val user02 = User("Adrian", "Perez", "","",5, 20.0)
 
 
         val user01 = UserBuilder()

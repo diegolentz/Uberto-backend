@@ -1,7 +1,6 @@
 package ar.edu.unsam.phm.uberto.model
 
 import java.time.LocalDate
-import java.util.Date
 
 class Driver(
     firstName: String = "",
@@ -25,9 +24,6 @@ class Driver(
     override fun cumpleCriterioBusqueda(texto: String): Boolean {
         TODO("Not yet implemented")
     }
-
-    val ratings: MutableList<Double> = mutableListOf()
-    val travelRealizated : MutableList<String> = mutableListOf()
 
 
     fun addRating(rating: Double) = ratings.add(rating)
