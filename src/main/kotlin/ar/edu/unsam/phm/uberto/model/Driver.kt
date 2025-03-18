@@ -1,54 +1,50 @@
 package ar.edu.unsam.phm.uberto.model
 
-import java.time.LocalDate
+import ar.edu.unsam.phm.uberto.repository.AvaliableInstance
 
-class Driver(
-    firstName: String = "",
-    lastName: String = "",
-    username: String = "",
-    password: String = "",
-    age: Int = 0,
-    money: Double = 0.0,
-    var vehicle: Vehicle = SimpleVehicle(),
-    var BASE_PRICE: Double = 0.0
-) : Person(
-    firstName,
-    lastName,
-    username,
-    password,
-    age,
-    money)
-{
-    override var id: Int = -1
-    override var isDriver = true
-    override fun cumpleCriterioBusqueda(texto: String): Boolean {
-        TODO("Not yet implemented")
+abstract class Driver(
+    override var username: String = "",
+    override var password: String = "",
+    override var firstName: String = "",
+    override var lastName: String = "",
+    override var balance: Double = 0.0,
+    override var trips: MutableList<Trip> = mutableListOf(),
+    var basePrice:Double = 0.0
+):User, AvaliableInstance {
+    companion object Vehicle {
+        var model:String = ""
+        var brand:String = ""
+        var serial:String = ""
     }
 
-
-    fun addRating(rating: Double) = ratings.add(rating)
-    fun avgRating(): Double = ratings.average()
-    fun tripPrice(): Double = 0.0 // ???
-    fun tripTime(): Double = 0.0 // ???
-    fun setBasePrice(price: Double) {
-        BASE_PRICE = price
+    fun avaliable():Boolean{
+        return true
     }
 
-    fun travelPrice(travel : Travel): Double =
-        BASE_PRICE + vehicle.calculatePlus(travel.time, travel.numberPassengers)
-
-    fun commission(travel: Travel): Double = travelPrice(travel) * 0.5
-
-    fun addRecaudation(travel: Travel){
-        money += travelPrice(travel) - commission(travel)
+    fun score():Double{
+        return this.trips.map { trip:Trip -> trip.score.scorePoints }.average()
+    }
+    fun fee(trip:Trip):Double{
+        return this.basePrice + this.plusFee(trip)
     }
 
+    fun plusFee(trip:Trip):Double{
+        return this.plusBasePrice(trip)*trip.duration
+    }
 
+    abstract fun plusBasePrice(viaje:Trip):Double
 
-//    el pica debe implementar el date en travel para ver como terminar este metodo
-    fun busy(date : LocalDate): Boolean = pendingTrips.any{ it.date.equals(date) }
+    override fun getScores(): List<TravelScore> {
+        return this.trips.map { trip:Trip -> trip.score }
+    }
 
+    fun addTrip(trip:Trip) {
+        this.trips.add(trip)
+    }
 
 }
 
+
+////    el pica debe implementar el date en travel para ver como terminar este metodo
+//    fun busy(date : LocalDate): Boolean = pendingTrips.any{ it.date.equals(date) }
 
