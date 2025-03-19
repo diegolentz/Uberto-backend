@@ -2,6 +2,8 @@ package ar.edu.unsam.phm.uberto.services
 
 import ar.edu.unsam.phm.uberto.DTO.LoginRequest
 import ar.edu.unsam.phm.uberto.DTO.LoginResponse
+import ar.edu.unsam.phm.uberto.DTO.TripDTO
+import ar.edu.unsam.phm.uberto.DTO.toDTO
 //import ar.edu.unsam.phm.uberto.DTO.UserProfileDto
 //import ar.edu.unsam.phm.uberto.DTO.toDTOProfile
 import ar.edu.unsam.phm.uberto.model.Driver
@@ -38,18 +40,33 @@ object UserService {
         return LoginResponse(1)
     }
 
-    fun confirmarViaje(){
+    fun createTrip(trip: TripDTO): TripDTO{
 
-        TODO("Extraer Cliente")
-        TODO("Extraer Chofer")
-        TODO("Instanciar un viaje(con chofer y cliente)")
+        //"Extraer Cliente"
+        //"Extraer Chofer"
+        //"Instanciar un viaje(con chofer y cliente)"
+        //"Validacion  el chofer esta disponible"
+        //"chofer.responseTrip"
+        //"agrgar el viaje al repo"
 
-        //TODO("Validacion  el chofer esta disponible")
+        val client = passengerRepo.getByID(trip.userId)
+        val driver = driverRepo.getByID(trip.driverDTO.driverID)
 
-        TODO("usario.requestTrip")
-        TODO("chofer.responseTrip")
+        val newTrip =
+            Trip(
+                trip.duration,
+                trip.numberPassengers,
+                trip.date,
+                trip.origin,
+                trip.destination
+            )
 
-        TODO("agrgar el viaje al repo")
+        client.requestTrip(newTrip)
+        driver.responseTrip(newTrip)// Este metodo tiene que validar si el chofer esta disponible
+
+        tripRepo.create(newTrip)
+
+        return newTrip.toDTO()
 
     }
 

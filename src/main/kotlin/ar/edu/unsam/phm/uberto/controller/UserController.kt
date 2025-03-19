@@ -33,4 +33,9 @@ class UserController(private val userService: UserService) {
     fun getTrips() : List<Trip>{
         return userService.getAllTrips()
     }
+
+    @PostMapping("/createTrip")
+    fun createTrip(@RequestBody trip : TripDTO): TripDTO {
+        return userService.createTrip(trip)
+    }
 }

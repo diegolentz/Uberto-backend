@@ -49,6 +49,9 @@ abstract class Driver(
 
     fun pendingTrips() = trips.map { trip:Trip ->trip.pendingTrip()}
     fun finishedTrips() = trips.map { trip:Trip ->trip.finishedTrip()}
+    fun responseTrip(newTrip: Trip) {
+
+    }
 
 }
 
