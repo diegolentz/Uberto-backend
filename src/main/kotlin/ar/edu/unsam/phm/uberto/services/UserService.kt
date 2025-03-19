@@ -38,6 +38,21 @@ object UserService {
         return LoginResponse(1)
     }
 
+    fun confirmarViaje(){
+
+        TODO("Extraer Cliente")
+        TODO("Extraer Chofer")
+        TODO("Instanciar un viaje(con chofer y cliente)")
+
+        //TODO("Validacion  el chofer esta disponible")
+
+        TODO("usario.requestTrip")
+        TODO("chofer.responseTrip")
+
+        TODO("agrgar el viaje al repo")
+
+    }
+
 //    fun getByIdRaw(userId: Int): User = userRepository.getByID(userId)
 
 //    fun getProfile(userId: Int): UserProfileDto = getByIdRaw(userId).toDTOProfile()
