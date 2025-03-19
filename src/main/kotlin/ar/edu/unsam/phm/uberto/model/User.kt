@@ -6,6 +6,6 @@ interface User {
     var firstName:String
     var lastName:String
     var balance:Double
-    var trips:MutableList<Trip>
+    val trips:MutableList<Trip>
     fun getScores():List<TravelScore>
 }

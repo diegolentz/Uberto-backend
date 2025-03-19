@@ -9,16 +9,17 @@ class Passenger(
     override var firstName: String = "",
     override var lastName: String = "",
     override var balance: Double = 0.0,
-    override var trips: MutableList<Trip> = mutableListOf(),
-    var cellphone:Int = 0,
-    var age:Int = 0,
-    override var id: Int = 0
+    override val trips: MutableList<Trip> = mutableListOf(),
+    var cellphone: Int = 0,
+    var age: Int = 0,
+    override var id: Int = 0,
+    val friends: MutableList<Passenger> = mutableListOf()
 ) : User, AvaliableInstance {
 
     //var currentTrip:Trip? = null
 
-    fun requestTrip(trip:Trip){
-        if(validateTrip(trip)){
+    fun requestTrip(trip: Trip) {
+        if (validateTrip(trip)) {
             throw BusinessException("you don't have enough money")
         }
         this.addTrip(trip)
@@ -54,5 +55,11 @@ class Passenger(
         TODO("Not yet implemented")
     }
 
+    fun addFriend(friend: Passenger) {
+        friends.add(friend)
+    }
 
+    fun removeFriend(friend: Passenger) {
+        friends.remove(friend)
+    }
 }
