@@ -1,6 +1,8 @@
 package ar.edu.unsam.phm.uberto.model
 
+import ar.edu.unsam.phm.uberto.BusinessException
 import ar.edu.unsam.phm.uberto.repository.AvaliableInstance
+import java.time.LocalDateTime
 
 abstract class Driver(
     override var username: String = "",
@@ -17,13 +19,14 @@ abstract class Driver(
         var serial:String = ""
     }
 
-    fun avaliable():Boolean{
-        return true
+    fun avaliable(trip: Trip):Boolean{
+        return trip.dateTimeFinished() < LocalDateTime.now()
     }
 
-    fun score():Double{
-        return this.trips.map { trip:Trip -> trip.score.scorePoints }.average()
+    fun scoreAVG():Double{
+        return this.trips.filter { it.score != null }.map { it.score!!.scorePoints }.average()
     }
+
     fun fee(trip:Trip):Double{
         return this.basePrice + this.plusFee(trip)
     }
@@ -32,10 +35,10 @@ abstract class Driver(
         return this.plusBasePrice(trip)*trip.duration
     }
 
-    abstract fun plusBasePrice(viaje:Trip):Double
+    abstract fun plusBasePrice(trip:Trip):Double
 
     override fun getScores(): List<TravelScore> {
-        return this.trips.map { trip:Trip -> trip.score }
+        return this.trips.filter { it.score != null }.map { it.score!! }
     }
 
     fun addTrip(trip:Trip) {
@@ -47,15 +50,15 @@ abstract class Driver(
         this.balance += price
     }
 
-    fun pendingTrips() = trips.map { trip:Trip ->trip.pendingTrip()}
-    fun finishedTrips() = trips.map { trip:Trip ->trip.finishedTrip()}
+    fun pendingTrips() = trips.filter { trip:Trip ->trip.pendingTrip()}
+    fun finishedTrips() = trips.filter { trip:Trip ->trip.finishedTrip()}
     fun responseTrip(newTrip: Trip) {
-
+        if(!avaliable(newTrip)){
+            throw BusinessException("El chofer no se encuentra disponible")
+        }
+        addTrip(newTrip)
     }
 
 }
 
-
-////    el pica debe implementar el date en travel para ver como terminar este metodo
-//    fun busy(date : LocalDate): Boolean = pendingTrips.any{ it.date.equals(date) }
 

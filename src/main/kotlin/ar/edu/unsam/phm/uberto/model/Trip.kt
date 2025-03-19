@@ -4,13 +4,14 @@ import ar.edu.unsam.phm.uberto.BusinessException
 import ar.edu.unsam.phm.uberto.repository.AvaliableInstance
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import kotlin.random.Random
 
 //instancio para que no de error
 class Trip(
-    var duration: Double = 0.0,
+    var duration: Int = 0,
     var numberPassengers: Int = 0,
-    var date: LocalDate = LocalDate.now(),
+    var date: LocalDateTime = LocalDateTime.now(),
     var origin: String = "",
     var destination: String = "",
     var client: Passenger = Passenger(),
@@ -36,7 +37,11 @@ class Trip(
 
     fun priceTrip(): Double = this.driver.fee(this)
 
-    fun pendingTrip()  : Boolean = date > LocalDate.now()
-    fun finishedTrip() : Boolean = date < LocalDate.now() // Local date + tiempo < localDate .now()
+    fun pendingTrip()  : Boolean = date > LocalDateTime.now()
+
+    fun dateTimeFinished() : LocalDateTime = date.plus(duration.toLong(), ChronoUnit.MINUTES)
+    fun finishedTrip() : Boolean  {
+        return dateTimeFinished() < LocalDateTime.now()
+    }
 
 }
