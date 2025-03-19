@@ -30,8 +30,6 @@ class Trip(
         score = null
     }
 
-
-
     override fun cumpleCriterioBusqueda(texto: String): Boolean {
         TODO("Not yet implemented")
     }
