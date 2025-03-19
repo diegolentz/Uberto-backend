@@ -15,38 +15,44 @@ class Passenger(
     override var id: Int = 0
 ) : User, AvaliableInstance {
 
-    var currentTrip:Trip? = null
+    //var currentTrip:Trip? = null
 
     fun requestTrip(trip:Trip){
-        trip.driver.addTrip(trip)
+        if(validateTrip(trip)){
+            throw BusinessException("you don't have enough money")
+        }
+        this.addTrip(trip)
+    }
+
+    private fun validateTrip(trip: Trip): Boolean {
+        return this.balance < trip.priceTrip()
+    }
+
+    fun addTrip(trip: Trip) {
+        this.payTrip(trip.priceTrip())
         this.trips.add(trip)
     }
 
-    fun rateDriver(){
-//        FALTA AGREGAR CONDICION DEL VIAJE FINALIZADO
-        if((currentTrip != null) and true) this.setTravelScore()
-        else throw BusinessException("Not currently on a Trip")
+    fun payTrip(price: Double) {
+        this.balance -= price
     }
 
-    fun setTravelScore() {
-//        Asocia el score al viaje
-        val newScore = TravelScore()
-        this.currentTrip?.addScore(newScore)
-//        Agrega el viaje al conductor y a si mismo
-        this.currentTrip?.driver?.addTrip(currentTrip!!)
-        this.trips.add(currentTrip!!)
+    fun loadBalance(balance: Double) {
+        this.balance += balance
     }
+
 
     fun deleteTravelScore() {
         TODO("Not yet implemented")
     }
 
     override fun getScores(): List<TravelScore> {
-        return this.trips.map { trip:Trip -> trip.score }
+        TODO()//return this.trips.map { trip:Trip -> trip.score }
     }
 
     override fun cumpleCriterioBusqueda(texto: String): Boolean {
         TODO("Not yet implemented")
     }
+
 
 }

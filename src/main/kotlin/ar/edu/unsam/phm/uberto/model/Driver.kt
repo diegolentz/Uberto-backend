@@ -40,7 +40,15 @@ abstract class Driver(
 
     fun addTrip(trip:Trip) {
         this.trips.add(trip)
+        acceditTrip(trip.priceTrip())
     }
+
+    fun acceditTrip(price: Double){
+        this.balance += price
+    }
+
+    fun pendingTrips() = trips.map { trip:Trip ->trip.pendingTrip()}
+    fun finishedTrips() = trips.map { trip:Trip ->trip.finishedTrip()}
 
 }
 
