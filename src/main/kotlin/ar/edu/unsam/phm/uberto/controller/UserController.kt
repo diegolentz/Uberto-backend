@@ -16,8 +16,8 @@ class UserController(private val userService: UserService) {
         return userService.getAllUsers()
     }
 
-//    @GetMapping("/users/{id}")
-//    fun getUserById(@PathVariable("id") id: Int): UserProfileDto = userService.getProfile(id)
+    @GetMapping("/users/{id}")
+    fun getUserById(@PathVariable("id") id: Int): PassengerProfileDto = userService.getProfile(id)
 
     @GetMapping("/drivers")
     fun getAllDrivers(): List<Driver> {
@@ -30,12 +30,20 @@ class UserController(private val userService: UserService) {
     }
 
     @GetMapping("/trips")
-    fun getTrips() : List<Trip>{
+    fun getTrips(): List<Trip> {
         return userService.getAllTrips()
     }
 
     @PostMapping("/createTrip")
-    fun createTrip(@RequestBody trip : TripDTO): TripDTO {
+    fun createTrip(@RequestBody trip: TripDTO): TripDTO {
         return userService.createTrip(trip)
     }
+
+    @GetMapping("/friends")
+    fun getFriends(@PathVariable("id") id: Int): List<FriendDTO> {
+        return userService.getFriends(id)
+    }
+
+    @PutMapping("/friends")
+    fun updateFriends(@RequestBody body: UpdatedFriends): List<FriendDTO> = userService.updateFriends(body)
 }

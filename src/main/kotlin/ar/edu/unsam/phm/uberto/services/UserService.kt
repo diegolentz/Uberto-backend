@@ -1,9 +1,6 @@
 package ar.edu.unsam.phm.uberto.services
 
-import ar.edu.unsam.phm.uberto.DTO.LoginRequest
-import ar.edu.unsam.phm.uberto.DTO.LoginResponse
-import ar.edu.unsam.phm.uberto.DTO.TripDTO
-import ar.edu.unsam.phm.uberto.DTO.toDTO
+import ar.edu.unsam.phm.uberto.DTO.*
 //import ar.edu.unsam.phm.uberto.DTO.UserProfileDto
 //import ar.edu.unsam.phm.uberto.DTO.toDTOProfile
 import ar.edu.unsam.phm.uberto.model.Driver
@@ -25,6 +22,8 @@ object UserService {
         return passengerRepo.instances.toMutableList()
     }
 
+    fun getProfile(userId: Int): PassengerProfileDto = passengerRepo.getByID(userId).toDTOProfile()
+
     fun getAllDrivers(): List<Driver> {
         return driverRepo.instances.toMutableList()
     }
@@ -40,8 +39,31 @@ object UserService {
         return LoginResponse(1)
     }
 
+    fun getFriends(userId: Int): List<FriendDTO> {
+        val userFriends = passengerRepo.getByID(userId).friends
+        return userFriends.map { it.toFriendDTO() }
+    }
+
+    fun updateFriends(friendsList: UpdatedFriends): List<FriendDTO> {
+        val friendsIds = friendsList.friends.map { friendId -> passengerRepo.getByID(friendId) }
+        val user = passengerRepo.getByID(friendsList.userId)
+
+        if (friendsList.addFriends) friendsIds.map { friendId -> user.addFriend(friendId) }
+        else friendsIds.map { friendId -> user.removeFriend(friendId) }
+
+        return getFriends(user.id)
+    }
+
+
+        //"Extraer Cliente"
+        //"Extraer Chofer"
+        //"Instanciar un viaje(con chofer y cliente)"
+        //"Validacion  el chofer esta disponible"
+        //"chofer.responseTrip"
+        //"agrgar el viaje al repo"
+
     fun createTrip(trip: TripDTO): TripDTO{
-        
+
         val client = passengerRepo.getByID(trip.userId)
         val driver = driverRepo.getByID(trip.driverDTO.driverID)
 
