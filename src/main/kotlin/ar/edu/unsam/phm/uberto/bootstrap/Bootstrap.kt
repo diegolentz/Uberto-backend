@@ -63,6 +63,7 @@ class Bootstrap(
         val users = mutableListOf<Passenger>(user01, user02, user03, user04)
         users.forEach{user:Passenger ->
             passengerRepo.create(user)
+            userRepo.create(user)
         }
 
     }
@@ -86,7 +87,10 @@ class Bootstrap(
         val drivers = mutableListOf<Driver>(driver01, driver02)
         drivers.forEach{driver:Driver ->
             driverRepo.create(driver)
+            userRepo.create(driver)
         }
+
+
     }
 
     private fun createTrips(){
