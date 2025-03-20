@@ -54,7 +54,6 @@ object UserService {
         return getFriends(user.id)
     }
 
-    fun createTrip(trip: TripDTO): TripDTO {
 
         //"Extraer Cliente"
         //"Extraer Chofer"
@@ -62,6 +61,8 @@ object UserService {
         //"Validacion  el chofer esta disponible"
         //"chofer.responseTrip"
         //"agrgar el viaje al repo"
+
+    fun createTrip(trip: TripDTO): TripDTO{
 
         val client = passengerRepo.getByID(trip.userId)
         val driver = driverRepo.getByID(trip.driverDTO.driverID)
@@ -72,12 +73,16 @@ object UserService {
                 trip.numberPassengers,
                 trip.date,
                 trip.origin,
-                trip.destination
+                trip.destination,
+                client,
+                driver
             )
 
         client.requestTrip(newTrip)
         driver.responseTrip(newTrip)// Este metodo tiene que validar si el chofer esta disponible
 
+        passengerRepo.update(client)
+        driverRepo.update(driver)
         tripRepo.create(newTrip)
 
         return newTrip.toDTO()
