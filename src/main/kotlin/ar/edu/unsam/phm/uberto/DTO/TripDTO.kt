@@ -2,14 +2,15 @@ package ar.edu.unsam.phm.uberto.DTO
 
 import ar.edu.unsam.phm.uberto.model.Trip
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.*
 
 class TripDTO(
     var userId: Int,
     var driverDTO: DriverDTO,
-    var duration: Double,
+    var duration: Int,
     val numberPassengers: Int,
-    val date: LocalDate,
+    val date: LocalDateTime,
     val origin: String,
     val destination: String,
 
@@ -20,7 +21,7 @@ class TripDTO(
 
 fun Trip.toDTO() = TripDTO(
     userId = client.id,
-    driverDTO = DriverDTO(),
+    driverDTO = driver.toDTO(),
     duration = duration,
     numberPassengers = numberPassengers,
     date = date,
