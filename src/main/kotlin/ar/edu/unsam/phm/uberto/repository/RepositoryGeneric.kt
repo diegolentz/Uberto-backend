@@ -53,7 +53,8 @@ abstract class Repository<T : AvaliableInstance> {
 
 
     private fun asignarID(objeto: T) {
-        objeto.id = instances.size + 1
+        val lastId = instances.maxOfOrNull { it.id }
+        objeto.id = if(lastId != null) lastId + 1 else 1
     }
 
 }
