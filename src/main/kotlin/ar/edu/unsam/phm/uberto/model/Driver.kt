@@ -38,7 +38,7 @@ abstract class Driver(
 
     abstract fun plusBasePrice(trip:Trip):Double
 
-    override fun getScores(): List<TravelScore> {
+    override fun getScores(): List<TripScore> {
         return this.trips.filter { it.score != null }.map { it.score!! }
     }
 

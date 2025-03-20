@@ -1,9 +1,7 @@
 package ar.edu.unsam.phm.uberto.dto
 
 import ar.edu.unsam.phm.uberto.model.Trip
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.*
 
 class TripDTO(
     var userId: Int,

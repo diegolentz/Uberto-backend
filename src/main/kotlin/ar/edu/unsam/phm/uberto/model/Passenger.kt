@@ -48,7 +48,7 @@ class Passenger(
         TODO("Not yet implemented")
     }
 
-    override fun getScores(): List<TravelScore> {
+    override fun getScores(): List<TripScore> {
         TODO()//return this.trips.map { trip:Trip -> trip.score }
     }
 

@@ -17,13 +17,13 @@ class Trip(
     var driver: Driver = SimpleDriver(),
     override var id: Int = 0
 ):AvaliableInstance{
-    var score: TravelScore? = null
+    var score: TripScore? = null
 
     fun addScore(mensaje:String,rate:Int){
         if(score != null){
             throw BusinessException("Solo adquiriendo version premium")
         }
-        this.score = TravelScore(mensaje,rate, LocalDate.now())
+        this.score = TripScore(mensaje,rate, LocalDate.now())
     }
 
     fun deleteScore(){
