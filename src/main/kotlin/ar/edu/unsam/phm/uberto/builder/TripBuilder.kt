@@ -19,7 +19,7 @@ class TripBuilder(val newTrip: Trip = Trip()) {
         newTrip.origin = origin
     }
 
-    fun duration(duration: Double): TripBuilder = apply {
+    fun duration(duration: Int): TripBuilder = apply {
         newTrip.duration = duration
     }
 
