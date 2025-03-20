@@ -5,12 +5,14 @@ import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.model.Trip
 import ar.edu.unsam.phm.uberto.model.User
 import ar.edu.unsam.phm.uberto.services.UserService
+import io.swagger.v3.oas.annotations.Operation
 import org.springframework.web.bind.annotation.*
 
 @CrossOrigin(origins = ["http://localhost:8080", "http://localhost:5173"])
 @RestController
 class UserController(private val userService: UserService) {
 
+    @Operation(summary = "Get all users", description = "Returns all users")
     @GetMapping("/users")
     fun getAllUsers(): List<User> {
         return userService.getAllUsers()
