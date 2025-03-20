@@ -13,6 +13,7 @@ class Passenger(
     var cellphone: Int = 0,
     var age: Int = 0,
     override var id: Int = 0,
+    override var img: String = "",
     val friends: MutableList<Passenger> = mutableListOf()
 ) : User, AvaliableInstance {
 
@@ -47,7 +48,7 @@ class Passenger(
         TODO("Not yet implemented")
     }
 
-    override fun getScores(): List<TravelScore> {
+    override fun getScores(): List<TripScore> {
         TODO()//return this.trips.map { trip:Trip -> trip.score }
     }
 

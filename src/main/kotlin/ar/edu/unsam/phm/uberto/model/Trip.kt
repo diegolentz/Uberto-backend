@@ -5,7 +5,6 @@ import ar.edu.unsam.phm.uberto.repository.AvaliableInstance
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import kotlin.random.Random
 
 //instancio para que no de error
 class Trip(
@@ -18,13 +17,13 @@ class Trip(
     var driver: Driver = SimpleDriver(),
     override var id: Int = 0
 ):AvaliableInstance{
-    var score: TravelScore? = null
+    var score: TripScore? = null
 
     fun addScore(mensaje:String,rate:Int){
         if(score != null){
             throw BusinessException("Solo adquiriendo version premium")
         }
-        this.score = TravelScore(mensaje,rate, LocalDate.now())
+        this.score = TripScore(mensaje, rate, LocalDate.now(), client)
     }
 
     fun deleteScore(){
