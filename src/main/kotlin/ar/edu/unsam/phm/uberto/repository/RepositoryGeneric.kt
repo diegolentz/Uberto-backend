@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component
 //Hace referencia a los objetos los cuales van a ser instancias en cada repositorio
 //Esto es para no tener un repositorio de entidades no deseadas
 
+//TODO Se necesita un metodo upsert??? la tiro no mas
+
 interface AvaliableInstance {
     var id: Int
 

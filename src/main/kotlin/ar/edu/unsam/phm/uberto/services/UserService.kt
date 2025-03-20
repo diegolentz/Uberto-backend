@@ -1,12 +1,11 @@
 package ar.edu.unsam.phm.uberto.services
 
-import ar.edu.unsam.phm.uberto.DTO.*
-//import ar.edu.unsam.phm.uberto.DTO.UserProfileDto
-//import ar.edu.unsam.phm.uberto.DTO.toDTOProfile
+import ar.edu.unsam.phm.uberto.dto.*
+import ar.edu.unsam.phm.uberto.dto.LoginRequest
+import ar.edu.unsam.phm.uberto.dto.LoginResponse
 import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.Trip
-import ar.edu.unsam.phm.uberto.model.User
 import ar.edu.unsam.phm.uberto.repository.Repository
 import exceptions.NotFoundException
 import exceptions.loginErrorMessageMock

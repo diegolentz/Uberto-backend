@@ -1,4 +1,4 @@
-package ar.edu.unsam.phm.uberto.DTO
+package ar.edu.unsam.phm.uberto.dto
 
 import ar.edu.unsam.phm.uberto.model.Trip
 import java.time.LocalDate

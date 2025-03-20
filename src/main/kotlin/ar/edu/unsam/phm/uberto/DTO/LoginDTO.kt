@@ -1,4 +1,4 @@
-package ar.edu.unsam.phm.uberto.DTO
+package ar.edu.unsam.phm.uberto.dto
 
 data class LoginRequest(
     var username: String = "",

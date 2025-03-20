@@ -5,7 +5,6 @@ import ar.edu.unsam.phm.uberto.repository.AvaliableInstance
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import kotlin.random.Random
 
 //instancio para que no de error
 class Trip(

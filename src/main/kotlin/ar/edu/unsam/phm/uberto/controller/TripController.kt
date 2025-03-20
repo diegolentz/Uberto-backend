@@ -1,6 +1,5 @@
 package ar.edu.unsam.phm.uberto.controller
 
-import ar.edu.unsam.phm.uberto.model.Trip
 import ar.edu.unsam.phm.uberto.services.TravelTimeMockService
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
