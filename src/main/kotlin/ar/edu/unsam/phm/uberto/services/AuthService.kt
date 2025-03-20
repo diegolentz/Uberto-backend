@@ -7,17 +7,14 @@ import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.Trip
 import ar.edu.unsam.phm.uberto.model.User
+import ar.edu.unsam.phm.uberto.repository.PassengerRepository
 import ar.edu.unsam.phm.uberto.repository.Repository
 import exceptions.NotFoundException
 import exceptions.loginErrorMessageMock
 import org.springframework.stereotype.Service
 
 @Service
-object AuthService {
-    ///TODO aca hay que replantear el modelo de interfaz... no puedo instanciar un repo de tipo User
-    val passengerRepo: Repository<Passenger> = Repository()
-    val tripRepo: Repository<Trip> = Repository()
-    val driverRepo: Repository<Driver> = Repository()
+class AuthService(val passengerRepo: PassengerRepository) {
 
     fun validateLoginRequest(loginRequest: LoginRequest): Int {
         TODO("Validar credenciales en el repo")

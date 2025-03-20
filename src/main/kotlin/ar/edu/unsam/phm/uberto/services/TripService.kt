@@ -2,22 +2,19 @@ package ar.edu.unsam.phm.uberto.services
 
 import ar.edu.unsam.phm.uberto.dto.TripDTO
 import ar.edu.unsam.phm.uberto.dto.toDTO
-import ar.edu.unsam.phm.uberto.model.Driver
-import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.Trip
-import ar.edu.unsam.phm.uberto.repository.Repository
+import ar.edu.unsam.phm.uberto.repository.DriverRepository
+import ar.edu.unsam.phm.uberto.repository.PassengerRepository
+import ar.edu.unsam.phm.uberto.repository.TripsRepository
 import org.springframework.stereotype.Service
 
 @Service
-class TripService {
-    val passengerRepo: Repository<Passenger> = Repository()
-    val tripRepo: Repository<Trip> = Repository()
-    val driverRepo: Repository<Driver> = Repository()
+class TripService(val passengerRepo: PassengerRepository, val driverRepo: DriverRepository, val tripRepo: TripsRepository) {
 
     fun createTrip(trip: TripDTO): TripDTO {
 
-        val client = UserService.passengerRepo.getByID(trip.userId)
-        val driver = UserService.driverRepo.getByID(trip.driverDTO.driverID)
+        val client = passengerRepo.getByID(trip.userId)
+        val driver = driverRepo.getByID(trip.driverDTO.driverID)
 
         val newTrip =
             Trip(
@@ -33,16 +30,16 @@ class TripService {
         client.requestTrip(newTrip)
         driver.responseTrip(newTrip)
 
-        UserService.passengerRepo.update(client)
-        UserService.driverRepo.update(driver)
-        UserService.tripRepo.create(newTrip)
+        passengerRepo.update(client)
+        driverRepo.update(driver)
+        tripRepo.create(newTrip)
 
         return newTrip.toDTO()
 
     }
 
     fun getAllTrips(): List<Trip> {
-        return UserService.tripRepo.instances.toMutableList()
+        return tripRepo.instances.toMutableList()
     }
 
 }

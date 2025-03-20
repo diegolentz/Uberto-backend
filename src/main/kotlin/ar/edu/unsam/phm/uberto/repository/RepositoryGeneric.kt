@@ -1,5 +1,9 @@
 package ar.edu.unsam.phm.uberto.repository
 
+import ar.edu.unsam.phm.uberto.model.Driver
+import ar.edu.unsam.phm.uberto.model.Passenger
+import ar.edu.unsam.phm.uberto.model.Trip
+import ar.edu.unsam.phm.uberto.model.User
 import exceptions.BusinessException
 import org.springframework.stereotype.Component
 
@@ -16,7 +20,7 @@ interface AvaliableInstance {
 }
 
 @Component
-class Repository<T : AvaliableInstance> {
+abstract class Repository<T : AvaliableInstance> {
     var instances: MutableSet<T> = mutableSetOf()
 
     fun create(objeto: T): Boolean {
@@ -47,10 +51,32 @@ class Repository<T : AvaliableInstance> {
         return instances.first { it.id == objectID } //devuelve elemento o null
     }
 
-    fun search(texto: String): List<T> = instances.filter { it.cumpleCriterioBusqueda(texto) }
+    //fun search(texto: String): List<T> = instances.filter { it.cumpleCriterioBusqueda(texto) }
 
     private fun asignarID(objeto: T) {
         objeto.id = instances.size + 1
     }
 
+}
+
+// User
+@Component
+class UserRepository(): Repository<User>() {
+    fun search(username: String): User?{
+        if(!exisUsername(username)){
+            throw BusinessException("Credenciales invalidas")
+        }
+        return instances.find { it.username == username }
+    }
+
+    fun exisUsername(username: String): Boolean = instances.any{it.username == username}
+}
+@Component
+class DriverRepository(): Repository<Driver>() {
+}
+@Component
+class PassengerRepository(): Repository<Passenger>() {
+}
+@Component
+class TripsRepository(): Repository<Trip>() {
 }

@@ -6,20 +6,20 @@ import ar.edu.unsam.phm.uberto.dto.LoginResponse
 import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.Trip
+import ar.edu.unsam.phm.uberto.repository.DriverRepository
+import ar.edu.unsam.phm.uberto.repository.PassengerRepository
 import ar.edu.unsam.phm.uberto.repository.Repository
+import ar.edu.unsam.phm.uberto.repository.TripsRepository
 import exceptions.NotFoundException
 import exceptions.loginErrorMessageMock
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 @Service
-object UserService {
-    val passengerRepo: Repository<Passenger> = Repository()
-    val tripRepo: Repository<Trip> = Repository()
-    val driverRepo: Repository<Driver> = Repository()
+class UserService( val passengerRepo: PassengerRepository, val tripRepo: TripsRepository, val driverRepo: DriverRepository) {
 
     fun getAllUsers(): List<Passenger> {
-        return passengerRepo.instances.toMutableList()
+        return passengerRepo.instances.toMutableList().toList()
     }
 
     fun getProfile(userId: Int): PassengerProfileDto = passengerRepo.getByID(userId).toDTOProfile()
