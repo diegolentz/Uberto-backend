@@ -6,6 +6,7 @@ import ar.edu.unsam.phm.uberto.model.User
 import ar.edu.unsam.phm.uberto.services.UserService
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDateTime
 
 @CrossOrigin(origins = ["http://localhost:8080", "http://localhost:5173"])
 @RestController
@@ -37,7 +38,7 @@ class UserController(private val userService: UserService) {
 
     @GetMapping("/drivers-available")
     fun getDriversAvailable(): List<Driver> {
-        return userService.getDriversAvailable()
+        return userService.getDriversAvailable(LocalDateTime.now()) //esto para que no rompa despues viene por path
     }
 
 }

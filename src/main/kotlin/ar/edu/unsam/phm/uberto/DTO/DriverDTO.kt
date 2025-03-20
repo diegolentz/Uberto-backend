@@ -2,11 +2,11 @@ package ar.edu.unsam.phm.uberto.dto
 
 import ar.edu.unsam.phm.uberto.model.Driver
 
-class DriverDTO(
+data class DriverDTO(
     var driverID: Int,
 )
 
-class DriverCartDTO(
+data class DriverCartDTO(
     var driverID: Int,
     var serial: String,
     var name: String,
