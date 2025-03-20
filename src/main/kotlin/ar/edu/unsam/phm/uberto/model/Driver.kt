@@ -12,13 +12,11 @@ abstract class Driver(
     override var balance: Double = 0.0,
     override var trips: MutableList<Trip> = mutableListOf(),
     override var img: String = "",
+    var model:Int = 0,
+    var brand:String = "",
+    var serial:String = "",
     var basePrice:Double = 0.0
 ):User, AvaliableInstance {
-    companion object Vehicle {
-        var model:String = ""
-        var brand:String = ""
-        var serial:String = ""
-    }
 
     fun avaliable(trip: Trip):Boolean{
         return trip.dateTimeFinished() < LocalDateTime.now()

@@ -23,7 +23,7 @@ class Trip(
         if(score != null){
             throw BusinessException("Solo adquiriendo version premium")
         }
-        this.score = TripScore(mensaje,rate, LocalDate.now())
+        this.score = TripScore(mensaje, rate, LocalDate.now(), client)
     }
 
     fun deleteScore(){

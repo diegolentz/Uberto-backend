@@ -3,7 +3,7 @@ package ar.edu.unsam.phm.uberto.dto
 import ar.edu.unsam.phm.uberto.model.Trip
 import java.time.LocalDateTime
 
-class TripDTO(
+class TripDTO( //este es sin confimar, no lleva tripscore
     var userId: Int,
     var driverDTO: DriverDTO,
     var duration: Int,
@@ -11,7 +11,6 @@ class TripDTO(
     val date: LocalDateTime,
     val origin: String,
     val destination: String,
-
     ) {
 
 
@@ -25,5 +24,4 @@ fun Trip.toDTO() = TripDTO(
     date = date,
     origin = origin,
     destination = destination,
-
 )

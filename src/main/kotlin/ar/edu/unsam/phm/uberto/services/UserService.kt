@@ -27,12 +27,6 @@ object UserService {
         return driverRepo.instances.toMutableList()
     }
 
-    fun getAllTrips(): List<Trip> {
-        return tripRepo.instances.toMutableList()
-    }
-
-
-
     fun getFriends(userId: Int): List<FriendDTO> {
         val userFriends = passengerRepo.getByID(userId).friends
         return userFriends.map { it.toFriendDTO() }
@@ -49,41 +43,5 @@ object UserService {
     }
 
 
-        //"Extraer Cliente"
-        //"Extraer Chofer"
-        //"Instanciar un viaje(con chofer y cliente)"
-        //"Validacion  el chofer esta disponible"
-        //"chofer.responseTrip"
-        //"agrgar el viaje al repo"
 
-    fun createTrip(trip: TripDTO): TripDTO{
-
-        val client = passengerRepo.getByID(trip.userId)
-        val driver = driverRepo.getByID(trip.driverDTO.driverID)
-
-        val newTrip =
-            Trip(
-                trip.duration,
-                trip.numberPassengers,
-                trip.date,
-                trip.origin,
-                trip.destination,
-                client,
-                driver
-            )
-
-        client.requestTrip(newTrip)
-        driver.responseTrip(newTrip)// Este metodo tiene que validar si el chofer esta disponible
-
-        passengerRepo.update(client)
-        driverRepo.update(driver)
-        tripRepo.create(newTrip)
-
-        return newTrip.toDTO()
-
-    }
-
-//    fun getByIdRaw(userId: Int): User = userRepository.getByID(userId)
-
-//    fun getProfile(userId: Int): UserProfileDto = getByIdRaw(userId).toDTOProfile()
 }
