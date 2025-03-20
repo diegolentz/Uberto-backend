@@ -31,12 +31,7 @@ object UserService {
         return tripRepo.instances.toMutableList()
     }
 
-    fun validateLogin(loginRequest: LoginRequest): LoginResponse {
-        if (loginRequest.password != "rooot" || loginRequest.username != "rooot") {
-            throw NotFoundException(loginErrorMessageMock)
-        }
-        return LoginResponse(1)
-    }
+
 
     fun getFriends(userId: Int): List<FriendDTO> {
         val userFriends = passengerRepo.getByID(userId).friends

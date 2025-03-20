@@ -7,5 +7,6 @@ interface User {
     var lastName:String
     var balance:Double
     val trips:MutableList<Trip>
+    val img:String
     fun getScores():List<TravelScore>
 }

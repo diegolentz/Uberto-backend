@@ -13,6 +13,7 @@ class Passenger(
     var cellphone: Int = 0,
     var age: Int = 0,
     override var id: Int = 0,
+    override var img: String = "",
     val friends: MutableList<Passenger> = mutableListOf()
 ) : User, AvaliableInstance {
 

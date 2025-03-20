@@ -1,8 +1,11 @@
 package ar.edu.unsam.phm.uberto.services
 
 import ar.edu.unsam.phm.uberto.dto.LoginRequest
+import ar.edu.unsam.phm.uberto.dto.LoginResponse
 import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.repository.Repository
+import exceptions.NotFoundException
+import exceptions.loginErrorMessageMock
 import org.springframework.stereotype.Service
 
 @Service
@@ -17,4 +20,10 @@ object AuthService {
         return 1
     }
 
+    fun validateLogin(loginRequest: LoginRequest): LoginResponse {
+        if (loginRequest.password != "rooot" || loginRequest.username != "rooot") {
+            throw NotFoundException(loginErrorMessageMock)
+        }
+        return LoginResponse(1)
+    }
 }

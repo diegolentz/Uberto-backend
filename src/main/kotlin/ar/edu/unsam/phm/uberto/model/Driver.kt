@@ -11,6 +11,7 @@ abstract class Driver(
     override var lastName: String = "",
     override var balance: Double = 0.0,
     override var trips: MutableList<Trip> = mutableListOf(),
+    override var img: String = "",
     var basePrice:Double = 0.0
 ):User, AvaliableInstance {
     companion object Vehicle {
