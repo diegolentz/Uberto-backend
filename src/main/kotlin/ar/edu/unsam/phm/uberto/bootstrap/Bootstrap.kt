@@ -4,14 +4,23 @@ import ar.edu.unsam.phm.uberto.builder.DriverBuilder
 import ar.edu.unsam.phm.uberto.builder.PassengerBuilder
 import ar.edu.unsam.phm.uberto.builder.TripBuilder
 import ar.edu.unsam.phm.uberto.model.*
+import ar.edu.unsam.phm.uberto.repository.DriverRepository
+import ar.edu.unsam.phm.uberto.repository.PassengerRepository
+import ar.edu.unsam.phm.uberto.repository.TripsRepository
+import ar.edu.unsam.phm.uberto.repository.UserRepository
 import ar.edu.unsam.phm.uberto.services.UserService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
 import org.springframework.stereotype.Component
 import kotlin.random.Random
 
 @Component
-object Bootstrap : CommandLineRunner {
-    private val serviceUser: UserService = UserService
+class Bootstrap(
+    @Autowired val userRepo: UserRepository,
+    @Autowired val passengerRepo: PassengerRepository,
+    @Autowired val driverRepo: DriverRepository,
+    @Autowired val tripRepo: TripsRepository
+) : CommandLineRunner {
 
     override fun run(vararg args: String?) {
         createUsers()
@@ -53,7 +62,7 @@ object Bootstrap : CommandLineRunner {
             .build()
         val users = mutableListOf<Passenger>(user01, user02, user03, user04)
         users.forEach{user:Passenger ->
-            serviceUser.passengerRepo.create(user)
+            passengerRepo.create(user)
         }
 
     }
@@ -76,25 +85,25 @@ object Bootstrap : CommandLineRunner {
             .build()
         val drivers = mutableListOf<Driver>(driver01, driver02)
         drivers.forEach{driver:Driver ->
-            serviceUser.driverRepo.create(driver)
+            driverRepo.create(driver)
         }
     }
 
     private fun createTrips(){
         val trip01 = TripBuilder()
-            .driver(serviceUser.driverRepo.getByID(Random.nextInt(1,2)))
-            .passenger(serviceUser.passengerRepo.getByID(Random.nextInt(1,2)))
+            .driver(driverRepo.getByID(Random.nextInt(1,2)))
+            .passenger(passengerRepo.getByID(Random.nextInt(1,2)))
             .passengerAmmount(Random.nextInt(1,2))
             .build()
 
         val trip02 = TripBuilder()
-            .driver(serviceUser.driverRepo.getByID(Random.nextInt(1,2)))
-            .passenger(serviceUser.passengerRepo.getByID(Random.nextInt(1,2)))
+            .driver(driverRepo.getByID(Random.nextInt(1,2)))
+            .passenger(passengerRepo.getByID(Random.nextInt(1,2)))
             .passengerAmmount(Random.nextInt(1,2))
             .build()
         val trips = mutableListOf<Trip>(trip01, trip02)
         trips.forEach{trip:Trip ->
-            serviceUser.tripRepo.create(trip)
+            tripRepo.create(trip)
         }
     }
 }

@@ -11,6 +11,6 @@ interface User : AvaliableInstance {
     val trips:MutableList<Trip>
     val img:String
     override var id:Int
-    fun getScores():List<TripScore>
+    //fun getScores():List<TripScore>
     fun rol():String
 }

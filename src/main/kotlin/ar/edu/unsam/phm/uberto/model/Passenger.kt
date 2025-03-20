@@ -44,17 +44,17 @@ class Passenger(
     }
 
 
-    fun deleteTravelScore() {
-        TODO("Not yet implemented")
-    }
+//    fun deleteTravelScore() {
+//        TODO("Not yet implemented")
+//    }
 
-    override fun getScores(): List<TripScore> {
-        TODO()//return this.trips.map { trip:Trip -> trip.score }
-    }
+//    override fun getScores(): List<TripScore> {
+//        TODO()//return this.trips.map { trip:Trip -> trip.score }
+//    }
 
-    override fun cumpleCriterioBusqueda(texto: String): Boolean {
-        TODO("Not yet implemented")
-    }
+//    override fun cumpleCriterioBusqueda(texto: String): Boolean {
+//        TODO("Not yet implemented")
+//    }
 
     fun addFriend(friend: Passenger) {
         friends.add(friend)

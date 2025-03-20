@@ -30,9 +30,9 @@ class Trip(
         score = null
     }
 
-    override fun cumpleCriterioBusqueda(texto: String): Boolean {
-        TODO("Not yet implemented")
-    }
+//    override fun cumpleCriterioBusqueda(texto: String): Boolean {
+//        TODO("Not yet implemented")
+//    }
 
     fun priceTrip(): Double = this.driver.fee(this)
 

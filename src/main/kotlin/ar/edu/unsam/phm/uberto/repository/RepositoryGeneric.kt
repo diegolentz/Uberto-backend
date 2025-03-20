@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component
 interface AvaliableInstance {
     var id: Int
 
-    fun cumpleCriterioBusqueda(texto: String): Boolean
+//    fun cumpleCriterioBusqueda(texto: String): Boolean
 }
 
 @Component
@@ -69,7 +69,12 @@ class UserRepository(): Repository<User>() {
         return instances.find { it.username == username }
     }
 
-    fun exisUsername(username: String): Boolean = instances.any{it.username == username}
+    fun exisUsername(username: String): Boolean {
+        return instances.any {
+            println("it.username " + it.username + "username entrada" + username)
+            it.username == username
+        }
+    }
 }
 @Component
 class DriverRepository(): Repository<Driver>() {
