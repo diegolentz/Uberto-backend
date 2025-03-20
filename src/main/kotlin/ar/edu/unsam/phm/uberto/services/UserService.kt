@@ -42,9 +42,10 @@ object UserService {
 
         return getFriends(user.id)
     }
-
+    //chofer
     fun getDriversAvailable(date: LocalDateTime): List<Driver>{
         return driverRepo.instances.filter { it.avaliable(date) }
+//        return driverRepo.getDriversAvailable(date)
     }
 
 }

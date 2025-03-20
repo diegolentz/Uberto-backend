@@ -1,8 +1,12 @@
 package ar.edu.unsam.phm.uberto.services
 
+import ar.edu.unsam.phm.uberto.dto.LoginDTO
 import ar.edu.unsam.phm.uberto.dto.LoginRequest
 import ar.edu.unsam.phm.uberto.dto.LoginResponse
 import ar.edu.unsam.phm.uberto.model.Driver
+import ar.edu.unsam.phm.uberto.model.Passenger
+import ar.edu.unsam.phm.uberto.model.Trip
+import ar.edu.unsam.phm.uberto.model.User
 import ar.edu.unsam.phm.uberto.repository.Repository
 import exceptions.NotFoundException
 import exceptions.loginErrorMessageMock
@@ -10,7 +14,10 @@ import org.springframework.stereotype.Service
 
 @Service
 object AuthService {
-    val driverRepository: Repository<Driver> = Repository()
+    ///TODO aca hay que replantear el modelo de interfaz... no puedo instanciar un repo de tipo User
+    val passengerRepo: Repository<Passenger> = Repository()
+    val tripRepo: Repository<Trip> = Repository()
+    val driverRepo: Repository<Driver> = Repository()
 
     fun validateLoginRequest(loginRequest: LoginRequest): Int {
         TODO("Validar credenciales en el repo")
@@ -20,7 +27,7 @@ object AuthService {
         return 1
     }
 
-    fun validateLogin(loginRequest: LoginRequest): LoginResponse {
+    fun validateLogin(loginRequest: LoginRequest): LoginDTO {
         if (loginRequest.password != "rooot" || loginRequest.username != "rooot") {
             throw NotFoundException(loginErrorMessageMock)
         }

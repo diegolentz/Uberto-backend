@@ -35,7 +35,6 @@ class Repository<T : AvaliableInstance> {
         }
     }
 
-
     private fun existeElemento(id: Int) = instances.any { it.id == id }
 
     fun update(objeto: T) {
