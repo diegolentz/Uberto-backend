@@ -1,5 +1,6 @@
 package ar.edu.unsam.phm.uberto.repository
 
+import ar.edu.unsam.phm.uberto.dto.LoginRequest
 import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.Trip
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Component
 interface AvaliableInstance {
     var id: Int
 
-//    fun cumpleCriterioBusqueda(texto: String): Boolean
 }
 
 @Component
@@ -51,7 +51,6 @@ abstract class Repository<T : AvaliableInstance> {
         return instances.first { it.id == objectID } //devuelve elemento o null
     }
 
-    //fun search(texto: String): List<T> = instances.filter { it.cumpleCriterioBusqueda(texto) }
 
     private fun asignarID(objeto: T) {
         objeto.id = instances.size + 1
@@ -71,16 +70,41 @@ class UserRepository(): Repository<User>() {
 
     fun exisUsername(username: String): Boolean {
         return instances.any {
-            println("it.username " + it.username + "username entrada" + username)
             it.username == username
         }
     }
 }
 @Component
 class DriverRepository(): Repository<Driver>() {
+
+    fun search(loginRequest: LoginRequest): Driver?{
+        if(!exisUsername(loginRequest.username)){
+            throw BusinessException("Credenciales invalidas")
+        }
+        return instances.find { it.username == loginRequest.username && it.password == loginRequest.password}
+    }
+
+    fun exisUsername(username: String): Boolean {
+        return instances.any {
+            it.username == username
+        }
+    }
 }
 @Component
 class PassengerRepository(): Repository<Passenger>() {
+
+    fun search(loginRequest: LoginRequest): Passenger?{
+        if(!exisUsername(loginRequest.username)){
+            throw BusinessException("Credenciales invalidas")
+        }
+        return instances.find { it.username == loginRequest.username && it.password == loginRequest.password}
+    }
+
+    fun exisUsername(username: String): Boolean {
+        return instances.any {
+            it.username == username
+        }
+    }
 }
 @Component
 class TripsRepository(): Repository<Trip>() {

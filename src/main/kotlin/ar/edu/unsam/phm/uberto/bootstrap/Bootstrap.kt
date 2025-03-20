@@ -63,6 +63,7 @@ class Bootstrap(
         val users = mutableListOf<Passenger>(user01, user02, user03, user04)
         users.forEach{user:Passenger ->
             passengerRepo.create(user)
+//            userRepo.create(user)
         }
 
     }
@@ -86,20 +87,21 @@ class Bootstrap(
         val drivers = mutableListOf<Driver>(driver01, driver02)
         drivers.forEach{driver:Driver ->
             driverRepo.create(driver)
+//            userRepo.create(driver)
         }
     }
 
     private fun createTrips(){
         val trip01 = TripBuilder()
-            .driver(driverRepo.getByID(Random.nextInt(1,2)))
-            .passenger(passengerRepo.getByID(Random.nextInt(1,2)))
-            .passengerAmmount(Random.nextInt(1,2))
+            .driver(driverRepo.getByID(1))
+            .passenger(passengerRepo.getByID(2))
+            .passengerAmmount(1)
             .build()
 
         val trip02 = TripBuilder()
-            .driver(driverRepo.getByID(Random.nextInt(1,2)))
-            .passenger(passengerRepo.getByID(Random.nextInt(1,2)))
-            .passengerAmmount(Random.nextInt(1,2))
+            .driver(driverRepo.getByID(1))
+            .passenger(passengerRepo.getByID(1))
+            .passengerAmmount(1)
             .build()
         val trips = mutableListOf<Trip>(trip01, trip02)
         trips.forEach{trip:Trip ->
