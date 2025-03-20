@@ -63,6 +63,10 @@ abstract class Driver(
         addTrip(newTrip)
     }
 
+    override fun rol(): String {
+        return "driver"
+    }
+
 }
 
 

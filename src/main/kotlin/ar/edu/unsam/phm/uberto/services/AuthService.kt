@@ -9,12 +9,14 @@ import ar.edu.unsam.phm.uberto.model.Trip
 import ar.edu.unsam.phm.uberto.model.User
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
 import ar.edu.unsam.phm.uberto.repository.Repository
+import ar.edu.unsam.phm.uberto.repository.UserRepository
+import exceptions.BusinessException
 import exceptions.NotFoundException
 import exceptions.loginErrorMessageMock
 import org.springframework.stereotype.Service
 
 @Service
-class AuthService(val passengerRepo: PassengerRepository) {
+class AuthService(val userRepo: UserRepository) {
 
     fun validateLoginRequest(loginRequest: LoginRequest): Int {
         TODO("Validar credenciales en el repo")
@@ -24,10 +26,15 @@ class AuthService(val passengerRepo: PassengerRepository) {
         return 1
     }
 
-    fun validateLogin(loginRequest: LoginRequest): LoginDTO {
-        if (loginRequest.password != "rooot" || loginRequest.username != "rooot") {
-            throw NotFoundException(loginErrorMessageMock)
+    fun validateLogin(loginRequest: LoginRequest): User? {
+        val user = userRepo.search(loginRequest.username)
+        if(!validateCredential(user!!, loginRequest)){ //Preguntar como validar aca para no poner !!
+            throw BusinessException("Contraseña o Usuario incorrecto")
         }
-        return LoginResponse(1)
+        return user
+    }
+
+    fun validateCredential(user: User, loginRequest: LoginRequest): Boolean  {
+        return user.username == loginRequest.username && user.password == loginRequest.password
     }
 }
