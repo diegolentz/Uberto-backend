@@ -18,8 +18,13 @@ abstract class Driver(
     var basePrice:Double = 0.0
 ):User, AvaliableInstance {
 
-    fun avaliable(trip: Trip):Boolean{
-        return trip.dateTimeFinished() < LocalDateTime.now()
+    fun avaliable(date: LocalDateTime):Boolean{
+        //estoy hay que pensarlo bien, esta mal
+        // porque en realidad necesito saber si la fecha es mayo a la finalizacion o
+        // la fecha + el tiempo es menor que date
+        // pero en este momento no tenemos el random, el random se optiene en la otra pantalla
+        //hay que analizarlo... salvo que lo saquemos cuando toca filtra.
+        return trips.any{ it.dateTimeFinished() < date || it.date > date}
     }
 
     fun scoreAVG():Double{
@@ -52,7 +57,7 @@ abstract class Driver(
     fun pendingTrips() = trips.filter { trip:Trip ->trip.pendingTrip()}
     fun finishedTrips() = trips.filter { trip:Trip ->trip.finishedTrip()}
     fun responseTrip(newTrip: Trip) {
-        if(!avaliable(newTrip)){
+        if(!avaliable(newTrip.date)){
             throw BusinessException("El chofer no se encuentra disponible")
         }
         addTrip(newTrip)

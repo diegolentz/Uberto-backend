@@ -10,6 +10,7 @@ import ar.edu.unsam.phm.uberto.repository.Repository
 import exceptions.NotFoundException
 import exceptions.loginErrorMessageMock
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @Service
 object UserService {
@@ -42,6 +43,8 @@ object UserService {
         return getFriends(user.id)
     }
 
-
+    fun getDriversAvailable(date: LocalDateTime): List<Driver>{
+        return driverRepo.instances.filter { it.avaliable(date) }
+    }
 
 }

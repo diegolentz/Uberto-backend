@@ -35,4 +35,9 @@ class UserController(private val userService: UserService) {
         return userService.getAllDrivers()
     }
 
+    @GetMapping("/drivers-available")
+    fun getDriversAvailable(): List<Driver> {
+        return userService.getDriversAvailable()
+    }
+
 }
