@@ -48,11 +48,13 @@ class Passenger(
 //        TODO("Not yet implemented")
 //    }
 
-//    override fun getScores(): List<TripScore> {
-//        TODO()//return this.trips.map { trip:Trip -> trip.score }
-//    }
+    override fun getScores(): List<TripScore> {
+        return this.getScoredTrips().map { trip:Trip -> trip.score!! }
+    }
 
-
+    private fun getScoredTrips():List<Trip>{
+        return this.trips.filter { it.score != null }
+    }
 
     fun addFriend(friend: Passenger) {
         friends.add(friend)

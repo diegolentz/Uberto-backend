@@ -28,7 +28,7 @@ abstract class Driver(
     }
 
     fun scoreAVG():Double{
-        return this.trips.filter { it.score != null }.map { it.score!!.scorePoints }.average()
+        return this.getScoredTrips().map { it.score!!.scorePoints }.average()
     }
 
     fun fee(trip:Trip):Double{
@@ -41,9 +41,13 @@ abstract class Driver(
 
     abstract fun plusBasePrice(trip:Trip):Double
 
-//    override fun getScores(): List<TripScore> {
-//        return this.trips.filter { it.score != null }.map { it.score!! }
-//    }
+    override fun getScores(): List<TripScore> {
+        return this.getScoredTrips().map{ it.score!! }
+    }
+
+    private fun getScoredTrips():List<Trip>{
+        return this.trips.filter { it.score != null }
+    }
 
     fun addTrip(trip:Trip) {
         this.trips.add(trip)
