@@ -10,15 +10,12 @@ data class LoginRequest(
 data class LoginResponse(
     var jwt: Int
 )
-
 data class LoginDTO(
     var id: Int,
-    var rol: String,
     var img: String
 )
 
 fun User.toLoginDTO() = LoginDTO(
     id = id,
-    img = img,
-    rol = rol()
+    img = img
 )
