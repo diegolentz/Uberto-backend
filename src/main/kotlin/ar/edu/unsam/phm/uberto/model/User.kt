@@ -12,5 +12,4 @@ interface User : AvaliableInstance {
     val img:String
     override var id:Int
     //fun getScores():List<TripScore>
-    fun rol():String
 }

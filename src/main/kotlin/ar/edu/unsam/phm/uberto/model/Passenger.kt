@@ -62,7 +62,4 @@ class Passenger(
         friends.remove(friend)
     }
 
-    override fun rol(): String {
-        return "passenger"
-    }
 }
