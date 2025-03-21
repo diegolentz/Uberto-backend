@@ -10,16 +10,17 @@ import java.time.LocalDateTime
 
 @CrossOrigin(origins = ["http://localhost:8080", "http://localhost:5173"])
 @RestController
+@RequestMapping("/user")
 class UserController(private val userService: UserService) {
 
     //================ USER class
     @Operation(summary = "Get all users", description = "Returns all users")
-    @GetMapping("/users")
+    @GetMapping()
     fun getAllUsers(): List<User> {
         return userService.getAllUsers()
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     fun getUserById(@PathVariable("id") id: Int): PassengerProfileDto = userService.getProfile(id)
 
     @GetMapping("/friends")
@@ -30,15 +31,6 @@ class UserController(private val userService: UserService) {
     @PutMapping("/friends")
     fun updateFriends(@RequestBody body: UpdatedFriends): List<FriendDTO> = userService.updateFriends(body)
 
-    //=============== DRIVER class
-    @GetMapping("/drivers")
-    fun getAllDrivers(): List<Driver> {
-        return userService.getAllDrivers()
-    }
 
-    @GetMapping("/drivers-available")
-    fun getDriversAvailable(): List<Driver> {
-        return userService.getDriversAvailable(LocalDateTime.now()) //esto para que no rompa despues viene por path
-    }
 
 }

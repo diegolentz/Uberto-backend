@@ -24,9 +24,7 @@ class UserService( val passengerRepo: PassengerRepository, val tripRepo: TripsRe
 
     fun getProfile(userId: Int): PassengerProfileDto = passengerRepo.getByID(userId).toDTOProfile()
 
-    fun getAllDrivers(): List<Driver> {
-        return driverRepo.instances.toMutableList()
-    }
+
 
     fun getFriends(userId: Int): List<FriendDTO> {
         val userFriends = passengerRepo.getByID(userId).friends
@@ -42,10 +40,6 @@ class UserService( val passengerRepo: PassengerRepository, val tripRepo: TripsRe
 
         return getFriends(user.id)
     }
-    //chofer
-    fun getDriversAvailable(date: LocalDateTime): List<Driver>{
-        return driverRepo.instances.filter { it.avaliable(date) }
-//        return driverRepo.getDriversAvailable(date)
-    }
+
 
 }
