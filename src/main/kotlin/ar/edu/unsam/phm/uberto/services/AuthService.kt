@@ -1,23 +1,14 @@
 package ar.edu.unsam.phm.uberto.services
 
-import ar.edu.unsam.phm.uberto.dto.LoginDTO
+import ar.edu.unsam.phm.uberto.BusinessException
 import ar.edu.unsam.phm.uberto.dto.LoginRequest
-import ar.edu.unsam.phm.uberto.dto.LoginResponse
-import ar.edu.unsam.phm.uberto.model.Driver
-import ar.edu.unsam.phm.uberto.model.Passenger
-import ar.edu.unsam.phm.uberto.model.Trip
 import ar.edu.unsam.phm.uberto.model.User
 import ar.edu.unsam.phm.uberto.repository.DriverRepository
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
-import ar.edu.unsam.phm.uberto.repository.Repository
-import ar.edu.unsam.phm.uberto.repository.UserRepository
-import exceptions.BusinessException
-import exceptions.NotFoundException
-import exceptions.loginErrorMessageMock
 import org.springframework.stereotype.Service
 
 @Service
-class AuthService(val passeRepo: PassengerRepository, val driverRepo: DriverRepository) {
+class AuthService(val passengerRepo: PassengerRepository, val driverRepo: DriverRepository) {
 
     fun validateLoginRequest(loginRequest: LoginRequest): Int {
         TODO("Validar credenciales en el repo")
@@ -28,11 +19,25 @@ class AuthService(val passeRepo: PassengerRepository, val driverRepo: DriverRepo
     }
 
     fun validateLogin(loginRequest: LoginRequest): User? {
-        val passe = passeRepo.search(loginRequest)
-        if(passe == null){
-            return  driverRepo.search(loginRequest)
+        val passenger = passengerRepo.search(loginRequest)
+        if(passenger == null){
+            val driver = driverRepo.search(loginRequest)
+            if(driver == null){
+                throw BusinessException("credenciales invalidas")
+            }
+            if(!authenticate(loginRequest, driver)){
+                throw BusinessException("credenciales invalidas")
+            }
+            return driver
         }else{
-            return passe
+            if(!authenticate(loginRequest, passenger)){
+                throw BusinessException("credenciales invalidas")
+            }
+            return passenger
         }
+    }
+
+    private fun authenticate(loginRequest: LoginRequest, user: User): Boolean{
+        return loginRequest.username == user.username && loginRequest.password == user.password
     }
 }

@@ -79,33 +79,16 @@ class UserRepository(): Repository<User>() {
 class DriverRepository(): Repository<Driver>() {
 
     fun search(loginRequest: LoginRequest): Driver?{
-        if(!exisUsername(loginRequest.username)){
-            throw BusinessException("Credenciales invalidas")
-        }
-        return instances.find { it.username == loginRequest.username && it.password == loginRequest.password}
-    }
-
-    fun exisUsername(username: String): Boolean {
-        return instances.any {
-            it.username == username
-        }
+        return instances.find { it.username == loginRequest.username}
     }
 }
 @Component
 class PassengerRepository(): Repository<Passenger>() {
 
     fun search(loginRequest: LoginRequest): Passenger?{
-        if(!exisUsername(loginRequest.username)){
-            throw BusinessException("Credenciales invalidas")
-        }
-        return instances.find { it.username == loginRequest.username && it.password == loginRequest.password}
+        return instances.find { it.username == loginRequest.username}
     }
 
-    fun exisUsername(username: String): Boolean {
-        return instances.any {
-            it.username == username
-        }
-    }
 }
 @Component
 class TripsRepository(): Repository<Trip>() {
