@@ -5,17 +5,14 @@ import ar.edu.unsam.phm.uberto.dto.LoginRequest
 import ar.edu.unsam.phm.uberto.dto.LoginResponse
 import ar.edu.unsam.phm.uberto.dto.toLoginDTO
 import ar.edu.unsam.phm.uberto.services.AuthService
-import org.springframework.web.bind.annotation.CrossOrigin
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 
 @CrossOrigin(origins = ["http://localhost:8080", "http://localhost:5173"])
 @RestController
+@RequestMapping("/login")
 class LoginController(private val authService: AuthService) {
-    @GetMapping("/login")
+    @PostMapping()
     fun authLogin(@RequestBody loginRequestBody: LoginRequest): LoginDTO {
         return authService.validateLogin(loginRequestBody)!!.toLoginDTO()
     }

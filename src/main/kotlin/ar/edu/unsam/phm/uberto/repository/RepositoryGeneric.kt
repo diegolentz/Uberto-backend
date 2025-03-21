@@ -110,3 +110,7 @@ class PassengerRepository(): Repository<Passenger>() {
 @Component
 class TripsRepository(): Repository<Trip>() {
 }
+
+@Component
+class TripScoreRepository(): Repository<Trip>() {
+}

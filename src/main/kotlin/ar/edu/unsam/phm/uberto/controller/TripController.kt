@@ -21,7 +21,7 @@ class TripsController(private val travelTimeService: TravelTimeMockService, priv
         return tripService.createTrip(trip)
     }
 
-    @GetMapping("/get-trips") //TODO de quien?? falta un id
+    @GetMapping() //TODO de quien?? falta un id
     fun getTrips(): List<Trip> {
         return tripService.getAllTrips()
     }
