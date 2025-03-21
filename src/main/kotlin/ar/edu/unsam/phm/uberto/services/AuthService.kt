@@ -19,6 +19,7 @@ class AuthService(val passengerRepo: PassengerRepository, val driverRepo: Driver
     }
 
     fun validateLogin(loginRequest: LoginRequest): User? {
+        //pls, hagan un refactor que no me da mas el bocho
         val passenger = passengerRepo.search(loginRequest)
         if(passenger == null){
             val driver = driverRepo.search(loginRequest)
