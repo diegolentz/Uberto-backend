@@ -27,7 +27,7 @@ abstract class Driver(
         return this.getScoredTrips().map { it.score!!.scorePoints }.average()
     }
 
-    fun fee(trip:Trip):Double{
+    fun fee(trip:Trip):Double{ //trabajar en este metodo al volver
         return this.basePrice + this.plusFee(trip)
     }
 
