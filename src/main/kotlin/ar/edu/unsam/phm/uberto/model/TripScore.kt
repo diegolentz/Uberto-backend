@@ -4,7 +4,8 @@ import ar.edu.unsam.phm.uberto.repository.AvaliableInstance
 import java.time.LocalDate
 
 data class TripScore(
-    val message:String = "",
-    val scorePoints:Int = 0,
-    val date:LocalDate = LocalDate.now(),
-    val passenger: Passenger)
+    var message:String = "",
+    var scorePoints:Int = 0,
+    var date:LocalDate = LocalDate.now(),
+    var passengerId: Int = 0, override var id: Int=0
+) : AvaliableInstance{}

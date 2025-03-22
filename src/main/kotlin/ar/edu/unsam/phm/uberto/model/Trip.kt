@@ -19,11 +19,11 @@ class Trip(
 ):AvaliableInstance{
     var score: TripScore? = null
 
-    fun addScore(mensaje:String,rate:Int){
+    fun addScore(newScore: TripScore){
         if(score != null){
             throw BusinessException("Solo adquiriendo version premium")
         }
-        this.score = TripScore(mensaje, rate, LocalDate.now(), client)
+        this.score = newScore
     }
 
     fun deleteScore(){

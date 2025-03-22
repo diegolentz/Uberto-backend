@@ -36,6 +36,7 @@ class TripBuilder(val newTrip: Trip = Trip()) {
         newTrip.date = LocalDateTime.parse(date)
     }
 
+
     fun build(): Trip = newTrip
 
 }

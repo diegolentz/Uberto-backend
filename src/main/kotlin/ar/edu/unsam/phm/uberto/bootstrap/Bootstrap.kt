@@ -3,6 +3,7 @@ package ar.edu.unsam.phm.uberto.bootstrap
 import ar.edu.unsam.phm.uberto.builder.DriverBuilder
 import ar.edu.unsam.phm.uberto.builder.PassengerBuilder
 import ar.edu.unsam.phm.uberto.builder.TripBuilder
+import ar.edu.unsam.phm.uberto.builder.TripScoreBuilder
 import ar.edu.unsam.phm.uberto.model.*
 import ar.edu.unsam.phm.uberto.repository.*
 import ar.edu.unsam.phm.uberto.services.UserService
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
 import org.springframework.stereotype.Component
 import java.sql.Driver
+import java.time.LocalDate
 import kotlin.random.Random
 
 @Component
@@ -18,13 +20,15 @@ class Bootstrap(
     @Autowired val passengerRepo: PassengerRepository,
     @Autowired val driverRepo: DriverRepository,
     @Autowired val tripRepo: TripsRepository,
-    @Autowired val accountsRepo: AuthCredentialsRepository
+    @Autowired val accountsRepo: AuthCredentialsRepository,
+    @Autowired val tripScoreRepo: TripScoreRepository
 ) : CommandLineRunner {
 
     override fun run(vararg args: String?) {
         createAccounts()
         createPassengers()
         createDrivers()
+        createTripScore()
         createTrips()
         driverAddTripMock()
     }
@@ -84,29 +88,42 @@ class Bootstrap(
 
     }
 
+    private fun createTripScore(){
+        val score1 = TripScoreBuilder()
+            .score(3)
+            .date(LocalDate.now())
+            .passengerId(1)
+            .message("Excelente viaje")
+            .build()
+
+        tripScoreRepo.create(score1)
+    }
+
     private fun createTrips(){
         val trip01 = TripBuilder()
-            .driver(driverRepo.getByID(1))
-            .passenger(passengerRepo.getByID(2))
+            .driver(driverRepo.searchByUserID(6)!!)
+            .passenger(passengerRepo.searchByUserID(1)!!)
             .passengerAmmount(1)
             .duration(10)
             .setDate("2025-03-21T10:44:10.9267679")
             .build()
 
         val trip02 = TripBuilder()
-            .driver(driverRepo.getByID(2))
-            .passenger(passengerRepo.getByID(1))
+            .driver(driverRepo.searchByUserID(7)!!)
+            .passenger(passengerRepo.searchByUserID(2)!!)
             .passengerAmmount(1)
             .build()
         val trips = mutableListOf<Trip>(trip01, trip02)
         trips.forEach{trip:Trip ->
             tripRepo.create(trip)
         }
+        val score = tripScoreRepo.getByID(1)
+        trip01.addScore(score)
 
     }
     private fun driverAddTripMock(){
-        val driver1 = driverRepo.getByID(1)
+        val driver1 = driverRepo.searchByUserID(6)
         val trip1 = tripRepo.getByID(1)
-        driver1.addTrip(trip1)
+        driver1!!.addTrip(trip1)
     }
 }
