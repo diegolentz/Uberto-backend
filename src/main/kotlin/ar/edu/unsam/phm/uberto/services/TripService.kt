@@ -14,7 +14,7 @@ class TripService(val passengerRepo: PassengerRepository, val driverRepo: Driver
     fun createTrip(trip: TripDTO): TripDTO {
 
         val client = passengerRepo.getByID(trip.userId)
-        val driver = driverRepo.getByID(trip.driverDTO.driverID)
+        val driver = driverRepo.getByID(trip.driverId)
 
         val newTrip =
             Trip(
@@ -28,7 +28,7 @@ class TripService(val passengerRepo: PassengerRepository, val driverRepo: Driver
             )
 
         client.requestTrip(newTrip)
-        driver.responseTrip(newTrip)
+        driver.responseTrip(newTrip, trip.duration)
 
         passengerRepo.update(client)
         driverRepo.update(driver)

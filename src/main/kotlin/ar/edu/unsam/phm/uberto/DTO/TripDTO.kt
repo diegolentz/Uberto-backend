@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 
 class TripDTO( //este es sin confimar, no lleva tripscore
     var userId: Int,
-    var driverDTO: DriverDTO,
+    var driverId: Int,
     var duration: Int,
     val numberPassengers: Int,
     val date: LocalDateTime,
@@ -17,8 +17,8 @@ class TripDTO( //este es sin confimar, no lleva tripscore
 }
 
 fun Trip.toDTO() = TripDTO(
-    userId = client.id,
-    driverDTO = driver.toDTO(),
+    userId = client.userId,
+    driverId = driver.userId,
     duration = duration,
     numberPassengers = numberPassengers,
     date = date,
