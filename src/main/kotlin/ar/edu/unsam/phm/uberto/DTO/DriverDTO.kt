@@ -5,7 +5,8 @@ import ar.edu.unsam.phm.uberto.model.Driver
 data class DriverDTO(
     val id: Int,
     val serial: String,
-    val name: String,
+    val firstName: String,
+    val lastName: String,
     val brand: String,
     val model: Int,
     val basePrice: Double,
@@ -16,7 +17,8 @@ data class DriverDTO(
 fun Driver.toDTO() = DriverDTO(
     id = userId,
     serial = serial,
-    name = firstName + " " + lastName,
+    firstName = firstName,
+    lastName = lastName,
     brand = brand,
     model = model,
     basePrice = basePrice,
