@@ -1,5 +1,6 @@
 package ar.edu.unsam.phm.uberto.builder
 
+import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.TripScore
 import java.time.LocalDate
 
@@ -14,8 +15,8 @@ class TripScoreBuilder(val newScore: TripScore = TripScore()) {
         newScore.scorePoints = score
     }
 
-    fun passengerId(id: Int): TripScoreBuilder = apply {
-        newScore.passengerId = id
+    fun passengerId(passenger: Passenger): TripScoreBuilder = apply {
+        newScore.passenger = passenger
     }
 
     fun date(date: LocalDate): TripScoreBuilder = apply {

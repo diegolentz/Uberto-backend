@@ -7,5 +7,5 @@ data class TripScore(
     var message:String = "",
     var scorePoints:Int = 0,
     var date:LocalDate = LocalDate.now(),
-    var passengerId: Int = 0, override var id: Int=0
+    var passenger: Passenger = Passenger(), override var id: Int=0
 ) : AvaliableInstance{}

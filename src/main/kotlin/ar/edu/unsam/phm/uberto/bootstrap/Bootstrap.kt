@@ -89,10 +89,11 @@ class Bootstrap(
     }
 
     private fun createTripScore(){
+        val passenger = passengerRepo.searchByUserID(1)
         val score1 = TripScoreBuilder()
             .score(3)
             .date(LocalDate.now())
-            .passengerId(1)
+            .passengerId(passenger!!)
             .message("Excelente viaje")
             .build()
 
