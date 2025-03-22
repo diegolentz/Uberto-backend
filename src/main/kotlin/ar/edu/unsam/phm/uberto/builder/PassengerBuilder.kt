@@ -8,12 +8,6 @@ class PassengerBuilder(val newPassenger: Passenger = Passenger()) {
         newPassenger.userId = id
     }
 
-//    fun username(user: String): PassengerBuilder = apply {
-//        newPassenger.username = user
-//    }
-//    fun password(pass: String): PassengerBuilder = apply {
-//        newPassenger.password = pass
-//    }
     fun firstName(name: String): PassengerBuilder = apply {
         newPassenger.firstName = name
     }
