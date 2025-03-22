@@ -13,8 +13,11 @@ class TripService(val passengerRepo: PassengerRepository, val driverRepo: Driver
 
     fun createTrip(trip: TripDTO): TripDTO {
 
-        val client = passengerRepo.getByID(trip.userId)
-        val driver = driverRepo.getByID(trip.driverId)
+        val client = passengerRepo.searchByUserID(trip.userId)
+        val driver = driverRepo.searchByUserID(trip.driverId)
+        if(client == null || driver == null){
+            throw Exception("Fallo en la creacion de viaje")
+        }
 
         val newTrip =
             Trip(

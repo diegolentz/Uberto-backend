@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/trip")
 class TripsController(private val travelTimeService: TravelTimeMockService, private val tripService: TripService) {
-    @GetMapping("/estimate")
+    @GetMapping("/estimate") //este creo que no se usa REVISAR
     fun getTime() : Map<String, Int>{
         return travelTimeService.getTime()
     }
 
-    @PostMapping("/create") //usado para traer la info a confirmar
+    @PostMapping("/create")
     fun createTrip(@RequestBody trip: TripDTO): TripDTO {
         return tripService.createTrip(trip)
     }

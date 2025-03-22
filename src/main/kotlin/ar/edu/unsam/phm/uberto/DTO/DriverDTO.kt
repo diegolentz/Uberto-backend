@@ -50,24 +50,3 @@ fun Driver.toCardDTO() = DriverCardDTO(
     rating = scoreAVG()
 )
 
-data class DriverTripConfirm(
-        val id: Int,
-        val name: String,
-        val brand: String,
-        val model: Int,
-        val serial: String,
-        val scoreRatingAVG: Double,
-        val type: String,
-        val scores: List<TripScore>
-        ){}
-
-fun Driver.toTripConfirm() = DriverTripConfirm(
-    id= userId,
-    name = firstName + " " + lastName,
-    brand = brand,
-    model = model,
-    serial = serial,
-    scoreRatingAVG = scoreAVG(),
-    type = toString(),
-    scores = getScores()
-)
