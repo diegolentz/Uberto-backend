@@ -4,93 +4,81 @@ import ar.edu.unsam.phm.uberto.builder.DriverBuilder
 import ar.edu.unsam.phm.uberto.builder.PassengerBuilder
 import ar.edu.unsam.phm.uberto.builder.TripBuilder
 import ar.edu.unsam.phm.uberto.model.*
-import ar.edu.unsam.phm.uberto.repository.DriverRepository
-import ar.edu.unsam.phm.uberto.repository.PassengerRepository
-import ar.edu.unsam.phm.uberto.repository.TripsRepository
-import ar.edu.unsam.phm.uberto.repository.UserRepository
+import ar.edu.unsam.phm.uberto.repository.*
 import ar.edu.unsam.phm.uberto.services.UserService
+import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
 import org.springframework.stereotype.Component
+import java.sql.Driver
 import kotlin.random.Random
 
 @Component
 class Bootstrap(
-    @Autowired val userRepo: UserRepository,
     @Autowired val passengerRepo: PassengerRepository,
     @Autowired val driverRepo: DriverRepository,
-    @Autowired val tripRepo: TripsRepository
+    @Autowired val tripRepo: TripsRepository,
+    @Autowired val accountsRepo: AuthCredentialsRepository
 ) : CommandLineRunner {
 
     override fun run(vararg args: String?) {
-        createUsers()
+        createAccounts()
+        createPassengers()
         createDrivers()
         createTrips()
+        driverAddTripMock()
     }
 
-    private fun createUsers() {
-        val user01 = PassengerBuilder()
-            .firstName("El Adri")
-            .lastName("Perez")
-            .balance(50000.0)
-            .username("pasajero1")
-            .password("pasajero1")
-            .build()
-        val user02 = PassengerBuilder()
-            .firstName("Martin")
-            .lastName("McFly")
-            .age(17)
-            .balance(50000.0)
-            .username("pasajero2")
-            .password("pasajero2")
-            .build()
+    private fun createAccounts(){
+        val account01 = UserAuthCredentials(username="adrian", password="adrian", rol="passenger")
+        val account02 = UserAuthCredentials(username="diego", password="diego", rol="passenger")
+        val account03 = UserAuthCredentials(username="matias", password="matias", rol="passenger")
+        val account04 = UserAuthCredentials(username="pedro", password="pedro", rol="passenger")
+        val account05 = UserAuthCredentials(username="valen", password="valen", rol="passenger")
+        val account06 = UserAuthCredentials(username="driver1", password="driver1", rol="driver")
+        val account07 = UserAuthCredentials(username="driver2", password="driver2", rol="driver")
 
-        val user03 = PassengerBuilder()
-            .firstName("Emmett")
-            .lastName("Brown")
-            .username("pasajero3")
-            .password("pasajero3")
-            .age(50)
-            .balance(50000.0)
-            .build()
+        val accounts = listOf(account01, account02, account03, account04, account05,account06, account07)
 
-        val user04 = PassengerBuilder()
-            .firstName("Biff")
-            .lastName("Tannen")
-            .age(18)
-            .balance(50000.0)
-            .username("pasajero4")
-            .password("pasajero4")
-            .build()
-        val users = mutableListOf<Passenger>(user01, user02, user03, user04)
-        users.forEach{user:Passenger ->
-            passengerRepo.create(user)
-//          userRepo.create(user)
+        accounts.forEach { account:UserAuthCredentials ->
+            accountsRepo.create(account)
+        }
+    }
+    private fun createPassengers() {
+        val users = accountsRepo.instances.filter { it.rol == "passenger" }
+        val names = listOf<String>("Adrian", "Diego", "Matias", "Pedro", "Valen")
+        val lastNames = listOf<String>("a", "b", "c", "d", "e")
+        val ages = listOf<Int>(1,2,3,4,5)
+        val balances = listOf<Double>(1.0, 10.0, 100.0, 1000.0, 10000.0)
+        users.forEachIndexed { index:Int, user:UserAuthCredentials ->
+            val passenger = PassengerBuilder()
+                .userId(user.id)
+                .firstName(names[index])
+                .lastName(lastNames[index])
+                .age(ages[index])
+                .balance(balances[index])
+                .build()
+
+            passengerRepo.create(passenger)
         }
 
     }
 
     private fun createDrivers() {
-        val driver01 = DriverBuilder(SimpleDriver())
-            .firstName("Adrian")
-            .lastName("Perez")
-            .username("chofer1")
-            .password("chofer1")
-            .balance(25000.0)
-            .build()
+        val users = accountsRepo.instances.filter { it.rol == "driver" }
+        val names = listOf<String>("Chofer1", "Chofer")
+        val lastNames = listOf<String>("a", "b")
+        val balances = listOf<Double>(200.0, 5000.0)
+        val driverType = listOf(PremiumDriver(), SimpleDriver())
+        users.forEachIndexed { index:Int, user:UserAuthCredentials ->
+            val driver = DriverBuilder(driverType[index])
+                .userId(user.id)
+                .firstName(names[index])
+                .lastName(lastNames[index])
+                .balance(balances[index])
+                .build()
 
-        val driver02 = DriverBuilder(PremiumDriver())
-            .firstName("Dominic")
-            .lastName("Toretto")
-            .username("chofer2")
-            .password("chofer2")
-            .balance(50000.0)
-            .build()
-        val drivers = mutableListOf<Driver>(driver01, driver02)
-        drivers.forEach{driver:Driver ->
             driverRepo.create(driver)
-//          userRepo.create(driver)
-
         }
 
 
@@ -101,10 +89,12 @@ class Bootstrap(
             .driver(driverRepo.getByID(1))
             .passenger(passengerRepo.getByID(2))
             .passengerAmmount(1)
+            .duration(10)
+            .setDate("2025-03-21T10:44:10.9267679")
             .build()
 
         val trip02 = TripBuilder()
-            .driver(driverRepo.getByID(1))
+            .driver(driverRepo.getByID(2))
             .passenger(passengerRepo.getByID(1))
             .passengerAmmount(1)
             .build()
@@ -112,5 +102,11 @@ class Bootstrap(
         trips.forEach{trip:Trip ->
             tripRepo.create(trip)
         }
+
+    }
+    private fun driverAddTripMock(){
+        val driver1 = driverRepo.getByID(1)
+        val trip1 = tripRepo.getByID(1)
+        driver1.addTrip(trip1)
     }
 }

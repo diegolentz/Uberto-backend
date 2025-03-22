@@ -12,10 +12,10 @@ data class LoginResponse(
 )
 data class LoginDTO(
     var id: Int,
-    var img: String
+    var rol:String
 )
 
 fun User.toLoginDTO() = LoginDTO(
     id = id,
-    img = img
+    rol = ""
 )

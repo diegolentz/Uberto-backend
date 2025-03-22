@@ -1,10 +1,12 @@
 package ar.edu.unsam.phm.uberto.controller
 
-import ar.edu.unsam.phm.uberto.dto.LoginRequest
-import ar.edu.unsam.phm.uberto.model.Driver
+import ar.edu.unsam.phm.uberto.DTO.DateDTO
+import ar.edu.unsam.phm.uberto.dto.DriverCardDTO
+import ar.edu.unsam.phm.uberto.dto.DriverDTO
+import ar.edu.unsam.phm.uberto.dto.toCardDTO
+import ar.edu.unsam.phm.uberto.dto.toDTO
 import ar.edu.unsam.phm.uberto.services.DriverService
 import org.springframework.web.bind.annotation.*
-import java.time.LocalDateTime
 
 @CrossOrigin(origins = ["http://localhost:8080", "http://localhost:5173"])
 @RestController
@@ -12,12 +14,18 @@ import java.time.LocalDateTime
 class DriverController(private val driverService: DriverService) {
 
     @GetMapping()
-    fun getAllDrivers(): List<Driver> {
-        return driverService.getAllDrivers()
+    fun getByID(@RequestParam driverId:Int): DriverDTO {
+        val driver = driverService.getDriverData(driverId)
+        return driver.toDTO()
     }
 
-    @PostMapping("/available")
-    fun getDriversAvailable(@RequestBody date: LocalDateTime): List<Driver> {
-        return driverService.getDriversAvailable(date) //esto para que no rompa despues viene por path
+    @PostMapping("/avaliable")
+    fun getDriversAvailable(@RequestBody date: DateDTO): List<DriverCardDTO> {
+        return driverService.getDriversAvailable(date).map { it.toCardDTO() }
+    }
+
+    @GetMapping("/all")
+    fun get(): List<DriverDTO> {
+        return driverService.getAllDrivers().map { it.toDTO() }
     }
 }

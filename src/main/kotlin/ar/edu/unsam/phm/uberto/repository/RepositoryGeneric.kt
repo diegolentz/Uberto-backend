@@ -5,6 +5,7 @@ import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.Trip
 import ar.edu.unsam.phm.uberto.model.User
+import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 import exceptions.BusinessException
 import org.springframework.stereotype.Component
 
@@ -59,41 +60,29 @@ abstract class Repository<T : AvaliableInstance> {
 
 }
 
-// User
-@Component
-class UserRepository(): Repository<User>() {
-    fun search(username: String): User?{
-        if(!exisUsername(username)){
-            throw BusinessException("Credenciales invalidas")
-        }
-        return instances.find { it.username == username }
-    }
-
-    fun exisUsername(username: String): Boolean {
-        return instances.any {
-            it.username == username
-        }
-    }
-}
 @Component
 class DriverRepository(): Repository<Driver>() {
 
-    fun search(loginRequest: LoginRequest): Driver?{
-        return instances.find { it.username == loginRequest.username}
+    fun searchByUserID(userID:Int): Driver?{
+        return instances.find { it.userId == userID }
     }
 }
 @Component
 class PassengerRepository(): Repository<Passenger>() {
 
-    fun search(loginRequest: LoginRequest): Passenger?{
-        return instances.find { it.username == loginRequest.username}
+    fun searchByUserID(userID:Int): Passenger?{
+        return instances.find { it.userId == userID}
     }
-
 }
+
 @Component
 class TripsRepository(): Repository<Trip>() {
 }
 
 @Component
 class TripScoreRepository(): Repository<Trip>() {
+}
+
+@Component
+class AuthCredentialsRepository(): Repository<UserAuthCredentials>() {
 }

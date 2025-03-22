@@ -4,8 +4,6 @@ import ar.edu.unsam.phm.uberto.repository.AvaliableInstance
 import exceptions.BusinessException
 
 class Passenger(
-    override var username: String = "",
-    override var password: String = "",
     override var firstName: String = "",
     override var lastName: String = "",
     override var balance: Double = 0.0,
@@ -14,7 +12,8 @@ class Passenger(
     var age: Int = 0,
     override var id: Int = 0,
     override var img: String = "",
-    val friends: MutableList<Passenger> = mutableListOf()
+    val friends: MutableList<Passenger> = mutableListOf(),
+    override var userId: Int = 0
 ) : User, AvaliableInstance {
 
     //var currentTrip:Trip? = null

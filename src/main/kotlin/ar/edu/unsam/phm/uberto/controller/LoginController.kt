@@ -2,9 +2,7 @@ package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.dto.LoginDTO
 import ar.edu.unsam.phm.uberto.dto.LoginRequest
-import ar.edu.unsam.phm.uberto.dto.LoginResponse
-import ar.edu.unsam.phm.uberto.dto.toLoginDTO
-import ar.edu.unsam.phm.uberto.services.AuthService
+import ar.edu.unsam.phm.uberto.services.auth.AuthService
 import org.springframework.web.bind.annotation.*
 
 
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.*
 class LoginController(private val authService: AuthService) {
     @PostMapping()
     fun authLogin(@RequestBody loginRequestBody: LoginRequest): LoginDTO {
-        return authService.validateLogin(loginRequestBody)!!.toLoginDTO()
+        val user = authService.validateLogin(loginRequestBody)!!
+        return LoginDTO( id = user!!.id, rol = user!!.rol )
     }
 }
