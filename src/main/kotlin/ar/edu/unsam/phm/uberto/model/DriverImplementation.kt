@@ -13,15 +13,16 @@ class BikeDriver(override var id: Int = 0): Driver() {
     private fun travelTimeCondition(trip:Trip):Boolean{
         return trip.duration < 30
     }
+
+    override fun toString() = "Motorbiker"
 }
 
 class SimpleDriver(override var id: Int = 0): Driver() {
     override fun plusBasePrice(trip: Trip): Double {
         return 1000.0
     }
-//    override fun cumpleCriterioBusqueda(texto: String): Boolean {
-//        TODO("Not yet implemented")
-//    }
+
+    override fun toString() = "Simple Driver"
 }
 
 class PremiumDriver(override var id: Int = 0): Driver() {
@@ -31,10 +32,7 @@ class PremiumDriver(override var id: Int = 0): Driver() {
         return if(this.passengerCondition(trip)) reference else reference + 500.0
     }
 
-
-//    override fun cumpleCriterioBusqueda(texto: String): Boolean {
-//        TODO("Not yet implemented")
-//    }
+    override fun toString() = "Premium Driver"
 
     private fun passengerCondition(trip:Trip):Boolean{
         return trip.numberPassengers > 1

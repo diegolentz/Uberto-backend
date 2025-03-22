@@ -9,7 +9,7 @@ data class TripScoreDTO(
     val scorePoints: Int,
     val date: String,
     val passengerId: Int,
-    val passengerImg: String)
+    val avatarUrl: String)
 
 
 fun TripScore.toDTO() = TripScoreDTO(
@@ -17,5 +17,5 @@ fun TripScore.toDTO() = TripScoreDTO(
     scorePoints = scorePoints,
     date = date.toString(),
     passengerId= passenger.userId,
-    passengerImg = passenger.img)
+    avatarUrl = passenger.img)
 

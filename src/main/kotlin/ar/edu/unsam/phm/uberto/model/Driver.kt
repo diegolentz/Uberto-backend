@@ -64,7 +64,6 @@ abstract class Driver(
         addTrip(newTrip)
     }
 
-
 }
 
 

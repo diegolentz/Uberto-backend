@@ -1,6 +1,7 @@
 package ar.edu.unsam.phm.uberto.dto
 
 import ar.edu.unsam.phm.uberto.model.Driver
+import ar.edu.unsam.phm.uberto.model.TripScore
 
 data class DriverDTO(
     val id: Int,
@@ -47,4 +48,26 @@ fun Driver.toCardDTO() = DriverCardDTO(
     basePrice = basePrice,
     img = img,
     rating = scoreAVG()
+)
+
+data class DriverTripConfirm(
+        val id: Int,
+        val name: String,
+        val brand: String,
+        val model: Int,
+        val serial: String,
+        val scoreRatingAVG: Double,
+        val type: String,
+        val scores: List<TripScore>
+        ){}
+
+fun Driver.toTripConfirm() = DriverTripConfirm(
+    id= userId,
+    name = firstName + " " + lastName,
+    brand = brand,
+    model = model,
+    serial = serial,
+    scoreRatingAVG = scoreAVG(),
+    type = toString(),
+    scores = getScores()
 )
