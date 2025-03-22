@@ -3,20 +3,20 @@ package ar.edu.unsam.phm.uberto.dto
 import ar.edu.unsam.phm.uberto.model.Driver
 
 data class DriverDTO(
-    var driverID: Int,
-    var serial: String,
-    var name: String,
-    var brand: String,
-    var model: Int,
-    var basePrice: Double,
-    var img: String,
+    val id: Int,
+    val serial: String,
+    val name: String,
+    val brand: String,
+    val model: Int,
+    val basePrice: Double,
+    val img: String,
     val trips: List<TripDTO>
 )
 
 fun Driver.toDTO() = DriverDTO(
-    driverID = id,
+    id = userId,
     serial = serial,
-    name = firstName + lastName,
+    name = firstName + " " + lastName,
     brand = brand,
     model = model,
     basePrice = basePrice,
@@ -25,22 +25,24 @@ fun Driver.toDTO() = DriverDTO(
 )
 
 data class DriverCardDTO(
-    var driverID: Int,
-    var serial: String,
-    var name: String,
-    var brand: String,
-    var model: Int,
-    var basePrice: Double,
-    var img: String
+    val id: Int,
+    val serial: String,
+    val name: String,
+    val brand: String,
+    val model: Int,
+    val basePrice: Double,
+    val img: String,
+    val rating: Double
 )
 
 
 fun Driver.toCardDTO() = DriverCardDTO(
-    driverID = id,
+    id = userId,
     serial = serial,
     brand = brand,
-    name = firstName + lastName,
+    name = firstName + " " +lastName,
     model = model,
     basePrice = basePrice,
-    img = img
+    img = img,
+    rating = scoreAVG()
 )

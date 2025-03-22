@@ -1,6 +1,6 @@
 package ar.edu.unsam.phm.uberto.controller
 
-import ar.edu.unsam.phm.uberto.DTO.DateDTO
+import ar.edu.unsam.phm.uberto.dto.DateDTO
 import ar.edu.unsam.phm.uberto.dto.DriverCardDTO
 import ar.edu.unsam.phm.uberto.dto.DriverDTO
 import ar.edu.unsam.phm.uberto.dto.toCardDTO
@@ -17,6 +17,11 @@ class DriverController(private val driverService: DriverService) {
     fun getByID(@RequestParam driverId:Int): DriverDTO {
         val driver = driverService.getDriverData(driverId)
         return driver.toDTO()
+    }
+
+    @GetMapping("/card")
+    fun getCardByID(@RequestParam driverId:Int): DriverCardDTO {
+        return driverService.getDriverData(driverId).toCardDTO()
     }
 
     @PostMapping("/avaliable")

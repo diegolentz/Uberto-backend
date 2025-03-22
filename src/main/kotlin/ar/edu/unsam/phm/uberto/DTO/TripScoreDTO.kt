@@ -4,15 +4,16 @@ import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.TripScore
 import java.time.LocalDate
 
-class TripScoreDTO(
-    message: String,
-    scorePoints: Int,
-    date: LocalDate,
-    passenger: Passenger)
+data class TripScoreDTO(
+    val message: String,
+    val scorePoints: Int,
+    val date: String,
+    val passengerId: Int)
 
 
 fun TripScore.toDTO() = TripScoreDTO(
     message = message,
     scorePoints = scorePoints,
-    date = date,
-    passenger= passenger)
+    date = date.toString(),
+    passengerId= passengerId)
+

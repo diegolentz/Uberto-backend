@@ -1,10 +1,7 @@
 package ar.edu.unsam.phm.uberto.repository
 
 import ar.edu.unsam.phm.uberto.dto.LoginRequest
-import ar.edu.unsam.phm.uberto.model.Driver
-import ar.edu.unsam.phm.uberto.model.Passenger
-import ar.edu.unsam.phm.uberto.model.Trip
-import ar.edu.unsam.phm.uberto.model.User
+import ar.edu.unsam.phm.uberto.model.*
 import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 import exceptions.BusinessException
 import org.springframework.stereotype.Component
@@ -34,7 +31,7 @@ abstract class Repository<T : AvaliableInstance> {
         instances.removeIf { objeto.id == it.id }//
     }
 
-    private fun exist(id: Int) {
+    fun exist(id: Int) {
         if (!existeElemento(id)) {
             throw BusinessException("no se encuentra")
         }
@@ -80,7 +77,7 @@ class TripsRepository(): Repository<Trip>() {
 }
 
 @Component
-class TripScoreRepository(): Repository<Trip>() {
+class TripScoreRepository(): Repository<TripScore>() {
 }
 
 @Component
