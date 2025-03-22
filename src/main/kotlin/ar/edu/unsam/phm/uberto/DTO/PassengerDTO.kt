@@ -11,9 +11,8 @@ data class PassengerProfileDto(
     val cellphone: Int
 )
 
-
 fun Passenger.toDTOProfile() = PassengerProfileDto(
-    id = id,
+    id = userId,
     firstName = firstName,
     lastName = lastName,
     age = age,
