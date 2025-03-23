@@ -22,7 +22,6 @@ fun Passenger.toDTOProfile() = PassengerProfileDto(
 )
 
 data class UpdatedFriends(
-    val userId: Int,
     val friends: List<Int>,
     val addFriends: Boolean
 )
