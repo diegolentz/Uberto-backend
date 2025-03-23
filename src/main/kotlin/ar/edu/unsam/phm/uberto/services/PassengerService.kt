@@ -1,6 +1,6 @@
 package ar.edu.unsam.phm.uberto.services
 
-import ar.edu.unsam.phm.uberto.DTO.*
+import ar.edu.unsam.phm.uberto.dto.*
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
 import org.springframework.stereotype.Service

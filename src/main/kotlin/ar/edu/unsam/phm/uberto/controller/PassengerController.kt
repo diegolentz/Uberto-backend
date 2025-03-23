@@ -1,9 +1,9 @@
 package ar.edu.unsam.phm.uberto.controller
 
-import ar.edu.unsam.phm.uberto.DTO.BalanceDTO
-import ar.edu.unsam.phm.uberto.DTO.PassengerProfileDto
-import ar.edu.unsam.phm.uberto.DTO.UpdatedFriends
-import ar.edu.unsam.phm.uberto.DTO.UpdatedPassengerDTO
+import ar.edu.unsam.phm.uberto.dto.BalanceDTO
+import ar.edu.unsam.phm.uberto.dto.PassengerProfileDto
+import ar.edu.unsam.phm.uberto.dto.UpdatedFriends
+import ar.edu.unsam.phm.uberto.dto.UpdatedPassengerDTO
 import ar.edu.unsam.phm.uberto.services.PassengerService
 import org.springframework.web.bind.annotation.*
 
