@@ -1,6 +1,7 @@
 package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.dto.TripDTO
+import ar.edu.unsam.phm.uberto.dto.toDTO
 import ar.edu.unsam.phm.uberto.model.Trip
 import ar.edu.unsam.phm.uberto.services.TravelTimeMockService
 import ar.edu.unsam.phm.uberto.services.TripService
@@ -23,9 +24,9 @@ class TripsController(private val travelTimeService: TravelTimeMockService, priv
         return tripService.createTrip(trip)
     }
 
-    @GetMapping() //TODO de quien?? falta un id
+    @GetMapping()
     fun getTrips(@RequestParam id:Int,rol: String): List<TripDTO> {
-        return tripService.getById(id, rol)
+        return tripService.getById(id, rol).map { it.toDTO() }
     }
 
 
