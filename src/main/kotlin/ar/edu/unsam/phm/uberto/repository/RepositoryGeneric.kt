@@ -75,6 +75,7 @@ class PassengerRepository(): Repository<Passenger>() {
     fun searchByUserID(userID:Int): Passenger?{
         return instances.find { it.userId == userID}
     }
+
 }
 
 @Component

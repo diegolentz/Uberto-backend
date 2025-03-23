@@ -63,4 +63,14 @@ class TripService(val passengerRepo: PassengerRepository, val driverRepo: Driver
             return driver.trips
         }
     }
+
+    fun getPending(id: Int, rol: String): List<Trip> {
+        if(rol == "passenger"){
+            val passenger = passengerRepo.searchByUserID(id) ?: throw Exception("Pasajero no encontrado")
+            return passenger.pendingTrips()
+        }else{
+            val driver = driverRepo.searchByUserID(id) ?: throw Exception("Chofer no encontrado")
+            return driver.pendingTrips()
+        }
+    }
 }
