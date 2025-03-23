@@ -8,7 +8,8 @@ data class PassengerProfileDto(
     val lastName: String,
     val age: Int,
     val money: Double,
-    val cellphone: Int
+    val cellphone: Int,
+    val img: String
 )
 
 fun Passenger.toDTOProfile() = PassengerProfileDto(
@@ -17,11 +18,26 @@ fun Passenger.toDTOProfile() = PassengerProfileDto(
     lastName = lastName,
     age = age,
     money = balance,
-    cellphone = cellphone
+    cellphone = cellphone,
+    img = img
 )
 
 data class UpdatedFriends(
-    val userId: Int,
     val friends: List<Int>,
     val addFriends: Boolean
+)
+
+data class BalanceDTO(
+    val currentBalance: Double
+)
+
+fun Passenger.balanceDTO() = BalanceDTO(
+    currentBalance = balance
+)
+
+data class UpdatedPassengerDTO(
+    val firstName: String?,
+    val lastName: String?,
+    val cellphone: Int?,
+    val img: String?
 )

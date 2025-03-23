@@ -55,12 +55,12 @@ class Passenger(
         return this.trips.filter { it.score != null }
     }
 
-    fun addFriend(friend: Passenger) {
-        friends.add(friend)
+    fun addFriends(friendsList: List<Passenger>) {
+        friends.addAll(friendsList)
     }
 
-    fun removeFriend(friend: Passenger) {
-        friends.remove(friend)
+    fun removeFriends(friendsList: List<Passenger>) {
+        friends.removeAll(friendsList)
     }
 
     fun pendingTrips() = trips.filter { trip:Trip ->trip.pendingTrip()}
