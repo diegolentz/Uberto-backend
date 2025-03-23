@@ -98,6 +98,8 @@ class Bootstrap(
         var passengers:List<Passenger> = passengerRepo.instances.toList()
         val passengersAmmounts:List<Int> = listOf(1, 1, 2, 3, 4)
         val durations:List<Int> = listOf(10, 25, 40, 15, 20)
+        val origin: List<String> = listOf("calleOrigen1", "calleOrigen2", "calleOrigen3", "calleOrigen4", "calleOrigen5")
+        val destination: List<String> = listOf("calleDestino1", "calleDestino2", "calleDestino3", "calleDestino4", "calleDestino5")
         val dates:List<String> = listOf(
             "2025-03-21T10:44:10.9267679",
             "2025-05-21T10:44:10.9267679",
@@ -115,6 +117,8 @@ class Bootstrap(
                 .passengerAmmount(passengersAmmounts[i])
                 .duration(durations[i])
                 .setDate(dates[i])
+                .origin(origin[i])
+                .destination(destination[i])
                 .build()
 
             tripRepo.create(trip)
@@ -128,6 +132,8 @@ class Bootstrap(
                 .passengerAmmount(passengersAmmounts[i])
                 .duration(durations[i])
                 .setDate(dates[i])
+                .origin(origin[i])
+                .destination(destination[i])
                 .build()
             tripRepo.create(trip)
             drivers[1].addTrip(trip)
