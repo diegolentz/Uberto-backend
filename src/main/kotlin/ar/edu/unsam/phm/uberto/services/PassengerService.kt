@@ -40,6 +40,7 @@ class PassengerService(val passengerRepository: PassengerRepository) {
         updatedInfo.firstName?.let { passenger.firstName = it }
         updatedInfo.lastName?.let { passenger.lastName = it }
         updatedInfo.cellphone?.let { passenger.cellphone = it }
+        updatedInfo.img?.let { passenger.img = it }
         passengerRepository.update(passenger)
         return passenger.toDTOProfile()
     }
