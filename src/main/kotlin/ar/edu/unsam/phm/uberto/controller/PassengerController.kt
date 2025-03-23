@@ -9,30 +9,30 @@ import org.springframework.web.bind.annotation.*
 
 @CrossOrigin(origins = ["http://localhost:8080", "http://localhost:5173"])
 @RestController
-@RequestMapping("/passenger/{id}")
+@RequestMapping("/passenger")
 class PassengerController(private val passengerService: PassengerService) {
     @GetMapping("")
-    fun getById(@PathVariable id: Int): PassengerProfileDto {
+    fun getById(@RequestParam id: Int): PassengerProfileDto {
         return passengerService.getPassenger(id)
     }
 
     @PutMapping("")
-    fun updatePassenger(@PathVariable id: Int, @RequestBody updatedInfo: UpdatedPassengerDTO): PassengerProfileDto {
+    fun updatePassenger(@RequestParam id: Int, @RequestBody updatedInfo: UpdatedPassengerDTO): PassengerProfileDto {
         return passengerService.updateInfo(id, updatedInfo)
     }
 
     @PutMapping("/addBalance")
-    fun addBalance(@PathVariable id: Int, balance: Double): BalanceDTO {
+    fun addBalance(@RequestParam id: Int, balance: Double): BalanceDTO {
         return passengerService.addBalance(id, balance)
     }
 
     @GetMapping("/friends")
-    fun getFriends(@PathVariable id: Int): List<PassengerProfileDto> {
+    fun getFriends(@RequestParam id: Int): List<PassengerProfileDto> {
         return passengerService.getFriends(id)
     }
 
     @PutMapping("/friends")
-    fun updateFriends(@PathVariable id: Int, @RequestBody updatedFriends: UpdatedFriends): List<PassengerProfileDto> {
+    fun updateFriends(@RequestParam id: Int, @RequestBody updatedFriends: UpdatedFriends): List<PassengerProfileDto> {
         return passengerService.updateFriends(id, updatedFriends)
     }
 
