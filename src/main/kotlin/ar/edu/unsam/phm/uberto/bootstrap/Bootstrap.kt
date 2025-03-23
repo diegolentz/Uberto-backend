@@ -6,7 +6,6 @@ import ar.edu.unsam.phm.uberto.builder.TripBuilder
 import ar.edu.unsam.phm.uberto.builder.TripScoreBuilder
 import ar.edu.unsam.phm.uberto.model.*
 import ar.edu.unsam.phm.uberto.repository.*
-import ar.edu.unsam.phm.uberto.services.UserService
 import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
