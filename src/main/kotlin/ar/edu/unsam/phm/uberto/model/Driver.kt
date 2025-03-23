@@ -27,15 +27,11 @@ abstract class Driver(
         return this.getScoredTrips().map { it.score!!.scorePoints }.average()
     }
 
-    fun fee(trip:Trip):Double{ //trabajar en este metodo al volver
-        return this.basePrice + this.plusFee(trip)
+    fun fee(time: Int, numberPassenger: Int):Double{ //trabajar en este metodo al volver
+        return this.basePrice + this.plusBasePrice(time, numberPassenger) * time
     }
 
-    fun plusFee(trip:Trip):Double{
-        return this.plusBasePrice(trip)*trip.duration
-    }
-
-    abstract fun plusBasePrice(trip:Trip):Double
+    abstract fun plusBasePrice(time: Int, numberPassengers: Int):Double
 
     override fun getScores(): List<TripScore> {
         return this.getScoredTrips().map{ it.score!! }

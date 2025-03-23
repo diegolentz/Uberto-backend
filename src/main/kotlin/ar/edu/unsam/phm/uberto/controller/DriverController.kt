@@ -19,14 +19,15 @@ class DriverController(private val driverService: DriverService) {
         return driver.toDTO()
     }
 
-    @GetMapping("/card")
-    fun getCardByID(@RequestParam driverId:Int): DriverCardDTO {
-        return driverService.getDriverData(driverId).toCardDTO()
-    }
+//    @GetMapping("/card") /// NUNCA TRAIGO 1
+//    fun getCardByID(@RequestParam driverId:Int): DriverCardDTO {
+//        return driverService.getDriverData(driverId).toCardDTO()
+//    }
 
     @PostMapping("/avaliable")
     fun getDriversAvailable(@RequestBody date: DateDTO): List<DriverCardDTO> {
-        return driverService.getDriversAvailable(date).map { it.toCardDTO() }
+        //aca tengo que retornar ya tipo DTO por el servicio de tiempos
+        return driverService.getDriversAvailable(date)
     }
 
     @GetMapping("/all")

@@ -34,7 +34,7 @@ class Trip(
 //        TODO("Not yet implemented")
 //    }
 
-    fun priceTrip(): Double = this.driver.fee(this)
+    fun priceTrip(): Double = this.driver.fee(duration, numberPassengers)
 
     fun pendingTrip()  : Boolean = date > LocalDateTime.now()
 
