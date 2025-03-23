@@ -1,35 +1,36 @@
 package ar.edu.unsam.phm.uberto.services.auth
 
-import ar.edu.unsam.phm.uberto.BusinessException
-import ar.edu.unsam.phm.uberto.dto.LoginDTO
+
+import ar.edu.unsam.phm.uberto.InvalidCredentialsException
 import ar.edu.unsam.phm.uberto.dto.LoginRequest
-import ar.edu.unsam.phm.uberto.model.User
 import ar.edu.unsam.phm.uberto.repository.AuthCredentialsRepository
-import ar.edu.unsam.phm.uberto.repository.DriverRepository
-import ar.edu.unsam.phm.uberto.repository.PassengerRepository
 import org.springframework.stereotype.Service
 
 @Service
 class AuthService(val accountsRepo: AuthCredentialsRepository) {
 
+
     fun validateLogin(loginRequest: LoginRequest): UserAuthCredentials? {
-        if(
-            !accountsRepo.instances.any { account: UserAuthCredentials ->
-                account.username == loginRequest.username
-            }
-        ){
-            throw BusinessException("Invalid credentials")
-        }
-        val user:UserAuthCredentials? = accountsRepo.instances.find { account: UserAuthCredentials ->
-            account.username == loginRequest.username && account.password == loginRequest.password
-        }
-        if(user == null) throw BusinessException("Invalid credentials")
+        //Extract all accounts
+        val accounts:List<UserAuthCredentials> = accountsRepo.instances.toList()
+
+        //Find account by username.
+        // Exist? Validate password.
+            // Valid password? return. Not valid? Exception
+        // Not Exist? Exception
+        val user: UserAuthCredentials? = this.findUser(loginRequest.username, accounts) ?: throw InvalidCredentialsException()
+        if(!this.validPassword(user!!, loginRequest.password)) throw InvalidCredentialsException()
 
         return user
-
     }
 
-//    private fun authenticate(loginRequest: LoginRequest, user: User): Boolean{
-//        return loginRequest.username == user.username && loginRequest.password == user.password
-//    }
+    private fun findUser(username: String, users:List<UserAuthCredentials>): UserAuthCredentials?{
+        return users.find { account: UserAuthCredentials ->
+            account.username == username
+        }
+    }
+
+    private fun validPassword(user:UserAuthCredentials, password: String): Boolean{
+        return user.password == password
+    }
 }
