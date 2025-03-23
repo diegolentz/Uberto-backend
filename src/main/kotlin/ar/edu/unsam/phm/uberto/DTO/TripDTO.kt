@@ -25,3 +25,13 @@ fun Trip.toDTO() = TripDTO(
     origin = origin,
     destination = destination,
 )
+
+fun Trip.scoreToDTO() = TripScoreDTO(
+    message = score!!.message,
+    scorePoints = score!!.scorePoints,
+    date = date.toString(),
+    passengerName= client.firstName + ' ' + client.lastName,
+    driverName = driver.firstName + ' ' + driver.lastName,
+    avatarUrlPassenger = client.img,
+    avatarUrlDriver = driver.img
+)

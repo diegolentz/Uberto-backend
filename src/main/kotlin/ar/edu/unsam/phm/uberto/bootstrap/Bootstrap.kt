@@ -10,7 +10,6 @@ import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
 import org.springframework.stereotype.Component
-import java.sql.Driver
 import java.time.LocalDate
 import kotlin.random.Random
 
@@ -27,9 +26,8 @@ class Bootstrap(
         createAccounts()
         createPassengers()
         createDrivers()
-        createTripScore()
         createTrips()
-        driverAddTripMock()
+        createTripScore()
     }
 
     private fun createAccounts(){
@@ -96,175 +94,62 @@ class Bootstrap(
 
     }
 
-    private fun createTripScore(){
-        val passenger1 = passengerRepo.searchByUserID(1)
-        val passenger2 = passengerRepo.searchByUserID(2)
-        val passenger3 = passengerRepo.searchByUserID(3)
-        val passenger4 = passengerRepo.searchByUserID(4)
-        val score1 = TripScoreBuilder()
-            .score(3)
-            .date(LocalDate.now())
-            .passengerId(passenger1!!)
-            .message("Excelente viaje")
-            .build()
-
-        val score2 = TripScoreBuilder()
-            .score(2)
-            .date(LocalDate.now())
-            .passengerId(passenger2!!)
-            .message("Excelente viaje")
-            .build()
-
-        val score3 = TripScoreBuilder()
-            .score(1)
-            .date(LocalDate.now())
-            .passengerId(passenger3!!)
-            .message("Excelente viaje")
-            .build()
-
-        val score4 = TripScoreBuilder()
-            .score(3)
-            .date(LocalDate.now())
-            .passengerId(passenger4!!)
-            .message("Excelente viaje")
-            .build()
-
-        val score5 = TripScoreBuilder()
-            .score(4)
-            .date(LocalDate.now())
-            .passengerId(passenger1!!)
-            .message("Excelente viaje")
-            .build()
-
-        val score6 = TripScoreBuilder()
-            .score(5)
-            .date(LocalDate.now())
-            .passengerId(passenger2!!)
-            .message("Excelente viaje")
-            .build()
-
-        val score7 = TripScoreBuilder()
-            .score(4)
-            .date(LocalDate.now())
-            .passengerId(passenger3!!)
-            .message("Excelente viaje")
-            .build()
-
-        val score8 = TripScoreBuilder()
-            .score(4)
-            .date(LocalDate.now())
-            .passengerId(passenger4!!)
-            .message("Excelente viaje")
-            .build()
-
-        tripScoreRepo.create(score1)
-        tripScoreRepo.create(score2)
-        tripScoreRepo.create(score3)
-        tripScoreRepo.create(score4)
-        tripScoreRepo.create(score5)
-        tripScoreRepo.create(score6)
-        tripScoreRepo.create(score7)
-        tripScoreRepo.create(score8)
-    }
-
     private fun createTrips(){
-        val trip01 = TripBuilder()
-            .driver(driverRepo.searchByUserID(6)!!)
-            .passenger(passengerRepo.searchByUserID(1)!!)
-            .passengerAmmount(1)
-            .duration(10)
-            .setDate("2025-03-21T10:44:10.9267679")
-            .build()
+        var passengers:List<Passenger> = passengerRepo.instances.toList()
+        val passengersAmmounts:List<Int> = listOf(1, 1, 2, 3, 4)
+        val durations:List<Int> = listOf(10, 25, 40, 15, 20)
+        val dates:List<String> = listOf(
+            "2025-03-21T10:44:10.9267679",
+            "2025-03-21T10:44:10.9267679",
+            "2025-03-21T10:44:10.9267679",
+            "2025-03-21T10:44:10.9267679",
+            "2025-03-21T10:44:10.9267679"
+        )
 
-        val trip02 = TripBuilder()
-            .driver(driverRepo.searchByUserID(7)!!)
-            .passenger(passengerRepo.searchByUserID(2)!!)
-            .passengerAmmount(1)
-            .build()
+        val drivers:List<Driver> = driverRepo.instances.toList()
 
-        val trip03 = TripBuilder()
-            .driver(driverRepo.searchByUserID(6)!!)
-            .passenger(passengerRepo.searchByUserID(3)!!)
-            .passengerAmmount(1)
-            .duration(10)
-            .setDate("2025-03-21T10:44:10.9267679")
-            .build()
+        for (i in 0..4){
+            val trip = TripBuilder()
+                .driver(drivers[0])
+                .passenger(passengers[i])
+                .passengerAmmount(passengersAmmounts[i])
+                .duration(durations[i])
+                .setDate(dates[i])
+                .build()
 
-        val trip04 = TripBuilder()
-            .driver(driverRepo.searchByUserID(6)!!)
-            .passenger(passengerRepo.searchByUserID(4)!!)
-            .passengerAmmount(1)
-            .duration(10)
-            .setDate("2025-03-21T10:44:10.9267679")
-            .build()
-        val trip05 = TripBuilder()
-            .driver(driverRepo.searchByUserID(7)!!)
-            .passenger(passengerRepo.searchByUserID(1)!!)
-            .passengerAmmount(1)
-            .duration(10)
-            .setDate("2025-05-21T10:44:10.9267679")
-            .build()
-        val trip06 = TripBuilder()
-            .driver(driverRepo.searchByUserID(7)!!)
-            .passenger(passengerRepo.searchByUserID(2)!!)
-            .passengerAmmount(1)
-            .duration(10)
-            .setDate("2025-05-21T10:44:10.9267679")
-            .build()
-        val trip07 = TripBuilder()
-            .driver(driverRepo.searchByUserID(7)!!)
-            .passenger(passengerRepo.searchByUserID(3)!!)
-            .passengerAmmount(1)
-            .duration(10)
-            .setDate("2025-05-21T10:44:10.9267679")
-            .build()
-        val trip08 = TripBuilder()
-            .driver(driverRepo.searchByUserID(7)!!)
-            .passenger(passengerRepo.searchByUserID(4)!!)
-            .passengerAmmount(1)
-            .duration(10)
-            .setDate("2025-05-21T10:44:10.9267679")
-            .build()
-        val trips = mutableListOf<Trip>(trip01, trip02, trip03, trip04, trip05,trip06, trip07, trip08)
-        trips.forEach{trip:Trip ->
             tripRepo.create(trip)
+            drivers[0].addTrip(trip)
+            passengers[i].addTrip(trip)
         }
-        val score = tripScoreRepo.getByID(1)
-        trip01.addScore(score)
+        for (i in 0..4){
+            val trip = TripBuilder()
+                .driver(drivers[1])
+                .passenger(passengers[i])
+                .passengerAmmount(passengersAmmounts[i])
+                .duration(durations[i])
+                .setDate(dates[i])
+                .build()
+            tripRepo.create(trip)
+            drivers[1].addTrip(trip)
+            passengers[i].addTrip(trip)
+        }
 
     }
-    private fun driverAddTripMock(){
-        val driver1 = driverRepo.searchByUserID(6)
-        val driver2 = driverRepo.searchByUserID(7)
-        val passenger1 = passengerRepo.searchByUserID(1)
-        val passenger2 = passengerRepo.searchByUserID(2)
-        val passenger3 = passengerRepo.searchByUserID(3)
-        val passenger4 = passengerRepo.searchByUserID(4)
-        val trip1 = tripRepo.getByID(1)
-        val trip2 = tripRepo.getByID(2)
-        val trip3 = tripRepo.getByID(3)
-        val trip4 = tripRepo.getByID(4)
-        val trip5 = tripRepo.getByID(5)
-        val trip6 = tripRepo.getByID(6)
-        val trip7 = tripRepo.getByID(7)
-        val trip8 = tripRepo.getByID(8)
 
-        driver1!!.addTrip(trip1)
-        driver2!!.addTrip(trip2)
-        driver1!!.addTrip(trip3)
-        driver2!!.addTrip(trip4)
-        driver1!!.addTrip(trip5)
-        driver2!!.addTrip(trip6)
-        driver2!!.addTrip(trip7)
-        driver1!!.addTrip(trip8)
 
-        passenger1!!.addTrip(trip1)
-        passenger2!!.addTrip(trip2)
-        passenger3!!.addTrip(trip3)
-        passenger4!!.addTrip(trip4)
-        passenger1!!.addTrip(trip5)
-        passenger2!!.addTrip(trip6)
-        passenger3!!.addTrip(trip7)
-        passenger4!!.addTrip(trip8)
+    private fun createTripScore(){
+        var passengers:List<Passenger> = passengerRepo.instances.toList()
+        val scoresPoints:List<Int> = listOf(3, 2, 1, 3, 4, 5)
+        val scoresMessages:List<String> = listOf("Excelente", "Bueno", "Malo", "Malisimo", "Nefasto")
+        passengers.forEachIndexed { index:Int, passenger:Passenger ->
+            val score = TripScoreBuilder()
+                .score(scoresPoints[index])
+                .date(LocalDate.now())
+                .message(scoresMessages[index])
+                .build()
+
+            tripScoreRepo.create(score)
+            passengers[index].trips[0].score = score
+        }
     }
 }
