@@ -54,4 +54,12 @@ class TripService(val passengerRepo: PassengerRepository, val driverRepo: Driver
         return tripRepo.instances.toMutableList()
     }
 
+    fun getById(id: Int, rol: String): List<Trip> {
+        if(rol == "passenger"){
+            val passenger = passengerRepo.searchByUserID(id)
+            if (passenger == null) throw Exception("Pasajero no encontrado")
+        }
+        return if(rol == "driver") passengerRepo.searchByUserID(id).trips else
+    }
+
 }

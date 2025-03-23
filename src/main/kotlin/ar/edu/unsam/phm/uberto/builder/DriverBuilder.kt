@@ -8,12 +8,6 @@ class DriverBuilder(val newDriver: Driver) {
         newDriver.userId = id
     }
 
-//    fun username(user: String): DriverBuilder = apply {
-//        newDriver.username = user
-//    }
-//    fun password(pass: String): DriverBuilder = apply {
-//        newDriver.password = pass
-//    }
     fun firstName(name: String): DriverBuilder = apply {
         newDriver.firstName = name
     }
@@ -26,6 +20,21 @@ class DriverBuilder(val newDriver: Driver) {
         newDriver.balance = moneyBalance
     }
 
+    fun brand(brand: String): DriverBuilder = apply {
+        newDriver.brand = brand
+    }
+
+    fun serial(serial: String): DriverBuilder = apply {
+        newDriver.serial = serial
+    }
+
+    fun model(model: Int): DriverBuilder = apply {
+        newDriver.model = model
+    }
+
+    fun img(img: String): DriverBuilder = apply {
+        newDriver.img = img
+    }
 
     fun build(): Driver = newDriver
 
