@@ -1,4 +1,4 @@
-package ar.edu.unsam.phm.uberto.dto
+package ar.edu.unsam.phm.uberto.DTO
 
 import ar.edu.unsam.phm.uberto.model.Passenger
 
@@ -24,4 +24,18 @@ fun Passenger.toDTOProfile() = PassengerProfileDto(
 data class UpdatedFriends(
     val friends: List<Int>,
     val addFriends: Boolean
+)
+
+data class BalanceDTO(
+    val currentBalance: Double
+)
+
+fun Passenger.balanceDTO() = BalanceDTO(
+    currentBalance = balance
+)
+
+data class UpdatedPassengerDTO(
+    val firstName: String?,
+    val lastName: String?,
+    val cellphone: Int?
 )

@@ -1,8 +1,6 @@
 package ar.edu.unsam.phm.uberto.services
 
-import ar.edu.unsam.phm.uberto.dto.PassengerProfileDto
-import ar.edu.unsam.phm.uberto.dto.UpdatedFriends
-import ar.edu.unsam.phm.uberto.dto.toDTOProfile
+import ar.edu.unsam.phm.uberto.DTO.*
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
 import org.springframework.stereotype.Service
@@ -31,5 +29,18 @@ class PassengerService(val passengerRepository: PassengerRepository) {
         return getFriends(passengerId)
     }
 
+    fun addBalance(passengerId: Int, balance: Double): BalanceDTO {
+        val currentPassenger = getCurrentPassenger(passengerId)
+        currentPassenger.loadBalance(balance)
+        return currentPassenger.balanceDTO()
+    }
 
+    fun updateInfo(passengerId: Int, updatedInfo: UpdatedPassengerDTO): PassengerProfileDto {
+        val passenger = getCurrentPassenger(passengerId)
+        updatedInfo.firstName?.let { passenger.firstName = it }
+        updatedInfo.lastName?.let { passenger.lastName = it }
+        updatedInfo.cellphone?.let { passenger.cellphone = it }
+        passengerRepository.update(passenger)
+        return passenger.toDTOProfile()
+    }
 }
