@@ -29,6 +29,9 @@ class TripsController(private val travelTimeService: TravelTimeMockService, priv
         return tripService.getById(id, rol).map { it.toDTO() }
     }
 
-
+    @GetMapping("/pending")
+    fun getTripsPending(@RequestParam id:Int,rol: String): List<TripDTO> {
+        return tripService.getPending(id, rol).map { it.toDTO() }
+    }
 
 }
