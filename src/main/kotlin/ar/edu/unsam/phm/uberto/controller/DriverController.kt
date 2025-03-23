@@ -1,10 +1,6 @@
 package ar.edu.unsam.phm.uberto.controller
 
-import ar.edu.unsam.phm.uberto.dto.DateDTO
-import ar.edu.unsam.phm.uberto.dto.DriverCardDTO
-import ar.edu.unsam.phm.uberto.dto.DriverDTO
-import ar.edu.unsam.phm.uberto.dto.toCardDTO
-import ar.edu.unsam.phm.uberto.dto.toDTO
+import ar.edu.unsam.phm.uberto.dto.*
 import ar.edu.unsam.phm.uberto.services.DriverService
 import org.springframework.web.bind.annotation.*
 
@@ -25,7 +21,7 @@ class DriverController(private val driverService: DriverService) {
 //    }
 
     @PostMapping("/avaliable")
-    fun getDriversAvailable(@RequestBody date: DateDTO): List<DriverCardDTO> {
+    fun getDriversAvailable(@RequestBody date: DateDTO): DriverCardAndTimeDTO {
         //aca tengo que retornar ya tipo DTO por el servicio de tiempos
         return driverService.getDriversAvailable(date)
     }

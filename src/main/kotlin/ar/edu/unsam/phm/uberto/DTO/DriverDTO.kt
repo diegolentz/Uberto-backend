@@ -51,3 +51,8 @@ fun Driver.toCardDTO(time: Int, numberPassenger: Int) = DriverCardDTO(
     rating = scoreAVG()
 )
 
+data class DriverCardAndTimeDTO(
+    val time: Int,
+    val cardDrivers: List<DriverCardDTO>
+)
+
