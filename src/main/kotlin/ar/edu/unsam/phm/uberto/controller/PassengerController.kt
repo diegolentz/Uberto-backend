@@ -1,9 +1,6 @@
 package ar.edu.unsam.phm.uberto.controller
 
-import ar.edu.unsam.phm.uberto.dto.BalanceDTO
-import ar.edu.unsam.phm.uberto.dto.PassengerProfileDto
-import ar.edu.unsam.phm.uberto.dto.UpdatedFriends
-import ar.edu.unsam.phm.uberto.dto.UpdatedPassengerDTO
+import ar.edu.unsam.phm.uberto.dto.*
 import ar.edu.unsam.phm.uberto.services.PassengerService
 import org.springframework.web.bind.annotation.*
 
@@ -27,13 +24,17 @@ class PassengerController(private val passengerService: PassengerService) {
     }
 
     @GetMapping("/friends")
-    fun getFriends(@RequestParam id: Int): List<PassengerProfileDto> {
+    fun getFriends(@RequestParam id: Int): List<FriendDto> {
         return passengerService.getFriends(id)
     }
 
-    @PutMapping("/friends")
-    fun updateFriends(@RequestParam id: Int, @RequestBody updatedFriends: UpdatedFriends): List<PassengerProfileDto> {
-        return passengerService.updateFriends(id, updatedFriends)
+    @PostMapping("/friends")
+    fun addFriend(@RequestParam passengerId: Int, friendId: Int): List<FriendDto> {
+        return passengerService.addFriend(passengerId, friendId)
     }
 
+    @DeleteMapping("/friends")
+    fun deleteFriend(@RequestParam passengerId: Int, friendId: Int): List<FriendDto> {
+        return passengerService.deleteFriend(passengerId, friendId)
+    }
 }
