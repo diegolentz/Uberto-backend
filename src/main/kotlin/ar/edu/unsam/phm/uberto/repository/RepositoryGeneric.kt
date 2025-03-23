@@ -1,10 +1,12 @@
 package ar.edu.unsam.phm.uberto.repository
 
+import ar.edu.unsam.phm.uberto.dto.DateDTO
 import ar.edu.unsam.phm.uberto.dto.LoginRequest
 import ar.edu.unsam.phm.uberto.model.*
 import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 import exceptions.BusinessException
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
 
 
 //Hace referencia a los objetos los cuales van a ser instancias en cada repositorio
@@ -63,6 +65,9 @@ class DriverRepository(): Repository<Driver>() {
     fun searchByUserID(userID:Int): Driver?{
         return instances.find { it.userId == userID }
     }
+
+    fun avaliable(date: LocalDateTime, time: Int): List<Driver> = instances.filter { it.avaliable(date, time) }
+
 }
 @Component
 class PassengerRepository(): Repository<Passenger>() {
@@ -70,6 +75,7 @@ class PassengerRepository(): Repository<Passenger>() {
     fun searchByUserID(userID:Int): Passenger?{
         return instances.find { it.userId == userID}
     }
+
 }
 
 @Component

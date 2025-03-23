@@ -63,4 +63,7 @@ class Passenger(
         friends.removeAll(friendsList)
     }
 
+    fun pendingTrips() = trips.filter { trip:Trip ->trip.pendingTrip()}
+    fun finishedTrips() = trips.filter { trip:Trip ->trip.finishedTrip()}
+
 }
