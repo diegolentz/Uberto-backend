@@ -70,16 +70,25 @@ class Bootstrap(
 
     private fun createDrivers() {
         val users = accountsRepo.instances.filter { it.rol == "driver" }
-        val names = listOf<String>("Chofer1", "Chofer")
-        val lastNames = listOf<String>("a", "b")
+        val names = listOf<String>("Dominic", "Franco")
+        val lastNames = listOf<String>("Toretto", "Colapinto")
         val balances = listOf<Double>(200.0, 5000.0)
         val driverType = listOf(PremiumDriver(), SimpleDriver())
+        val brand = listOf("Fiat Uno", "Renault 12")
+        val serial = listOf("FTG 879", "DEV 666")
+        val model = listOf(1980,19999)
+        val img = listOf("https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSxIABKumHIEfVtFkRWCdlA9qmyHCZyxV6-N7m_c1Xc4MOXv8s61ssMabL5Ny5mdcBpBYG21zMUqikXJ-6K0xK5n8jm58thk8-9MXSGA0w","")
+
         users.forEachIndexed { index:Int, user:UserAuthCredentials ->
             val driver = DriverBuilder(driverType[index])
                 .userId(user.id)
                 .firstName(names[index])
                 .lastName(lastNames[index])
                 .balance(balances[index])
+                .brand(brand[index])
+                .serial(serial[index])
+                .model(model[index])
+                .img(img[index])
                 .build()
 
             driverRepo.create(driver)

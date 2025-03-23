@@ -24,8 +24,8 @@ class TripsController(private val travelTimeService: TravelTimeMockService, priv
     }
 
     @GetMapping() //TODO de quien?? falta un id
-    fun getTrips(): List<Trip> {
-        return tripService.getAllTrips()
+    fun getTrips(@RequestParam id:Int,rol: String): List<TripDTO> {
+        return tripService.getById(id, rol)
     }
 
 
