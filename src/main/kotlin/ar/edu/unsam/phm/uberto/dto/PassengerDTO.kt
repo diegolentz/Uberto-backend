@@ -9,8 +9,7 @@ data class PassengerProfileDto(
     val age: Int,
     val money: Double,
     val cellphone: Int,
-    val img: String,
-    val friends: List<FriendDto>
+    val img: String
 )
 
 fun Passenger.toDTOProfile() = PassengerProfileDto(
@@ -20,8 +19,7 @@ fun Passenger.toDTOProfile() = PassengerProfileDto(
     age = age,
     money = balance,
     cellphone = cellphone,
-    img = img,
-    friends = friends.map { it.toDTOFriend() }
+    img = img
 )
 
 data class FriendDto(

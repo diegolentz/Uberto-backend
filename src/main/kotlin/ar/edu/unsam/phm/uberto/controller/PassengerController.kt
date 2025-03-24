@@ -29,12 +29,12 @@ class PassengerController(private val passengerService: PassengerService) {
     }
 
     @PostMapping("/friends")
-    fun addFriend(@RequestParam passengerId: Int, friendId: Int): List<FriendDto> {
+    fun addFriend(@RequestParam passengerId: Int, friendId: Int): String {
         return passengerService.addFriend(passengerId, friendId)
     }
 
     @DeleteMapping("/friends")
-    fun deleteFriend(@RequestParam passengerId: Int, friendId: Int): List<FriendDto> {
+    fun deleteFriend(@RequestParam passengerId: Int, friendId: Int): String {
         return passengerService.deleteFriend(passengerId, friendId)
     }
 }
