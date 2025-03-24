@@ -85,7 +85,6 @@ class TripsRepository(): Repository<Trip>() {
         return tripFromDriver.filter{ trip ->
             (form.origin == trip.origin || form.origin == null || form.origin == "") &&
             (form.destination == trip.destination || form.destination == null || form.destination == "") &&
-            (form.date == trip.date || form.date == null) &&
             (form.numberPassengers == trip.numberPassengers || form.numberPassengers == null) &&
             (form.name == trip.client.firstName || form.name == null || form.name == "")
         }

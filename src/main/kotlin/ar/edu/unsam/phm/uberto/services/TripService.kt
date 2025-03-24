@@ -73,6 +73,17 @@ class TripService(val passengerRepo: PassengerRepository, val driverRepo: Driver
         }
     }
 
+    fun getFinished(id: Int, rol: String): List<Trip> {
+        if(rol == "passenger"){
+            val passenger = passengerRepo.searchByUserID(id) ?: throw Exception("Pasajero no encontrado")
+            return passenger.finishedTrips()
+        }else{
+            val driver = driverRepo.searchByUserID(id) ?: throw Exception("Chofer no encontrado")
+            return driver.finishedTrips()
+        }
+    }
+
+
     fun getTripsPendingFromDriver(formTripDTO: FormTripDTO): List<Trip> {
         return tripRepo.searchByForm(formTripDTO, formTripDTO.userId)
     }
