@@ -20,20 +20,20 @@ class PassengerService(val passengerRepository: PassengerRepository) {
     }
 
 
-    fun addBalance(passengerId: Int, balance: Double): BalanceDTO {
+    fun addBalance(passengerId: Int, balance: Double): String {
         val currentPassenger = getCurrentPassenger(passengerId)
         currentPassenger.loadBalance(balance)
-        return currentPassenger.balanceDTO()
+        return "Balance actualizado correctamente"
     }
 
-    fun updateInfo(passengerId: Int, updatedInfo: UpdatedPassengerDTO): PassengerProfileDto {
+    fun updateInfo(passengerId: Int, updatedInfo: UpdatedPassengerDTO): String {
         val passenger = getCurrentPassenger(passengerId)
         updatedInfo.firstname?.let { passenger.firstName = it }
         updatedInfo.lastname?.let { passenger.lastName = it }
         updatedInfo.cellphone?.let { passenger.cellphone = it }
         updatedInfo.img?.let { passenger.img = it }
         passengerRepository.update(passenger)
-        return passenger.toDTOProfile()
+        return "Informacion actualizada correctamente"
     }
 
     fun deleteFriend(passengerId: Int, friendId: Int): List<FriendDto> {

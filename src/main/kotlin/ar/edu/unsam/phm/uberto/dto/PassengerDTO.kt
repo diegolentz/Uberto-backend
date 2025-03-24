@@ -38,15 +38,6 @@ fun Passenger.toDTOFriend() = FriendDto(
     img = img
 )
 
-
-data class BalanceDTO(
-    val currentBalance: Double
-)
-
-fun Passenger.balanceDTO() = BalanceDTO(
-    currentBalance = balance
-)
-
 data class UpdatedPassengerDTO(
     val firstname: String?,
     val lastname: String?,
