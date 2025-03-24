@@ -1,7 +1,6 @@
 package ar.edu.unsam.phm.uberto.repository
 
-import ar.edu.unsam.phm.uberto.dto.DateDTO
-import ar.edu.unsam.phm.uberto.dto.LoginRequest
+import ar.edu.unsam.phm.uberto.dto.FormTripDTO
 import ar.edu.unsam.phm.uberto.model.*
 import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 import exceptions.BusinessException
@@ -80,6 +79,17 @@ class PassengerRepository(): Repository<Passenger>() {
 
 @Component
 class TripsRepository(): Repository<Trip>() {
+
+    fun searchByForm(form: FormTripDTO, driverId: Int): List<Trip>{
+        val tripFromDriver = instances.filter { it.driver.userId == driverId }
+        return tripFromDriver.filter{ trip ->
+            (form.origin == trip.origin || form.origin == null) &&
+            (form.destination == trip.destination || form.destination == null) &&
+            (form.date == trip.date || form.date == null) &&
+            (form.numberPassengers == trip.numberPassengers || form.numberPassengers == null) &&
+            (form.name == trip.client.firstName || form.name == null)
+        }
+    }
 }
 
 @Component

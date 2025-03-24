@@ -41,3 +41,12 @@ fun Trip.scoreToDTO() = TripScoreDTO(
     avatarUrlPassenger = client.img,
     avatarUrlDriver = driver.img
 )
+
+data class FormTripDTO(
+    val userId: Int,
+    val origin: String?,
+    val destination: String?,
+    val date: LocalDateTime?,
+    val numberPassengers: Int?,
+    val name: String?
+){}

@@ -1,8 +1,8 @@
 package ar.edu.unsam.phm.uberto.services
 
 import ar.edu.unsam.phm.uberto.BusinessException
+import ar.edu.unsam.phm.uberto.dto.FormTripDTO
 import ar.edu.unsam.phm.uberto.dto.TripDTO
-import ar.edu.unsam.phm.uberto.dto.toDTO
 import ar.edu.unsam.phm.uberto.model.Trip
 import ar.edu.unsam.phm.uberto.repository.DriverRepository
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
@@ -10,7 +10,6 @@ import ar.edu.unsam.phm.uberto.repository.TripsRepository
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
-import org.springframework.web.servlet.function.EntityResponse
 
 @Service
 class TripService(val passengerRepo: PassengerRepository, val driverRepo: DriverRepository, val tripRepo: TripsRepository) {
@@ -72,5 +71,9 @@ class TripService(val passengerRepo: PassengerRepository, val driverRepo: Driver
             val driver = driverRepo.searchByUserID(id) ?: throw Exception("Chofer no encontrado")
             return driver.pendingTrips()
         }
+    }
+
+    fun getTripsPendingFromDriver(formTripDTO: FormTripDTO): List<Trip> {
+        return tripRepo.searchByForm(formTripDTO, formTripDTO.userId)
     }
 }
