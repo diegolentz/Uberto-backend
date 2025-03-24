@@ -36,7 +36,8 @@ data class DriverCardDTO(
     val model: Int,
     val price: Double,
     val img: String,
-    val rating: Double
+    val rating: Double,
+    val type: String
 )
 
 
@@ -48,7 +49,8 @@ fun Driver.toCardDTO(time: Int, numberPassenger: Int) = DriverCardDTO(
     model = model,
     price = fee(time, numberPassenger),
     img = img,
-    rating = scoreAVG()
+    rating = scoreAVG(),
+    type = toString()
 )
 
 data class DriverCardAndTimeDTO(
