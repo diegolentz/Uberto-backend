@@ -14,34 +14,43 @@ class PassengerService(val passengerRepository: PassengerRepository) {
         return getCurrentPassenger(passengerId).toDTOProfile()
     }
 
-    fun getFriends(passengerId: Int): List<PassengerProfileDto> {
+    fun getFriends(passengerId: Int): List<FriendDto> {
         val friends: List<Passenger> = passengerRepository.getByID(passengerId).friends
-        return friends.map { it.toDTOProfile() }
+        return friends.map { it.toDTOFriend() }
     }
 
-    fun updateFriends(passengerId: Int, modifiedFriends: UpdatedFriends): List<PassengerProfileDto> {
-        val modifiedFriendsList = modifiedFriends.friends.map { passengerRepository.getByID(it) }
-        val passenger = getCurrentPassenger(passengerId)
 
-        if (modifiedFriends.addFriends) passenger.addFriends(modifiedFriendsList)
-        else passenger.removeFriends(modifiedFriendsList)
-
-        return getFriends(passengerId)
-    }
-
-    fun addBalance(passengerId: Int, balance: Double): BalanceDTO {
+    fun addBalance(passengerId: Int, balance: Double): String {
         val currentPassenger = getCurrentPassenger(passengerId)
         currentPassenger.loadBalance(balance)
-        return currentPassenger.balanceDTO()
+        return "Balance succesfully updated"
     }
 
-    fun updateInfo(passengerId: Int, updatedInfo: UpdatedPassengerDTO): PassengerProfileDto {
+    fun updateInfo(passengerId: Int, updatedInfo: UpdatedPassengerDTO): String {
         val passenger = getCurrentPassenger(passengerId)
-        updatedInfo.firstName?.let { passenger.firstName = it }
-        updatedInfo.lastName?.let { passenger.lastName = it }
+        updatedInfo.firstname?.let { passenger.firstName = it }
+        updatedInfo.lastname?.let { passenger.lastName = it }
         updatedInfo.cellphone?.let { passenger.cellphone = it }
         updatedInfo.img?.let { passenger.img = it }
         passengerRepository.update(passenger)
-        return passenger.toDTOProfile()
+        return "Profile succesfully updated"
+    }
+
+    fun deleteFriend(passengerId: Int, friendId: Int): String {
+        val currentPassenger = getCurrentPassenger(passengerId)
+        val friend = getCurrentPassenger(friendId)
+        currentPassenger.removeFriend(friend)
+
+        passengerRepository.update(currentPassenger)
+        return "Friend succesfully removed"
+    }
+
+    fun addFriend(passengerId: Int, friendId: Int): String {
+        val currentPassenger = getCurrentPassenger(passengerId)
+        val friend = getCurrentPassenger(friendId)
+        currentPassenger.addFriend(friend)
+
+        passengerRepository.update(currentPassenger)
+        return "You have a new friend!"
     }
 }
