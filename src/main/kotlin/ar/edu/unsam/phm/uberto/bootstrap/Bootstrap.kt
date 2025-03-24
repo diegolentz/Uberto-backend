@@ -145,7 +145,7 @@ class Bootstrap(
 
     private fun createTripScore(){
         var passengers:List<Passenger> = passengerRepo.instances.toList()
-        val scoresPoints:List<Int> = listOf(3, 2, 1, 3, 4, 5)
+        val scoresPoints:List<Int> = listOf(3, 2, 1, 3, 4)
         val scoresMessages:List<String> = listOf("Excelente", "Bueno", "Malo", "Malisimo", "Nefasto")
         passengers.forEachIndexed { index:Int, passenger:Passenger ->
             val score = TripScoreBuilder()

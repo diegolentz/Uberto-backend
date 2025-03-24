@@ -1,5 +1,6 @@
 package ar.edu.unsam.phm.uberto.controller
 
+import ar.edu.unsam.phm.uberto.dto.FormTripDTO
 import ar.edu.unsam.phm.uberto.dto.TripDTO
 import ar.edu.unsam.phm.uberto.dto.toDTO
 import ar.edu.unsam.phm.uberto.services.TravelTimeMockService
@@ -29,6 +30,16 @@ class TripsController(private val travelTimeService: TravelTimeMockService, priv
     @GetMapping("/pending")
     fun getTripsPending(@RequestParam id:Int,rol: String): List<TripDTO> {
         return tripService.getPending(id, rol).map { it.toDTO() }
+    }
+
+    @GetMapping("/finished")
+    fun getTripsFinished(@RequestParam id:Int,rol: String): List<TripDTO> {
+        return tripService.getFinished(id, rol).map { it.toDTO() }
+    }
+
+    @PostMapping("/pending")
+    fun getTripsPendingFromDriver(@RequestBody formTripDTO: FormTripDTO): List<TripDTO> {
+        return tripService.getTripsPendingFromDriver(formTripDTO).map { it.toDTO() }
     }
 
 }
