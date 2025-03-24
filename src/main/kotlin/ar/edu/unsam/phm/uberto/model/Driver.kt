@@ -24,7 +24,8 @@ abstract class Driver(
     }
 
     fun scoreAVG():Double{
-        return this.getScoredTrips().map { it.score!!.scorePoints }.average()
+        val avg = getScoredTrips().map { it.score!!.scorePoints }.average()
+        return if(avg.isNaN()) 0.0 else avg
     }
 
     fun fee(time: Int, numberPassenger: Int):Double{ //trabajar en este metodo al volver
