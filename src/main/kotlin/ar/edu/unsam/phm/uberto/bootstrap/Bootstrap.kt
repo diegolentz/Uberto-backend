@@ -50,7 +50,7 @@ class Bootstrap(
         val names = listOf<String>("Adrian", "Diego", "Matias", "Pedro", "Valen")
         val lastNames = listOf<String>("a", "b", "c", "d", "e")
         val ages = listOf<Int>(1,2,3,4,5)
-        val balances = listOf<Double>(1.0, 10.0, 100.0, 1000.0, 1000000000.0)
+        val balances = listOf<Double>(1000000000.0, 1000000000.0, 1000000000.0, 1000000000.0, 1000000000.0)
         users.forEachIndexed { index:Int, user:UserAuthCredentials ->
             val passenger = PassengerBuilder()
                 .userId(user.id)
