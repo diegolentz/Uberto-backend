@@ -53,4 +53,10 @@ class PassengerService(val passengerRepository: PassengerRepository) {
         passengerRepository.update(currentPassenger)
         return "You have a new friend!"
     }
+
+    fun searchFriends(passengerId: Int, filter: String): List<FriendDto> {
+        val passengers = passengerRepository.instances.filter { it.id != passengerId }
+        return passengers.filter { it.firstName.contains(filter, true) || it.lastName.contains(filter, true) }
+            .map { it.toDTOFriend() }
+    }
 }
