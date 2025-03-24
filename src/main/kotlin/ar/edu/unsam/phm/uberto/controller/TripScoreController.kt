@@ -18,8 +18,8 @@ class TripScoreController(private val tripScoreService: TripScoreService){
 //    }
 
     @GetMapping()
-    fun get(@RequestParam userId: Int): List<TripScoreDTO>{
-        val trips = tripScoreService.getFromUser(userId)
+    fun get(@RequestParam id: Int): List<TripScoreDTO>{
+        val trips = tripScoreService.getFromUser(id)
         return trips.map { it!!.scoreToDTO() }
     }
 }
