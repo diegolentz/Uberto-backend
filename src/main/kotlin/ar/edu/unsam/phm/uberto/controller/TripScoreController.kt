@@ -3,6 +3,7 @@ package ar.edu.unsam.phm.uberto.controller
 import ar.edu.unsam.phm.uberto.dto.TripScoreDTO
 import ar.edu.unsam.phm.uberto.dto.scoreToDTO
 import ar.edu.unsam.phm.uberto.services.TripScoreService
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 
@@ -18,6 +19,11 @@ class TripScoreController(private val tripScoreService: TripScoreService){
     @GetMapping()
     fun get(@RequestParam userId: Int): List<TripScoreDTO>{
         val trips = tripScoreService.getFromUser(userId)
-        return trips.map { it!!.scoreToDTO() }
+        return trips.map { it!!.scoreToDTO(userId) }
+    }
+
+    @DeleteMapping()
+    fun delete(@RequestParam userId: Int, tripScoreId: Int): ResponseEntity<String>{
+        return tripScoreService.delete(userId, tripScoreId)
     }
 }

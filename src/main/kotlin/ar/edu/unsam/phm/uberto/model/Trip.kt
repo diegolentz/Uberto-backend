@@ -27,13 +27,11 @@ class Trip(
         this.score = newScore
     }
 
-    fun deleteScore(){
+    fun canDeleteScore(userId: Int) = userId == client.userId
+
+    fun delete(){
         score = null
     }
-
-//    override fun cumpleCriterioBusqueda(texto: String): Boolean {
-//        TODO("Not yet implemented")
-//    }
 
     fun priceTrip(): Double = this.driver.fee(duration, numberPassengers)
 
