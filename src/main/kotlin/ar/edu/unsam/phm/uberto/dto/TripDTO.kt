@@ -44,8 +44,8 @@ fun Trip.scoreToDTO() = TripScoreDTO(
 
 data class FormTripDTO(
     val userId: Int,
-    val origin: String?,
-    val destination: String?,
-    val numberPassengers: Int?,
-    val name: String?
+    val origin: String,
+    val destination: String,
+    val numberPassengers: Int,
+    val name: String
 ){}
