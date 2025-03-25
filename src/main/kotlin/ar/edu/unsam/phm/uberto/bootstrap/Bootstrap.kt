@@ -36,10 +36,11 @@ class Bootstrap(
         val account03 = UserAuthCredentials(username="matias", password="matias", rol="passenger")
         val account04 = UserAuthCredentials(username="pedro", password="pedro", rol="passenger")
         val account05 = UserAuthCredentials(username="valen", password="valen", rol="passenger")
-        val account06 = UserAuthCredentials(username="driver1", password="driver1", rol="driver")
-        val account07 = UserAuthCredentials(username="driver2", password="driver2", rol="driver")
+        val account06 = UserAuthCredentials(username="premium", password="premium", rol="driver")
+        val account07 = UserAuthCredentials(username="simple", password="simple", rol="driver")
+        val account08 = UserAuthCredentials(username="biker", password="biker", rol="driver")
 
-        val accounts = listOf(account01, account02, account03, account04, account05,account06, account07)
+        val accounts = listOf(account01, account02, account03, account04, account05,account06, account07, account08)
 
         accounts.forEach { account:UserAuthCredentials ->
             accountsRepo.create(account)
@@ -67,14 +68,18 @@ class Bootstrap(
 
     private fun createDrivers() {
         val users = accountsRepo.instances.filter { it.rol == "driver" }
-        val names = listOf<String>("Dominic", "Franco")
-        val lastNames = listOf<String>("Toretto", "Colapinto")
-        val balances = listOf<Double>(200.0, 5000.0)
-        val driverType = listOf(PremiumDriver(), SimpleDriver())
-        val brand = listOf("Fiat Uno", "Renault 12")
-        val serial = listOf("FTG 879", "DEV 666")
-        val model = listOf(1980,19999)
-        val img = listOf("https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSxIABKumHIEfVtFkRWCdlA9qmyHCZyxV6-N7m_c1Xc4MOXv8s61ssMabL5Ny5mdcBpBYG21zMUqikXJ-6K0xK5n8jm58thk8-9MXSGA0w","")
+        val names = listOf<String>("Dominic", "Franco", "Nicky")
+        val lastNames = listOf<String>("Toretto", "Colapinto", "Lauda")
+        val balances = listOf<Double>(200.0, 5000.0, 10000.0)
+        val driverType = listOf(PremiumDriver(), SimpleDriver(), BikeDriver())
+        val brand = listOf("Fiat Uno", "Renault 12", "Gilera")
+        val serial = listOf("FTG 879", "DEV 666", "AAA 123")
+        val model = listOf(1980,1999, 2003)
+        val img = listOf(
+            "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSxIABKumHIEfVtFkRWCdlA9qmyHCZyxV6-N7m_c1Xc4MOXv8s61ssMabL5Ny5mdcBpBYG21zMUqikXJ-6K0xK5n8jm58thk8-9MXSGA0w",
+            "",
+            ""
+        )
 
         users.forEachIndexed { index:Int, user:UserAuthCredentials ->
             val driver = DriverBuilder(driverType[index])
@@ -98,8 +103,20 @@ class Bootstrap(
         var passengers:List<Passenger> = passengerRepo.instances.toList()
         val passengersAmmounts:List<Int> = listOf(1, 1, 2, 3, 4)
         val durations:List<Int> = listOf(10, 25, 40, 15, 20)
-        val origin: List<String> = listOf("calleOrigen1", "calleOrigen2", "calleOrigen3", "calleOrigen4", "calleOrigen5")
-        val destination: List<String> = listOf("calleDestino1", "calleDestino2", "calleDestino3", "calleDestino4", "calleDestino5")
+        val origin: List<String> = listOf(
+            "calleOrigen1",
+            "calleOrigen2",
+            "calleOrigen3",
+            "calleOrigen4",
+            "calleOrigen5"
+        )
+        val destination: List<String> = listOf(
+            "calleDestino1",
+            "calleDestino2",
+            "calleDestino3",
+            "calleDestino4",
+            "calleDestino5"
+        )
         val dates:List<String> = listOf(
             "2025-03-21T10:44:10.9267679",
             "2025-05-21T10:44:10.9267679",
@@ -110,34 +127,23 @@ class Bootstrap(
 
         val drivers:List<Driver> = driverRepo.instances.toList()
 
-        for (i in 0..4){
-            val trip = TripBuilder()
-                .driver(drivers[0])
-                .passenger(passengers[i])
-                .passengerAmmount(passengersAmmounts[i])
-                .duration(durations[i])
-                .setDate(dates[i])
-                .origin(origin[i])
-                .destination(destination[i])
-                .build()
 
-            tripRepo.create(trip)
-            drivers[0].addTrip(trip)
-            passengers[i].addTrip(trip)
-        }
-        for (i in 0..4){
-            val trip = TripBuilder()
-                .driver(drivers[1])
-                .passenger(passengers[i])
-                .passengerAmmount(passengersAmmounts[i])
-                .duration(durations[i])
-                .setDate(dates[i])
-                .origin(origin[i])
-                .destination(destination[i])
-                .build()
-            tripRepo.create(trip)
-            drivers[1].addTrip(trip)
-            passengers[i].addTrip(trip)
+        for(j in drivers.indices){
+            for (i in passengers.indices){
+                val trip = TripBuilder()
+                    .driver(drivers[j])
+                    .passenger(passengers[i])
+                    .passengerAmmount(passengersAmmounts[i])
+                    .duration(durations[i])
+                    .setDate(dates[i])
+                    .origin(origin[i])
+                    .destination(destination[i])
+                    .build()
+
+                tripRepo.create(trip)
+                drivers[j].addTrip(trip)
+                passengers[i].requestTrip(trip)
+            }
         }
 
     }
@@ -155,7 +161,7 @@ class Bootstrap(
                 .build()
 
             tripScoreRepo.create(score)
-            passengers[index].trips[0].score = score
+            passenger.trips[0].score = score
         }
     }
 }

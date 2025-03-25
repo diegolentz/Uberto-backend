@@ -29,12 +29,12 @@ class Passenger(
         return this.balance < trip.priceTrip()
     }
 
-    fun addTrip(trip: Trip) {
+    private fun addTrip(trip: Trip) {
         this.payTrip(trip.priceTrip())
         this.trips.add(trip)
     }
 
-    fun payTrip(price: Double) {
+    private fun payTrip(price: Double) {
         this.balance -= price
     }
 
