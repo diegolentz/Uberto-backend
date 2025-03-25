@@ -26,7 +26,7 @@ class TripService(val passengerRepo: PassengerRepository, val driverRepo: Driver
             Trip(
                 trip.duration,
                 trip.numberPassengers,
-                trip.date,
+                trip.date.atStartOfDay(),
                 trip.origin,
                 trip.destination,
                 client,

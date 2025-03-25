@@ -4,6 +4,7 @@ import ar.edu.unsam.phm.uberto.BusinessException
 import ar.edu.unsam.phm.uberto.repository.AvaliableInstance
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 //instancio para que no de error
@@ -41,6 +42,12 @@ class Trip(
     fun dateTimeFinished() : LocalDateTime = date.plus(duration.toLong(), ChronoUnit.MINUTES)
     fun finishedTrip() : Boolean  {
         return dateTimeFinished() < LocalDateTime.now()
+    }
+
+    fun onlyTimeToStr(date: LocalDateTime): String {
+        val time = date.toLocalTime()
+        val formatter = DateTimeFormatter.ofPattern("HH:mm")
+        return time.format(formatter).toString()
     }
 
 }

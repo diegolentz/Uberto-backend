@@ -3,6 +3,7 @@ package ar.edu.unsam.phm.uberto.model
 import ar.edu.unsam.phm.uberto.BusinessException
 import ar.edu.unsam.phm.uberto.repository.AvaliableInstance
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 abstract class Driver(
@@ -60,6 +61,8 @@ abstract class Driver(
         }
         addTrip(newTrip)
     }
+
+
 
 }
 
