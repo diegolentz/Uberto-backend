@@ -1,8 +1,6 @@
 package ar.edu.unsam.phm.uberto.dto
 
 import ar.edu.unsam.phm.uberto.model.Driver
-import ar.edu.unsam.phm.uberto.model.Passenger
-import ar.edu.unsam.phm.uberto.model.TripScore
 
 data class DriverDTO(
     val id: Int,

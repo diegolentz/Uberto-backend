@@ -2,9 +2,7 @@ package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.dto.TripScoreDTO
 import ar.edu.unsam.phm.uberto.dto.scoreToDTO
-import ar.edu.unsam.phm.uberto.dto.toDTO
 import ar.edu.unsam.phm.uberto.services.TripScoreService
-import jakarta.websocket.server.PathParam
 import org.springframework.web.bind.annotation.*
 
 
