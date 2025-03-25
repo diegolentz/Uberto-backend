@@ -32,14 +32,16 @@ fun Trip.toDTO() = TripDTO(
     price = driver.fee(duration, numberPassengers),
 )
 
-fun Trip.scoreToDTO() = TripScoreDTO(
+fun Trip.scoreToDTO(userId: Int) = TripScoreDTO(
     message = score!!.message,
     scorePoints = score!!.scorePoints,
     date = date.toString(),
     passengerName= client.firstName + ' ' + client.lastName,
     driverName = driver.firstName + ' ' + driver.lastName,
     avatarUrlPassenger = client.img,
-    avatarUrlDriver = driver.img
+    avatarUrlDriver = driver.img,
+    tripId = id,
+    delete = canDeleteScore(userId)
 )
 
 data class FormTripDTO(
