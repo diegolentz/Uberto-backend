@@ -2,7 +2,6 @@ package ar.edu.unsam.phm.uberto.services
 
 import ar.edu.unsam.phm.uberto.dto.DateDTO
 import ar.edu.unsam.phm.uberto.dto.DriverCardAndTimeDTO
-import ar.edu.unsam.phm.uberto.dto.DriverCardDTO
 import ar.edu.unsam.phm.uberto.dto.toCardDTO
 import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.repository.DriverRepository
