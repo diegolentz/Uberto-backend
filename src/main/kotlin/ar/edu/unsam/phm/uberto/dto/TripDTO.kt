@@ -19,7 +19,6 @@ class TripDTO( //este es sin confimar, no lleva tripscore
     val imgDriver: String?
     ) {
 
-
 }
 
 fun Trip.toDTO() = TripDTO(

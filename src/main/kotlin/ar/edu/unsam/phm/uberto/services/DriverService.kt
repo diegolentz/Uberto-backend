@@ -49,4 +49,9 @@ class DriverService(val driverRepo: DriverRepository, val timeTripsService: Trav
         driver.model = driverDTO.model
         driver.balance = driverDTO.price
     }
+
+    fun getImg(driverId: Int): String {
+        val driver = driverRepo.searchByUserID(driverId)
+        return driver!!.img
+    }
 }

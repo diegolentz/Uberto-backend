@@ -45,4 +45,9 @@ class PassengerController(private val passengerService: PassengerService) {
     fun filter(@RequestParam id: Int, filter: String): List<FriendDto> {
         return passengerService.searchFriends(id, filter)
     }
+
+    @GetMapping("/img")
+    fun getImg(@RequestParam passengerId: Int): Map<String,String>{
+        return mapOf("img" to passengerService.getImg(passengerId))
+    }
 }
