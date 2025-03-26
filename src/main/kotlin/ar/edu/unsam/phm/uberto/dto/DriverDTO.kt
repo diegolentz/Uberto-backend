@@ -21,7 +21,6 @@ fun Driver.toDTO() = DriverDTO(
     brand = brand,
     model = model,
     price = balance,
-
 )
 
 data class DriverCardDTO(
