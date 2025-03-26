@@ -1,9 +1,8 @@
 package ar.edu.unsam.phm.uberto.model
 
-import ar.edu.unsam.phm.uberto.BusinessException
+import ar.edu.unsam.phm.uberto.DriverNotAvaliableException
 import ar.edu.unsam.phm.uberto.repository.AvaliableInstance
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 abstract class Driver(
@@ -21,7 +20,7 @@ abstract class Driver(
 
     fun avaliable(date: LocalDateTime, time: Int):Boolean{
         val finishedDate =  date.plus(time.toLong(), ChronoUnit.MINUTES)
-        return trips.any{ it.dateTimeFinished() < date || it.date > finishedDate}
+        return trips.any{ it.dateTimeFinished() < date || it.date > finishedDate} || trips.isEmpty()
     }
 
     fun scoreAVG():Double{
@@ -53,17 +52,14 @@ abstract class Driver(
     }
 
     fun pendingTrips() = trips.filter { trip:Trip ->trip.pendingTrip()}
-    fun finishedTrips() = trips.filter { trip:Trip ->trip.finishedTrip()}
+    fun finishedTrips() = trips.filter { trip:Trip ->trip.finished()}
 
     fun responseTrip(newTrip: Trip, time: Int) {
         if(!avaliable(newTrip.date, time)){
-            throw BusinessException("El chofer no se encuentra disponible")
+            throw DriverNotAvaliableException()
         }
         addTrip(newTrip)
     }
 
-
-
 }
-
 
