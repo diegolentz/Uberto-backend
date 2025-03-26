@@ -26,4 +26,9 @@ class TripScoreController(private val tripScoreService: TripScoreService){
     fun delete(@RequestParam userId: Int, tripId: Int): ResponseEntity<String>{
         return tripScoreService.delete(userId, tripId)
     }
+
+    @PostMapping()
+    fun post(@RequestBody tripScoreDTO: TripScoreDTO): ResponseEntity<String>{
+        return tripScoreService.create(tripScoreDTO)
+    }
 }
