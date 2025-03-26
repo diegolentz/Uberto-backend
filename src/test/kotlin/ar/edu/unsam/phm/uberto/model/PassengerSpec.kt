@@ -66,7 +66,7 @@ class PassengerSpec : DescribeSpec({
             passenger.balance shouldBe (originalBalance - trip.priceTrip())
         }
 
-        it("Puede agregar valoraciones") {
+        it("Can add scores") {
             val scoreMessage = "test"
             passenger.scoreTrip(trip, scoreMessage, Random.nextInt(1,5))
             trip.score!!.message shouldBe scoreMessage
