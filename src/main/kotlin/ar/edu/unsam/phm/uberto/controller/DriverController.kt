@@ -4,6 +4,7 @@ import ar.edu.unsam.phm.uberto.dto.*
 import ar.edu.unsam.phm.uberto.services.DriverService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import kotlin.random.Random
 
 @CrossOrigin(origins = ["http://localhost:8080", "http://localhost:5173"])
 @RestController
@@ -30,5 +31,10 @@ class DriverController(private val driverService: DriverService) {
     @PostMapping()
     fun changeProfile(@RequestBody driverDTO: DriverDTO): ResponseEntity<String>{
         return driverService.changeProfile(driverDTO)
+    }
+
+    @GetMapping("/img")
+    fun getImg(@RequestParam driverId: Int): Map<String,String>{
+        return mapOf("img" to driverService.getImg(driverId))
     }
 }

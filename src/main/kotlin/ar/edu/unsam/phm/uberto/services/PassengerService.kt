@@ -68,4 +68,9 @@ class PassengerService(val passengerRepository: PassengerRepository) {
         val friendsIds = getCurrentPassenger(passengerId)!!.friends.map { it.id }
         return friendsIds.contains(friendId)
     }
+
+    fun getImg(passengerId: Int): String {
+        val passenger = getCurrentPassenger(passengerId)
+        return passenger!!.img
+    }
 }
