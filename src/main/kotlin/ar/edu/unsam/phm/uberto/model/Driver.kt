@@ -18,9 +18,15 @@ abstract class Driver(
     var basePrice:Double = 0.0
 ):User, AvaliableInstance {
 
-    fun avaliable(date: LocalDateTime, time: Int):Boolean{
-        val finishedDate =  date.plus(time.toLong(), ChronoUnit.MINUTES)
-        return trips.any{ it.dateTimeFinished() < date || it.date > finishedDate} || trips.isEmpty()
+    fun avaliable(tripDate: LocalDateTime, tripDuration: Int):Boolean{
+        val finishedDate =  tripDate.plus(tripDuration.toLong(), ChronoUnit.MINUTES)
+        return !this.tripOverlapping(tripDate, finishedDate) || trips.isEmpty()
+    }
+
+    fun tripOverlapping(tripStart: LocalDateTime, tripEnd: LocalDateTime):Boolean{
+        return this.pendingTrips().any{ pending:Trip ->
+            tripStart < pending.finalizationDate() && tripEnd > pending.date
+        }
     }
 
     fun scoreAVG():Double{
@@ -28,7 +34,7 @@ abstract class Driver(
         return if(avg.isNaN()) 0.0 else avg
     }
 
-    fun fee(time: Int, numberPassenger: Int):Double{ //trabajar en este metodo al volver
+    fun fee(time: Int, numberPassenger: Int):Double{
         return this.basePrice + this.plusBasePrice(time, numberPassenger) * time
     }
 

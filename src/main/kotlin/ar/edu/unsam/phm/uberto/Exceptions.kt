@@ -17,3 +17,6 @@ class ScoredTripException(msg: String = scoredTripMessage) : Exception(msg)
 
 const val tripNotFinishedException = "Trip not finished."
 class TripNotFinishedException(msg: String = tripNotFinishedException) : Exception(msg)
+
+const val balanceAmmountNotValidMessage = "Balance must be positive."
+class BalanceAmmountNotValidException(msg: String = balanceAmmountNotValidMessage) : Exception(msg)
