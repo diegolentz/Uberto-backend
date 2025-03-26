@@ -1,5 +1,6 @@
 package ar.edu.unsam.phm.uberto.model
 
+import ar.edu.unsam.phm.uberto.BalanceAmmountNotValidException
 import ar.edu.unsam.phm.uberto.builder.PassengerBuilder
 import exceptions.BusinessException
 import io.kotest.assertions.throwables.shouldThrow
@@ -27,6 +28,10 @@ class PassengerSpec : DescribeSpec({
             passenger.balance shouldBe randomMoney
         }
 
+        it("cant add $0 to the account") {
+            shouldThrow<BalanceAmmountNotValidException> {passenger.loadBalance(0.0) }
+        }
+
         it("can add friends") {
             passenger.addFriend(friend)
             passenger.friends shouldContain friend
@@ -43,27 +48,28 @@ class PassengerSpec : DescribeSpec({
         val trip = Trip()
 
         it("passenger can book a trip") {
-            passenger.loadBalance(trip.priceTrip())
+            passenger.loadBalance(trip.priceTrip() + 1.0)
             passenger.requestTrip(trip)
-            passenger.trips shouldContain trip
+            passenger.finishedTrips() shouldContain trip
         }
 
         it("cannot request a trip if it is to expensive") {
-            passenger.loadBalance(trip.priceTrip() - 1.0)
-            shouldThrow<BusinessException> { passenger.requestTrip(trip) }
+            val expensiveTrip = Trip(duration = 15)
+            passenger.loadBalance(expensiveTrip.priceTrip() - 1.0)
+            shouldThrow<BusinessException> { passenger.requestTrip(expensiveTrip) }
         }
 
         it("the balance is reduced succesfully") {
-            passenger.loadBalance(trip.priceTrip())
+            passenger.loadBalance(trip.priceTrip() + 1.0)
             val originalBalance: Double = passenger.balance
             passenger.requestTrip(trip)
             passenger.balance shouldBe (originalBalance - trip.priceTrip())
         }
 
         it("Puede agregar valoraciones") {
-            val score = Random.nextInt(1, 5)
-            passenger.scoreTrip(trip, "test", score)
-            trip.score shouldBe score
+            val scoreMessage = "test"
+            passenger.scoreTrip(trip, scoreMessage, Random.nextInt(1,5))
+            trip.score!!.message shouldBe scoreMessage
         }
     }
 
