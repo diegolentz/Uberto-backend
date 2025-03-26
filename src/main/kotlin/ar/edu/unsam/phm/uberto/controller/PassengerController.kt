@@ -16,14 +16,14 @@ class PassengerController(private val passengerService: PassengerService) {
     }
 
 
-    @PutMapping("")
-    fun updatePassenger(@RequestParam id: Int, @RequestBody updatedInfo: UpdatedPassengerDTO): String {
-        return passengerService.updateInfo(id, updatedInfo)
-    }
-
     @PutMapping("/addBalance")
     fun addBalance(@RequestParam id: Int, balance: Double): String {
         return passengerService.addBalance(id, balance)
+    }
+
+    @PutMapping("")
+    fun updatePassenger(@RequestParam id: Int, @RequestBody updatedInfo: UpdatedPassengerDTO): String {
+        return passengerService.updateInfo(id, updatedInfo)
     }
 
     @GetMapping("/friends")
