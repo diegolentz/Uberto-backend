@@ -1,7 +1,8 @@
 package ar.edu.unsam.phm.uberto.model
 //
-import ar.edu.unsam.phm.uberto.*
-
+import ar.edu.unsam.phm.uberto.BalanceAmmountNotValidException
+import ar.edu.unsam.phm.uberto.InsufficientBalanceException
+import ar.edu.unsam.phm.uberto.TripNotFinishedException
 import ar.edu.unsam.phm.uberto.builder.PassengerBuilder
 import ar.edu.unsam.phm.uberto.builder.TripBuilder
 import io.kotest.assertions.throwables.shouldThrow
@@ -12,12 +13,14 @@ import io.kotest.matchers.shouldBe
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
-class UserSpec: DescribeSpec({
+class TripSpec: DescribeSpec({
     isolationMode = IsolationMode.InstancePerTest
 
     var usuario: Passenger = PassengerBuilder().build()
+    val simpleDriver: SimpleDriver = SimpleDriver()
+    var trip    : Trip = TripBuilder().driver(simpleDriver).build()
 
-    describe(name="Dado un usuario"){
+    describe(name="Dado un viaje"){
         it(name="Su balance inicial es 0"){
             usuario.balance shouldBeExactly 0.0
         }
@@ -80,40 +83,5 @@ class UserSpec: DescribeSpec({
 
         }
 
-        describe(name="Puede tener amigos") {
-            val usuarioAmigo:Passenger = PassengerBuilder().build()
-            describe(name="Agrega amigos"){
-                it(name="No son amigos, lo agrega exitosamente"){
-                    usuario.isFriendOf(usuarioAmigo) shouldBe false
-                    usuario.addFriend(usuarioAmigo)
-                    usuario.isFriendOf(usuarioAmigo) shouldBe true
-                }
-
-                it(name="Ya son amigos, no lo puede volver a agregar"){
-                    usuario.addFriend(usuarioAmigo)
-                    usuario.isFriendOf(usuarioAmigo) shouldBe true
-                    shouldThrow<FriendAlreadyExistException> {
-                        usuario.addFriend(usuarioAmigo)
-                    }
-                }
-            }
-
-            describe(name="Elimina amigos"){
-                it(name="Elimina amigo correctamente"){
-                    usuario.addFriend(usuarioAmigo)
-                    usuario.isFriendOf(usuarioAmigo) shouldBe true
-                    usuario.removeFriend(usuarioAmigo)
-                    usuario.isFriendOf(usuarioAmigo) shouldBe false
-                }
-
-                it(name="Si no son amigos, no puede eliminar nada"){
-                    usuario.isFriendOf(usuarioAmigo) shouldBe false
-                    shouldThrow<FriendNotExistException> {
-                        usuario.removeFriend(usuarioAmigo)
-                    }
-                }
-            }
-
-        }
     }
 })

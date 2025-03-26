@@ -1,6 +1,9 @@
 package ar.edu.unsam.phm.uberto.model
 
 import ar.edu.unsam.phm.uberto.BalanceAmmountNotValidException
+import ar.edu.unsam.phm.uberto.FriendAlreadyExistException
+import ar.edu.unsam.phm.uberto.FriendNotExistException
+import ar.edu.unsam.phm.uberto.InsufficientBalanceException
 import ar.edu.unsam.phm.uberto.repository.AvaliableInstance
 import exceptions.BusinessException
 
@@ -21,17 +24,17 @@ class Passenger(
 
     fun requestTrip(trip: Trip) {
         if (validateTrip(trip)) {
-            throw BusinessException("you don't have enough money")
+            throw InsufficientBalanceException()
         }
         this.addTrip(trip)
     }
 
     private fun validateTrip(trip: Trip): Boolean {
-        return this.balance < trip.priceTrip()
+        return this.balance < trip.price()
     }
 
     private fun addTrip(trip: Trip) {
-        this.payTrip(trip.priceTrip())
+        this.payTrip(trip.price())
         this.trips.add(trip)
     }
 
@@ -54,11 +57,19 @@ class Passenger(
         return this.trips.filter { it.score != null }
     }
 
+    fun isFriendOf(passenger: Passenger) = this.friends.contains(passenger)
+
     fun addFriend(friend: Passenger) {
+        if(this.isFriendOf(friend)){
+            throw FriendAlreadyExistException()
+        }
         friends.add(friend)
     }
 
     fun removeFriend(friend: Passenger) {
+        if(!this.isFriendOf(friend)){
+            throw FriendNotExistException()
+        }
         friends.remove(friend)
     }
 
