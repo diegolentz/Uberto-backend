@@ -49,15 +49,18 @@ class Bootstrap(
     private fun createPassengers() {
         val users = accountsRepo.instances.filter { it.rol == "passenger" }
         val names = listOf<String>("Adrian", "Diego", "Matias", "Pedro", "Valen")
-        val lastNames = listOf<String>("a", "b", "c", "d", "e")
+        val lastNames = listOf<String>("Perez", "Lentz", "Diaz", "Geragthy", "Pugliese")
         val ages = listOf<Int>(1,2,3,4,5)
-        val balances = listOf<Double>(1000000000.0, 1000000000.0, 1000000000.0, 1000000000.0, 1000000000.0)
+        val balances = listOf<Double>(1000000.0, 1000000.0, 1000000.0, 1000000.0, 1000000.0)
+        val phones = listOf<Int>(1568568792,1235598763,1556876259,1235468975,1554876255)
+
         users.forEachIndexed { index:Int, user:UserAuthCredentials ->
             val passenger = PassengerBuilder()
                 .userId(user.id)
                 .firstName(names[index])
                 .lastName(lastNames[index])
                 .age(ages[index])
+                .cellphone(phones[index])
                 .balance(balances[index])
                 .build()
 
