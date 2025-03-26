@@ -46,11 +46,6 @@ class Passenger(
         this.balance += balance
     }
 
-
-//    fun deleteTravelScore() {
-//        TODO("Not yet implemented")
-//    }
-
     override fun getScores(): List<TripScore> {
         return this.getScoredTrips().map { trip:Trip -> trip.score!! }
     }
