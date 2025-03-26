@@ -9,9 +9,8 @@ data class DriverDTO(
     val lastName: String,
     val brand: String,
     val model: Int,
-    val basePrice: Double,
-    val img: String,
-    val trips: List<TripDTO>
+    val price: Double,
+
 )
 
 fun Driver.toDTO() = DriverDTO(
@@ -21,9 +20,8 @@ fun Driver.toDTO() = DriverDTO(
     lastName = lastName,
     brand = brand,
     model = model,
-    basePrice = basePrice,
-    img = img,
-    trips = trips.map { it.toDTO() }
+    price = balance,
+
 )
 
 data class DriverCardDTO(
