@@ -8,3 +8,12 @@ class BusinessException(msg: String) : Exception(msg)
 const val invalidCredentialsMessage = "Incorrect Username or Password"
 @ResponseStatus(HttpStatus.UNAUTHORIZED)
 class InvalidCredentialsException(msg: String = invalidCredentialsMessage) : Exception(msg)
+
+const val driverNotAvaliableMessage = "Driver not avaliable"
+class DriverNotAvaliableException(msg: String = driverNotAvaliableMessage) : Exception(msg)
+
+const val scoredTripMessage = "Trip already scored."
+class ScoredTripException(msg: String = scoredTripMessage) : Exception(msg)
+
+const val tripNotFinishedException = "Trip not finished."
+class TripNotFinishedException(msg: String = tripNotFinishedException) : Exception(msg)

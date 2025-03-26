@@ -1,8 +1,9 @@
 package ar.edu.unsam.phm.uberto.model
 
 import ar.edu.unsam.phm.uberto.BusinessException
+import ar.edu.unsam.phm.uberto.ScoredTripException
+import ar.edu.unsam.phm.uberto.TripNotFinishedException
 import ar.edu.unsam.phm.uberto.repository.AvaliableInstance
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -21,12 +22,12 @@ class Trip(
     var score: TripScore? = null
 
     fun addScore(newScore: TripScore){
-        if(score != null){
-            throw BusinessException("Solo adquiriendo version premium")
-        }
+        if(!this.finished()) throw TripNotFinishedException()
+        if(this.scored()) throw ScoredTripException()
         this.score = newScore
     }
 
+    private fun scored():Boolean = (this.score != null)
     fun canDeleteScore(userId: Int) = userId == client.userId
 
     fun delete(){
@@ -38,7 +39,7 @@ class Trip(
     fun pendingTrip()  : Boolean = date > LocalDateTime.now()
 
     fun dateTimeFinished() : LocalDateTime = date.plus(duration.toLong(), ChronoUnit.MINUTES)
-    fun finishedTrip() : Boolean  {
+    fun finished() : Boolean  {
         return dateTimeFinished() < LocalDateTime.now()
     }
 

@@ -64,6 +64,10 @@ class Passenger(
     }
 
     fun pendingTrips() = trips.filter { trip:Trip ->trip.pendingTrip()}
-    fun finishedTrips() = trips.filter { trip:Trip ->trip.finishedTrip()}
+    fun finishedTrips() = trips.filter { trip:Trip ->trip.finished()}
 
+    fun scoreTrip(trip: Trip, message:String, scorePoints:Int){
+        val score = TripScore(message=message, scorePoints = scorePoints)
+        trip.addScore(score)
+    }
 }
