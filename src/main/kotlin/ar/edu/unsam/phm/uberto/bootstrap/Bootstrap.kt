@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
 import org.springframework.stereotype.Component
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.temporal.ChronoUnit
 import kotlin.random.Random
 
 @Component
@@ -27,7 +30,7 @@ class Bootstrap(
         createPassengers()
         createDrivers()
         createTrips()
-        createTripScore()
+//        createTripScore()
     }
 
     private fun createAccounts(){
@@ -48,7 +51,7 @@ class Bootstrap(
     }
     private fun createPassengers() {
         val users = accountsRepo.instances.filter { it.rol == "passenger" }
-        val names = listOf<String>("Adrian", "Diego", "Matias", "Pedro", "Valen")
+        val names = listOf<String>("Adrian", "Diego", "Matias", "Pedro", "Valentin")
         val lastNames = listOf<String>("Perez", "Lentz", "Diaz", "Geragthy", "Pugliese")
         val ages = listOf<Int>(1,2,3,4,5)
         val balances = listOf<Double>(1000000.0, 1000000.0, 1000000.0, 1000000.0, 1000000.0)
@@ -120,33 +123,135 @@ class Bootstrap(
             "calleDestino4",
             "calleDestino5"
         )
-        val dates:List<String> = listOf(
-            "2025-03-21T10:44:10.9267679",
-            "2025-05-21T10:44:10.9267679",
-            "2025-03-21T10:44:10.9267679",
-            "2025-05-21T10:44:10.9267679",
-            "2025-03-21T10:44:10.9267679"
-        )
 
         val drivers:List<Driver> = driverRepo.instances.toList()
 
+        //8 viajes de cada tipo. Premium, simple, biker. 24 viajes
+        //Cada usuario tiene que tener minimo 2 viajes.
+        val toretto = driverRepo.instances.first{it.lastName == "Toretto"}
+        val colapinto = driverRepo.instances.first{it.lastName == "Colapinto"}
+        val lauda = driverRepo.instances.first{it.lastName == "Lauda"}
 
-        for(j in drivers.indices){
-            for (i in passengers.indices){
-                val trip = TripBuilder()
-                    .driver(drivers[j])
-                    .passenger(passengers[i])
-                    .passengerAmmount(passengersAmmounts[i])
-                    .duration(durations[i])
-                    .setDate(dates[i])
-                    .origin(origin[i])
-                    .destination(destination[i])
-                    .build()
+        val adrian = passengerRepo.instances.first{it.firstName == "Adrian"}
+        val matias = passengerRepo.instances.first{it.firstName == "Matias"}
+        val diego = passengerRepo.instances.first{it.firstName == "Diego"}
+        val pedro = passengerRepo.instances.first{it.firstName == "Pedro"}
+        val valentin = passengerRepo.instances.first{it.firstName == "Valentin"}
 
-                tripRepo.create(trip)
-                drivers[j].addTrip(trip)
-                passengers[i].requestTrip(trip)
-            }
+        val lastMonth = LocalDate.now().minus(1, ChronoUnit.MONTHS)
+        val pastWeek = LocalDate.now().minus(1, ChronoUnit.WEEKS)
+        val yesterday3 = LocalDate.now().minus(3, ChronoUnit.DAYS)
+        val yesterday2 = LocalDate.now().minus(2, ChronoUnit.DAYS)
+        val yesterday1 = LocalDate.now().minus(1, ChronoUnit.DAYS)
+        val today = LocalDate.now()
+        val tomorrow1 = LocalDate.now().plus(1, ChronoUnit.DAYS)
+        val tomorrow2 = LocalDate.now().plus(1, ChronoUnit.DAYS)
+        val tomorrow3 = LocalDate.now().plus(1, ChronoUnit.DAYS)
+        val nextWeek = LocalDate.now().plus(1, ChronoUnit.WEEKS)
+        val nextMonth = LocalDate.now().plus(1, ChronoUnit.MONTHS)
+
+        val dawn = LocalTime.of(6,0, 0)
+        val morning = LocalTime.of(9,0, 0)
+        val noon = LocalTime.of(12,0, 0)
+        val afternoon = LocalTime.of(15,0, 0)
+        val sunset = LocalTime.of(17,0, 0)
+        val dusk = LocalTime.of(19,0, 0)
+        val night = LocalTime.of(21,0, 0)
+        val midnight = LocalTime.of(0,0, 0)
+
+
+        val tripAdrian01 = TripBuilder().passenger(adrian).driver(toretto)
+            .setDate(LocalDateTime.of(lastMonth, morning).toString())
+            .duration(50).build()
+        val tripAdrian02 = TripBuilder().passenger(adrian).driver(toretto)
+            .setDate(LocalDateTime.of(pastWeek, morning).toString())
+            .duration(45).build()
+        val tripAdrian03 = TripBuilder().passenger(adrian).driver(colapinto)
+            .setDate(LocalDateTime.of(today, morning).toString())
+            .duration(20).build()
+        val tripAdrian04 = TripBuilder().passenger(adrian).driver(lauda)
+            .setDate(LocalDateTime.of(tomorrow1, afternoon).toString())
+            .duration(70).build()
+        val tripAdrian05 = TripBuilder().passenger(adrian).driver(lauda)
+            .setDate(LocalDateTime.of(tomorrow1, night).toString())
+            .duration(90).build()
+
+        val tripMatias01 = TripBuilder().passenger(matias).driver(toretto)
+            .setDate(LocalDateTime.of(pastWeek, morning).toString())
+            .duration(15).build()
+        val tripMatias02 = TripBuilder().passenger(matias).driver(toretto)
+            .setDate(LocalDateTime.of(today, morning).toString())
+            .duration(25).build()
+        val tripMatias03 = TripBuilder().passenger(matias).driver(toretto)
+            .setDate(LocalDateTime.of(today, afternoon).toString())
+            .duration(35).build()
+        val tripMatias04 = TripBuilder().passenger(matias).driver(toretto)
+            .setDate(LocalDateTime.of(today, sunset).toString())
+            .duration(45).build()
+        val tripMatias05 = TripBuilder().passenger(matias).driver(toretto)
+            .setDate(LocalDateTime.of(today, night).toString())
+            .duration(55).build()
+
+        val tripDiego01 = TripBuilder().passenger(diego).driver(lauda)
+            .setDate(LocalDateTime.of(lastMonth, afternoon).toString())
+            .duration(10).build()
+        val tripDiego02 = TripBuilder().passenger(diego).driver(lauda)
+            .setDate(LocalDateTime.of(lastMonth, afternoon).toString())
+            .duration(20).build()
+        val tripDiego03 = TripBuilder().passenger(diego).driver(lauda)
+            .setDate(LocalDateTime.of(lastMonth, afternoon).toString())
+            .duration(30).build()
+        val tripDiego04 = TripBuilder().passenger(diego).driver(lauda)
+            .setDate(LocalDateTime.of(lastMonth, afternoon).toString())
+            .duration(40).build()
+        val tripDiego05 = TripBuilder().passenger(diego).driver(lauda)
+            .setDate(LocalDateTime.of(tomorrow1, afternoon).toString())
+            .duration(50).build()
+
+        val tripPedro01 = TripBuilder().passenger(pedro).driver(colapinto)
+            .setDate(LocalDateTime.of(lastMonth,dawn).toString())
+            .duration(45).build()
+        val tripPedro02 = TripBuilder().passenger(pedro).driver(colapinto)
+            .setDate(LocalDateTime.of(lastMonth, morning).toString())
+            .duration(45).build()
+        val tripPedro03 = TripBuilder().passenger(pedro).driver(colapinto)
+            .setDate(LocalDateTime.of(lastMonth, noon).toString())
+            .duration(45).build()
+        val tripPedro04 = TripBuilder().passenger(pedro).driver(colapinto)
+            .setDate(LocalDateTime.of(lastMonth, afternoon).toString())
+            .duration(45).build()
+        val tripPedro05 = TripBuilder().passenger(pedro).driver(colapinto)
+            .setDate(LocalDateTime.of(lastMonth, sunset).toString())
+            .duration(55).build()
+
+        val tripValentin01 = TripBuilder().passenger(valentin).driver(toretto)
+            .setDate(LocalDateTime.of(tomorrow1, morning).toString())
+            .duration(25).build()
+        val tripValentin02 = TripBuilder().passenger(valentin).driver(toretto)
+            .setDate(LocalDateTime.of(tomorrow1, sunset).toString())
+            .duration(25).build()
+        val tripValentin03 = TripBuilder().passenger(valentin).driver(toretto)
+            .setDate(LocalDateTime.of(tomorrow1, night).toString())
+            .duration(45).build()
+        val tripValentin04 = TripBuilder().passenger(valentin).driver(toretto)
+            .setDate(LocalDateTime.of(tomorrow2, morning).toString())
+            .duration(50).build()
+        val tripValentin05 = TripBuilder().passenger(valentin).driver(toretto)
+            .setDate(LocalDateTime.of(tomorrow3, morning).toString())
+            .duration(50).build()
+
+        val allTrips:List<Trip> = listOf(
+            tripAdrian01, tripAdrian02, tripAdrian03, tripAdrian04, tripAdrian05,
+            tripMatias01, tripMatias02, tripMatias03, tripMatias04, tripMatias05,
+            tripDiego01, tripDiego02, tripDiego03, tripDiego04, tripDiego05,
+            tripPedro01, tripPedro02, tripPedro03, tripPedro04, tripPedro05,
+            tripValentin01, tripValentin02, tripValentin03, tripValentin04, tripValentin05
+        )
+
+        allTrips.forEach {
+            tripRepo.create(it)
+            it.driver.addTrip(it)
+            it.client.trips.add(it)
         }
 
     }
