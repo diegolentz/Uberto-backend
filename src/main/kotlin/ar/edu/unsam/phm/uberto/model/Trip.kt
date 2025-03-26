@@ -1,6 +1,5 @@
 package ar.edu.unsam.phm.uberto.model
 
-import ar.edu.unsam.phm.uberto.BusinessException
 import ar.edu.unsam.phm.uberto.ScoredTripException
 import ar.edu.unsam.phm.uberto.TripNotFinishedException
 import ar.edu.unsam.phm.uberto.repository.AvaliableInstance
@@ -38,9 +37,9 @@ class Trip(
 
     fun pendingTrip()  : Boolean = date > LocalDateTime.now()
 
-    fun dateTimeFinished() : LocalDateTime = date.plus(duration.toLong(), ChronoUnit.MINUTES)
+    fun finalizationDate() : LocalDateTime = date.plus(duration.toLong(), ChronoUnit.MINUTES)
     fun finished() : Boolean  {
-        return dateTimeFinished() < LocalDateTime.now()
+        return finalizationDate() < LocalDateTime.now()
     }
 
     fun onlyTimeToStr(date: LocalDateTime): String {

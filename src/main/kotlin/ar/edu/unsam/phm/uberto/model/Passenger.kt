@@ -1,5 +1,6 @@
 package ar.edu.unsam.phm.uberto.model
 
+import ar.edu.unsam.phm.uberto.BalanceAmmountNotValidException
 import ar.edu.unsam.phm.uberto.repository.AvaliableInstance
 import exceptions.BusinessException
 
@@ -39,6 +40,9 @@ class Passenger(
     }
 
     fun loadBalance(balance: Double) {
+        if(balance <= 0){
+            throw BalanceAmmountNotValidException()
+        }
         this.balance += balance
     }
 
@@ -70,4 +74,5 @@ class Passenger(
         val score = TripScore(message=message, scorePoints = scorePoints)
         trip.addScore(score)
     }
+
 }

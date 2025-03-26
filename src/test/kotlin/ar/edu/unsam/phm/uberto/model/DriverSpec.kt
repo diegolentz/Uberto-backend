@@ -83,8 +83,9 @@ class DriverSpec: DescribeSpec( {
                 driver.trips shouldContain trip
             }
             it("Si NO esta disponible, no lo puede aceptar") {
+                driver.trips.isEmpty() shouldBe true
                 driver.responseTrip(trip, trip.duration)
-                val tripDateConflict = TripBuilder().driver(driver).passenger(client).setDate(tomorrow).build()
+                val tripDateConflict = TripBuilder().driver(driver).passenger(client).setDate(tomorrow).duration(10).build()
                 shouldThrow<DriverNotAvaliableException> {
                     driver.responseTrip(tripDateConflict, tripDateConflict.duration)
                 }

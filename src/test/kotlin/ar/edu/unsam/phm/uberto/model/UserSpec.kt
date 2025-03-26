@@ -1,15 +1,18 @@
 package ar.edu.unsam.phm.uberto.model
 //
+import ar.edu.unsam.phm.uberto.BalanceAmmountNotValidException
 import ar.edu.unsam.phm.uberto.BusinessException
 
 import ar.edu.unsam.phm.uberto.builder.DriverBuilder
 import ar.edu.unsam.phm.uberto.builder.PassengerBuilder
 import ar.edu.unsam.phm.uberto.builder.TripBuilder
 import ar.edu.unsam.phm.uberto.model.*
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.doubles.shouldBeExactly
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import org.junit.jupiter.api.assertThrows
@@ -18,18 +21,27 @@ import kotlin.random.Random
 class UserSpec: DescribeSpec({
     isolationMode = IsolationMode.InstancePerTest
 
-    var usuario1: Passenger = PassengerBuilder().build()
+    var usuario: Passenger = PassengerBuilder().build()
     val simpleDriver: SimpleDriver = SimpleDriver()
     var trip    : Trip = TripBuilder().driver(simpleDriver).build()
 
-    describe("Dado un usuario"){
-        it("Su balance debe comenzar en 0"){
-            usuario1.balance shouldBe 0
+    describe(name="Dado un usuario"){
+        it(name="Su balance inicial es 0"){
+            usuario.balance shouldBeExactly 0.0
         }
 
-        it("Si cargo 5000 de saldo el valor deberia ser de 5000 de saldo") {
-            usuario1.loadBalance(5000.0)
-            usuario1.balance shouldBe 5000
+        describe(name="Puede agregar dinero") {
+            it(name="Balance positivo se ve reflejado"){
+                usuario.loadBalance(5000.0)
+                usuario.balance shouldBe 5000
+            }
+
+            it(name="Balance negativo NO se puede"){
+                shouldThrow<BalanceAmmountNotValidException> {
+                    usuario.loadBalance(-1.0)
+                }
+            }
+
         }
 //        describe("Dado un usario que quiere realizar un viaje")
 //            usuario1.loadBalance(100000.0)
