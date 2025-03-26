@@ -23,7 +23,7 @@ class TripScoreController(private val tripScoreService: TripScoreService){
     }
 
     @DeleteMapping()
-    fun delete(@RequestParam userId: Int, tripScoreId: Int): ResponseEntity<String>{
-        return tripScoreService.delete(userId, tripScoreId)
+    fun delete(@RequestParam userId: Int, tripId: Int): ResponseEntity<String>{
+        return tripScoreService.delete(userId, tripId)
     }
 }

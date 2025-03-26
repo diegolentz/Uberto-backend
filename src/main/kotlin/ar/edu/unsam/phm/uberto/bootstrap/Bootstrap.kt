@@ -32,10 +32,10 @@ class Bootstrap(
 
     private fun createAccounts(){
         val account01 = UserAuthCredentials(username="adrian", password="adrian", rol="passenger")
-        val account02 = UserAuthCredentials(username="diego", password="diego", rol="passenger")
+        val account02 = UserAuthCredentials(username="diego", password="diegoo", rol="passenger")
         val account03 = UserAuthCredentials(username="matias", password="matias", rol="passenger")
-        val account04 = UserAuthCredentials(username="pedro", password="pedro", rol="passenger")
-        val account05 = UserAuthCredentials(username="valen", password="valen", rol="passenger")
+        val account04 = UserAuthCredentials(username="pedro", password="pedroo", rol="passenger")
+        val account05 = UserAuthCredentials(username="valen", password="valenn", rol="passenger")
         val account06 = UserAuthCredentials(username="premium", password="premium", rol="driver")
         val account07 = UserAuthCredentials(username="simple", password="simple", rol="driver")
         val account08 = UserAuthCredentials(username="biker", password="biker", rol="driver")
@@ -49,15 +49,18 @@ class Bootstrap(
     private fun createPassengers() {
         val users = accountsRepo.instances.filter { it.rol == "passenger" }
         val names = listOf<String>("Adrian", "Diego", "Matias", "Pedro", "Valen")
-        val lastNames = listOf<String>("a", "b", "c", "d", "e")
+        val lastNames = listOf<String>("Perez", "Lentz", "Diaz", "Geragthy", "Pugliese")
         val ages = listOf<Int>(1,2,3,4,5)
-        val balances = listOf<Double>(1000000000.0, 1000000000.0, 1000000000.0, 1000000000.0, 1000000000.0)
+        val balances = listOf<Double>(1000000.0, 1000000.0, 1000000.0, 1000000.0, 1000000.0)
+        val phones = listOf<Int>(1568568792,1235598763,1556876259,1235468975,1554876255)
+
         users.forEachIndexed { index:Int, user:UserAuthCredentials ->
             val passenger = PassengerBuilder()
                 .userId(user.id)
                 .firstName(names[index])
                 .lastName(lastNames[index])
                 .age(ages[index])
+                .cellphone(phones[index])
                 .balance(balances[index])
                 .build()
 
