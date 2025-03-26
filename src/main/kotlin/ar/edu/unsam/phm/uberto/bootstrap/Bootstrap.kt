@@ -32,10 +32,10 @@ class Bootstrap(
 
     private fun createAccounts(){
         val account01 = UserAuthCredentials(username="adrian", password="adrian", rol="passenger")
-        val account02 = UserAuthCredentials(username="diego", password="diego", rol="passenger")
+        val account02 = UserAuthCredentials(username="diego", password="diegoo", rol="passenger")
         val account03 = UserAuthCredentials(username="matias", password="matias", rol="passenger")
-        val account04 = UserAuthCredentials(username="pedro", password="pedro", rol="passenger")
-        val account05 = UserAuthCredentials(username="valen", password="valen", rol="passenger")
+        val account04 = UserAuthCredentials(username="pedro", password="pedroo", rol="passenger")
+        val account05 = UserAuthCredentials(username="valen", password="valenn", rol="passenger")
         val account06 = UserAuthCredentials(username="premium", password="premium", rol="driver")
         val account07 = UserAuthCredentials(username="simple", password="simple", rol="driver")
         val account08 = UserAuthCredentials(username="biker", password="biker", rol="driver")
