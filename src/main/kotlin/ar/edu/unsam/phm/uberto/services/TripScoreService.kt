@@ -1,6 +1,7 @@
 package ar.edu.unsam.phm.uberto.services
 
 import ar.edu.unsam.phm.uberto.BusinessException
+import ar.edu.unsam.phm.uberto.dto.TripScoreDTO
 import ar.edu.unsam.phm.uberto.model.Trip
 import ar.edu.unsam.phm.uberto.model.TripScore
 import ar.edu.unsam.phm.uberto.model.User
@@ -48,5 +49,23 @@ class TripScoreService(
         return ResponseEntity
             .status(HttpStatus.OK)
             .body("Elimino calificacion")
+    }
+
+    fun create(tripScore: TripScoreDTO): ResponseEntity<String>{
+        val trip = tripRepo.getByID(tripScore.tripId)
+        val passenger = passengerRepo.searchByUserID(trip.client.id)
+        if(passenger == null){
+            throw BusinessException("No se encuentra pasajero")
+        }
+        passenger!!.scoreTrip(trip, tripScore.message, tripScore.scorePoints)
+
+        if(trip.score == null){
+            throw BusinessException("No se crea recomendacion")
+        }
+        tripScoreRepo.create(trip.score!!)
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body("Se crea recomendacion")
     }
 }
