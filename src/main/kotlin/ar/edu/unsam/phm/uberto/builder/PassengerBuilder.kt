@@ -12,6 +12,10 @@ class PassengerBuilder(val newPassenger: Passenger = Passenger()) {
         newPassenger.firstName = name
     }
 
+    fun img(image: String): PassengerBuilder = apply {
+        newPassenger.img = image
+    }
+
     fun lastName(name: String): PassengerBuilder = apply {
         newPassenger.lastName = name
     }

@@ -54,6 +54,12 @@ class Bootstrap(
         val names = listOf<String>("Adrian", "Diego", "Matias", "Pedro", "Valentin")
         val lastNames = listOf<String>("Perez", "Lentz", "Diaz", "Geragthy", "Pugliese")
         val ages = listOf<Int>(1,2,3,4,5)
+        val imgenes = listOf<String>(
+            "https://1.bp.blogspot.com/-mX40EP3h9w0/XuEMJ7e7TdI/AAAAAAAAAGw/ABJg-o2m1JEC2-UA22ouBtLBXdSkR8ZoQCLcBGAsYHQ/s1600/013d6285-1a23-41ae-8564-a954e04e60d9.jpg",
+            "https://img.freepik.com/fotos-premium/avatar-digital-fisioterapeuta-inteligencia-artificial-generativa_934475-9204.jpg",
+            "https://img.freepik.com/fotos-premium/persona-avatar-plana-fondo-rojo-personaje-dibujos-animados_1036693-6803.jpg",
+            "https://img.freepik.com/fotos-premium/hombre-joven-sonriente-adam-avatar-3d-personas-vectoriales-ilustracion-personajes-estilo-minimalista-dibujos-animados_1029476-294679.jpg",
+            "https://ar.images.search.yahoo.com/search/images;_ylt=AwrFNzpEaORnzvkjOTCt9Qt.?p=avatar+persona+html+img&fr=mcafee&imgf=face&fr2=p%3As%2Cv%3Ai#id=236&iurl=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F220453%2Fpexels-photo-220453.jpeg%3Fcs%3Dsrgb%26dl%3Dpexels-pixabay-220453.jpg%26fm%3Djpg&action=click")
         val balances = listOf<Double>(1000000.0, 1000000.0, 1000000.0, 1000000.0, 1000000.0)
         val phones = listOf<Int>(1568568792,1235598763,1556876259,1235468975,1554876255)
 
@@ -63,6 +69,7 @@ class Bootstrap(
                 .firstName(names[index])
                 .lastName(lastNames[index])
                 .age(ages[index])
+                .img(imgenes[index])
                 .cellphone(phones[index])
                 .balance(balances[index])
                 .build()
@@ -83,8 +90,8 @@ class Bootstrap(
         val model = listOf(1980,1999, 2003)
         val img = listOf(
             "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSxIABKumHIEfVtFkRWCdlA9qmyHCZyxV6-N7m_c1Xc4MOXv8s61ssMabL5Ny5mdcBpBYG21zMUqikXJ-6K0xK5n8jm58thk8-9MXSGA0w",
-            "",
-            ""
+            "https://imgs.search.brave.com/govkyiYhkWlQIXB_rGkHY0bbnntpI5wjyJDdmJ3Oxfc/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93d3cu/bGFuYWNpb24uY29t/LmFyL3Jlc2l6ZXIv/djIvc2UtdmlyYWxp/em8tdW5hLWZvdG8t/ZGUtZnJhbmNvLWNv/bGFwaW50by1jdWFu/ZG8tUzVIMkpKNEdM/RkVRUEZaTE5NVEE2/QU9NSzQuSlBHP2F1/dGg9ZmJjOWJiMjU3/NDY4ZTdmNDllNDU1/NzBlMTYzYzNmNDIz/ZTUwODZlOTA4ZGFh/ZDBhYzRkNWQ5ZDNl/N2E5ODgxOCZ3aWR0/aD00MjAmaGVpZ2h0/PTI4MCZxdWFsaXR5/PTcwJnNtYXJ0PXRy/dWU",
+            "https://imgs.search.brave.com/ccyEUVl1Jj6vw63RrXeCqblIt0xyl5WfdLyQXdIH8jk/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTA4/OTI5OTY3Mi9lcy9m/b3RvL2JyYW5kcy1o/YXRjaC1lbmdsYW5k/LWF1c3RyaWFuLWYx/LXJhY2luZy1kcml2/ZXItbmlraS1sYXVk/YS1hdC1icmFuZHMt/aGF0Y2gtb24tanVs/eS0wMS0xOTc0LWlu/LmpwZz9zPTYxMng2/MTImdz0wJms9MjAm/Yz1GZ29lUEQ0ZFJE/c3YycFlQVVdDalpy/S0FfaTJjRlgzQmNV/UTN6eThEN2FJPQ"
         )
 
         users.forEachIndexed { index:Int, user:UserAuthCredentials ->
