@@ -37,8 +37,7 @@ fun Passenger.toDTOFriend() = FriendDto(
 )
 
 data class UpdatedPassengerDTO(
-    val firstname: String?,
-    val lastname: String?,
-    val cellphone: Int?,
-    val img: String?
+    val firstName: String?,
+    val lastName: String?,
+    val phone: Int?,
 )
