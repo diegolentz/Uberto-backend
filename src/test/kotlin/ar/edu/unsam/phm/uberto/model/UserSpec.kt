@@ -1,22 +1,14 @@
 package ar.edu.unsam.phm.uberto.model
 //
-import ar.edu.unsam.phm.uberto.BalanceAmmountNotValidException
-import ar.edu.unsam.phm.uberto.BusinessException
 
-import ar.edu.unsam.phm.uberto.builder.DriverBuilder
+import ar.edu.unsam.phm.uberto.BalanceAmmountNotValidException
 import ar.edu.unsam.phm.uberto.builder.PassengerBuilder
 import ar.edu.unsam.phm.uberto.builder.TripBuilder
-import ar.edu.unsam.phm.uberto.model.*
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.matchers.collections.shouldContain
-import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.doubles.shouldBeExactly
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
-import org.junit.jupiter.api.assertThrows
-import kotlin.random.Random
 
 class UserSpec: DescribeSpec({
     isolationMode = IsolationMode.InstancePerTest
