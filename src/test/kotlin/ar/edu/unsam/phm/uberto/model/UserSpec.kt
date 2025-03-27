@@ -1,5 +1,8 @@
 package ar.edu.unsam.phm.uberto.model
 //
+
+import ar.edu.unsam.phm.uberto.BalanceAmmountNotValidException
+
 import ar.edu.unsam.phm.uberto.*
 
 import ar.edu.unsam.phm.uberto.builder.PassengerBuilder
@@ -11,6 +14,7 @@ import io.kotest.matchers.doubles.shouldBeExactly
 import io.kotest.matchers.shouldBe
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
+
 
 class UserSpec: DescribeSpec({
     isolationMode = IsolationMode.InstancePerTest
