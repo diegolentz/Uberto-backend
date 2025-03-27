@@ -44,7 +44,7 @@ class TripScoreService(
         }
         val tripScore = tripScoreRepo.getByID(trip.score!!.id)
         tripScoreRepo.delete(tripScore)
-        trip.delete()
+        trip.deleteScore()
         tripRepo.update(trip)
         return ResponseEntity
             .status(HttpStatus.OK)
