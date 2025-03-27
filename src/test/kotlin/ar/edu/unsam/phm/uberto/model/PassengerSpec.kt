@@ -1,76 +1,128 @@
 package ar.edu.unsam.phm.uberto.model
 
-import ar.edu.unsam.phm.uberto.BalanceAmmountNotValidException
+import ar.edu.unsam.phm.uberto.*
 import ar.edu.unsam.phm.uberto.builder.PassengerBuilder
-import exceptions.BusinessException
+import ar.edu.unsam.phm.uberto.builder.TripBuilder
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.matchers.collections.shouldContain
-import io.kotest.matchers.collections.shouldNotContain
+import io.kotest.matchers.doubles.shouldBeExactly
 import io.kotest.matchers.shouldBe
-import kotlin.random.Random
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 class PassengerSpec : DescribeSpec({
     isolationMode = IsolationMode.InstancePerTest
     val passenger = PassengerBuilder().build()
 
-    describe("Given a passsenger") {
-        val friend = PassengerBuilder().build()
+    describe(name = "Given a passsenger") {
 
-        it("balance starts as 0") {
-            passenger.balance shouldBe 0
+        describe(name="Balance") {
+            it(name = "Initial balance of 0.0") {
+                passenger.balance shouldBeExactly 0.0
+            }
+
+            it(name="Adding balance"){
+                val balance:Double = 5000.0
+                passenger.loadBalance(balance)
+                passenger.balance shouldBeExactly balance
+            }
+
+            describe(name="Invalid balance"){
+                it(name="Adds 0.0 balance"){
+                    val balance:Double = 0.0
+                    shouldThrow<BalanceAmmountNotValidException> {
+                        passenger.loadBalance(balance)
+                    }
+                }
+
+                it(name="Adds negative balance"){
+                    val balance:Double = -0.5
+                    shouldThrow<BalanceAmmountNotValidException> {
+                        passenger.loadBalance(balance)
+                    }
+                }
+            }
         }
 
-        it("can add balance to the account") {
-            val randomMoney = Random.nextDouble(1.5, 100.0)
-            passenger.loadBalance(randomMoney)
-            passenger.balance shouldBe randomMoney
+        describe(name="Friends") {
+            val friend:Passenger = PassengerBuilder().build()
+            describe(name="Adding friends"){
+                it(name="Initially not friends, added succesfully"){
+                    passenger.isFriendOf(friend) shouldBe false
+                    passenger.addFriend(friend)
+                    passenger.isFriendOf(friend) shouldBe true
+                }
+
+                it(name="Already friends, cannot be added"){
+                    passenger.addFriend(friend)
+                    passenger.isFriendOf(friend) shouldBe true
+                    shouldThrow<FriendAlreadyExistException> {
+                        passenger.addFriend(friend)
+                    }
+                }
+            }
+
+            describe(name="Deleting friends"){
+                it(name="Succesfully deleted"){
+                    passenger.addFriend(friend)
+                    passenger.isFriendOf(friend) shouldBe true
+                    passenger.removeFriend(friend)
+                    passenger.isFriendOf(friend) shouldBe false
+                }
+
+                it(name="Cannot deleted a non-friend"){
+                    passenger.isFriendOf(friend) shouldBe false
+                    shouldThrow<FriendNotExistException> {
+                        passenger.removeFriend(friend)
+                    }
+                }
+            }
         }
 
-        it("cant add $0 to the account") {
-            shouldThrow<BalanceAmmountNotValidException> {passenger.loadBalance(0.0) }
+        describe(name="Can book trips") {
+            val driver:SimpleDriver = SimpleDriver()
+            driver.basePrice = 10.0
+            val trip:Trip = TripBuilder().duration(10).passenger(passenger).driver(driver).build()
+            it(name="Succesfully booked. Expends balance"){
+                val balance:Double = 1000000.0
+                passenger.loadBalance(balance)
+                passenger.requestTrip(trip)
+                passenger.balance shouldBeExactly (balance - trip.price())
+            }
+
+            it(name="Insufficient balance"){
+                shouldThrow<InsufficientBalanceException> {
+                    passenger.requestTrip(trip)
+                }
+            }
+
         }
 
-        it("can add friends") {
-            passenger.addFriend(friend)
-            passenger.friends shouldContain friend
+        describe(name="Can score trips") {
+            val driver:SimpleDriver = SimpleDriver()
+            driver.basePrice = 10.0
+            val balance:Double = 1000000.0
+            passenger.loadBalance(balance)
+            it(name="Can score if trip is finished"){
+                val yesterday: LocalDateTime = LocalDateTime.now().minus(1, ChronoUnit.DAYS)
+                val trip:Trip = TripBuilder().duration(10).passenger(passenger).driver(driver).setDate(yesterday.toString()).build()
+                passenger.requestTrip(trip)
+                trip.finished() shouldBe true
+                passenger.scoreTrip(trip, message = "Score message", scorePoints = 5)
+            }
+
+            it(name="Trip not finished, cannot score"){
+                val tomorrow: LocalDateTime = LocalDateTime.now().plus(1, ChronoUnit.DAYS)
+                val trip:Trip = TripBuilder().duration(10).passenger(passenger).driver(driver).setDate(tomorrow.toString()).build()
+                passenger.requestTrip(trip)
+                trip.finished() shouldBe false
+                shouldThrow<TripNotFinishedException> {
+                    passenger.scoreTrip(trip, message = "Score message", scorePoints = 5)
+                }
+            }
+
         }
 
-        it("can delete friends") {
-            passenger.addFriend(friend)
-            passenger.removeFriend(friend)
-            passenger.friends shouldNotContain friend
-        }
     }
-
-    describe("When requesting a trip") {
-        val trip = Trip()
-
-        it("passenger can book a trip") {
-            passenger.loadBalance(trip.priceTrip() + 1.0)
-            passenger.requestTrip(trip)
-            passenger.finishedTrips() shouldContain trip
-        }
-
-        it("cannot request a trip if it is to expensive") {
-            val expensiveTrip = Trip(duration = 15)
-            passenger.loadBalance(expensiveTrip.priceTrip() - 1.0)
-            shouldThrow<BusinessException> { passenger.requestTrip(expensiveTrip) }
-        }
-
-        it("the balance is reduced succesfully") {
-            passenger.loadBalance(trip.priceTrip() + 1.0)
-            val originalBalance: Double = passenger.balance
-            passenger.requestTrip(trip)
-            passenger.balance shouldBe (originalBalance - trip.priceTrip())
-        }
-
-        it("Can add scores") {
-            val scoreMessage = "test"
-            passenger.scoreTrip(trip, scoreMessage, Random.nextInt(1,5))
-            trip.score!!.message shouldBe scoreMessage
-        }
-    }
-
 })

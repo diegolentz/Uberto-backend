@@ -16,7 +16,8 @@ class TripDTO( //este es sin confimar, no lleva tripscore
     val passengerName: String,
     val id: Int,
     val imgPassenger: String?,
-    val imgDriver: String?
+    val imgDriver: String?,
+    val scored: Boolean
     ) {
 
 }
@@ -34,7 +35,8 @@ fun Trip.toDTO() = TripDTO(
     price = driver.fee(duration, numberPassengers),
     id = id,
     imgPassenger = client.img,
-    imgDriver = driver.img
+    imgDriver = driver.img,
+    scored = this.scored()
 )
 
 fun Trip.scoreToDTO(userId: Int) = TripScoreDTO(
