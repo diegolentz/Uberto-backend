@@ -50,7 +50,7 @@ abstract class Driver(
 
     fun addTrip(trip:Trip) {
         this.trips.add(trip)
-        acceditTrip(trip.priceTrip())
+        acceditTrip(trip.price())
     }
 
     fun acceditTrip(price: Double){

@@ -20,3 +20,12 @@ class TripNotFinishedException(msg: String = tripNotFinishedException) : Excepti
 
 const val balanceAmmountNotValidMessage = "Balance must be positive."
 class BalanceAmmountNotValidException(msg: String = balanceAmmountNotValidMessage) : Exception(msg)
+
+const val insufficientBalanceMessage = "Insufficient balance."
+class InsufficientBalanceException(msg: String = insufficientBalanceMessage) : Exception(msg)
+
+const val friendAlreadyExistMessage = "Already friend of passenger."
+class FriendAlreadyExistException(msg: String = friendAlreadyExistMessage) : Exception(msg)
+
+const val friendNotExistMessage = "Not friend of passenger"
+class FriendNotExistException(msg: String = friendNotExistMessage) : Exception(msg)

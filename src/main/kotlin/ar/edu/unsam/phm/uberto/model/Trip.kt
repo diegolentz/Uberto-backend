@@ -33,7 +33,7 @@ class Trip(
         score = null
     }
 
-    fun priceTrip(): Double = this.driver.fee(duration, numberPassengers)
+    fun price(): Double = this.driver.fee(duration, numberPassengers)
 
     fun pendingTrip()  : Boolean = date > LocalDateTime.now()
 
