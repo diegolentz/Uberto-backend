@@ -85,7 +85,7 @@ class Bootstrap(
         val lastNames = listOf<String>("Toretto", "Colapinto", "Lauda")
         val balances = listOf<Double>(200.0, 5000.0, 10000.0)
         val driverType = listOf(PremiumDriver(), SimpleDriver(), BikeDriver())
-        val brand = listOf("Fiat Uno", "Renault 12", "Gilera")
+        val brand = listOf("Fiat Uno", "Fiat Uno", "Gilera")
         val serial = listOf("FTG 879", "DEV 666", "AAA 123")
         val model = listOf(2013,1999, 2003)
         val img = listOf(
