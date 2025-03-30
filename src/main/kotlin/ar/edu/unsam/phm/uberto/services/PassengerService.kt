@@ -1,5 +1,6 @@
 package ar.edu.unsam.phm.uberto.services
 
+import ar.edu.unsam.phm.uberto.PassengerNotFoundException
 import ar.edu.unsam.phm.uberto.dto.*
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
@@ -10,8 +11,8 @@ class PassengerService(val passengerRepository: PassengerRepository) {
 
     fun getCurrentPassenger(passengerId: Int) = passengerRepository.searchByUserID(passengerId)
 
-    fun getPassenger(passengerId: Int): PassengerProfileDto {
-        return getCurrentPassenger(passengerId)!!.toDTOProfile()
+    fun getPassenger(passengerId: Int): Passenger? {
+        return passengerRepository.searchByUserID(passengerId) ?: throw PassengerNotFoundException()
     }
 
     fun getFriends(passengerId: Int): List<FriendDto> {
