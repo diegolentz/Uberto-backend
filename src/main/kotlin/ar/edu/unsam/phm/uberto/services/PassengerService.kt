@@ -11,7 +11,7 @@ class PassengerService(val passengerRepository: PassengerRepository) {
 
     fun getCurrentPassenger(passengerId: Int) = passengerRepository.searchByUserID(passengerId)
 
-    fun getPassenger(passengerId: Int): Passenger? {
+    fun getPassenger(passengerId: Int): Passenger {
         return passengerRepository.searchByUserID(passengerId) ?: throw PassengerNotFoundException()
     }
 

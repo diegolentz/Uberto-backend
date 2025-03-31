@@ -16,7 +16,7 @@ class PassengerController(private val passengerService: PassengerService) {
     @GetMapping("/{id}")
     fun getById(@PathVariable id: Int): PassengerProfileDto {
         val passenger = passengerService.getPassenger(id)
-        return passenger!!.toDTOProfile()
+        return passenger.toDTOProfile()
     }
 
 
