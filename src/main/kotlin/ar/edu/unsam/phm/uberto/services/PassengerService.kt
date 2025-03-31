@@ -15,9 +15,9 @@ class PassengerService(val passengerRepository: PassengerRepository) {
         return passengerRepository.searchByUserID(passengerId) ?: throw PassengerNotFoundException()
     }
 
-    fun getFriends(passengerId: Int): List<FriendDto> {
+    fun getFriends(passengerId: Int): List<Passenger> {
         val friends: List<Passenger> = passengerRepository.getByID(passengerId).friends
-        return friends.map { it.toDTOFriend() }
+        return friends
     }
 
 
