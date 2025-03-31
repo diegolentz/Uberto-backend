@@ -29,3 +29,7 @@ class FriendAlreadyExistException(msg: String = friendAlreadyExistMessage) : Exc
 
 const val friendNotExistMessage = "Not friend of passenger"
 class FriendNotExistException(msg: String = friendNotExistMessage) : Exception(msg)
+
+const val passengerNotFoundMessage = "Not passenger match for given ID"
+@ResponseStatus(HttpStatus.NOT_FOUND)
+class PassengerNotFoundException(msg: String = passengerNotFoundMessage) : Exception(msg)

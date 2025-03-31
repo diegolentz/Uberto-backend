@@ -3,6 +3,8 @@ package ar.edu.unsam.phm.uberto.controller
 import ar.edu.unsam.phm.uberto.dto.PassengerProfileDto
 import ar.edu.unsam.phm.uberto.dto.FriendDto
 import ar.edu.unsam.phm.uberto.dto.UpdatedPassengerDTO
+import ar.edu.unsam.phm.uberto.dto.toDTOProfile
+import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.services.PassengerService
 import org.springframework.web.bind.annotation.*
 
@@ -10,9 +12,11 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/passenger")
 class PassengerController(private val passengerService: PassengerService) {
-    @GetMapping("")
-    fun getById(@RequestParam id: Int): PassengerProfileDto {
-        return passengerService.getPassenger(id)
+
+    @GetMapping("/{id}")
+    fun getById(@PathVariable id: Int): PassengerProfileDto {
+        val passenger = passengerService.getPassenger(id)
+        return passenger.toDTOProfile()
     }
 
 
