@@ -33,3 +33,7 @@ class FriendNotExistException(msg: String = friendNotExistMessage) : Exception(m
 const val passengerNotFoundMessage = "Not passenger match for given ID"
 @ResponseStatus(HttpStatus.NOT_FOUND)
 class PassengerNotFoundException(msg: String = passengerNotFoundMessage) : Exception(msg)
+
+const val noFriendsFoundMessage = "No passenger matching the given name or lastname"
+@ResponseStatus(HttpStatus.NOT_FOUND)
+class NoFriendsFoundException(msg: String = noFriendsFoundMessage) : Exception(msg)

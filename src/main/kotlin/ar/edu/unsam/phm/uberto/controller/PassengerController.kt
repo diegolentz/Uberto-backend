@@ -3,6 +3,7 @@ package ar.edu.unsam.phm.uberto.controller
 import ar.edu.unsam.phm.uberto.dto.*
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.services.PassengerService
+import jakarta.websocket.server.PathParam
 import org.springframework.web.bind.annotation.*
 
 @CrossOrigin(origins = ["http://localhost:8080", "http://localhost:5173"])
@@ -45,9 +46,12 @@ class PassengerController(private val passengerService: PassengerService) {
         return passengerService.deleteFriend(passengerId, friendId)
     }
 
-    @GetMapping("/friends/search")
-    fun filter(@RequestParam id: Int, filter: String): List<FriendDto> {
-        return passengerService.searchFriends(id, filter)
+    @GetMapping("/{id}/friends/search")
+    fun filter(@PathVariable id: Int, @RequestParam filter: String): List<FriendDto> {
+        val nonFriendsPassengers:List<Passenger> = passengerService.searchNonFriends(id, filter)
+        return nonFriendsPassengers.map { friend:Passenger ->
+            friend.toDTOFriend()
+        }
     }
 
     @GetMapping("/img")
