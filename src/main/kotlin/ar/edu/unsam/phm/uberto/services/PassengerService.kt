@@ -1,5 +1,6 @@
 package ar.edu.unsam.phm.uberto.services
 
+import ar.edu.unsam.phm.uberto.NoFriendsFoundException
 import ar.edu.unsam.phm.uberto.PassengerNotFoundException
 import ar.edu.unsam.phm.uberto.dto.*
 import ar.edu.unsam.phm.uberto.model.Passenger
@@ -54,20 +55,20 @@ class PassengerService(val passengerRepository: PassengerRepository) {
         return "You have a new friend!"
     }
 
-    fun searchFriends(passengerId: Int, filter: String): List<FriendDto> {
-        val passengers = passengerRepository.instances.filter { it.id != passengerId }
-        return passengers.filter {
-            (it.firstName.contains(filter, true) || it.lastName.contains(
-                filter,
-                true
-            )) && !isAlreadyfriend(passengerId, it.id)
+    fun searchNonFriends(passengerId: Int, filter: String): List<Passenger> {
+        val passengers:List<Passenger> = passengerRepository.instances.filter { it.id != passengerId }
+        if(filter.isEmpty()) return passengers
+        val passengerUser:Passenger = passengerRepository.getByID(passengerId)
+        val nonFriendsPassenger:List<Passenger> = passengers.filter { passenger:Passenger->
+            passengerMatch(passenger, filter) && !passengerUser.isFriendOf(passenger)
         }
-            .map { it.toDTOFriend() }
+        if(nonFriendsPassenger.isEmpty()) throw NoFriendsFoundException()
+        return nonFriendsPassenger
     }
 
-    private fun isAlreadyfriend(passengerId: Int, friendId: Int): Boolean {
-        val friendsIds = getCurrentPassenger(passengerId)!!.friends.map { it.id }
-        return friendsIds.contains(friendId)
+    private fun passengerMatch(passenger: Passenger, textFilter: String): Boolean {
+        val ignoreCase:Boolean = true
+        return passenger.firstName.contains(textFilter, ignoreCase) || passenger.lastName.contains(textFilter, ignoreCase)
     }
 
     fun getImg(passengerId: Int): String {
