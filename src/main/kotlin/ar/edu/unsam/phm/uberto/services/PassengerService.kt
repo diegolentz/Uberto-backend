@@ -34,22 +34,24 @@ class PassengerService(val passengerRepository: PassengerRepository) {
         return "Balance succesfully updated"
     }
 
-    fun updateInfo(passengerId: Int, updatedInfo: UpdatedPassengerDTO): String {
+    fun updateInfo(passengerId: Int, updatedInfo: UpdatedPassengerDTO): ResponseEntity<String> {
         val passenger = getCurrentPassenger(passengerId)
         updatedInfo.firstName?.let { passenger!!.firstName = it }
         updatedInfo.lastName?.let { passenger!!.lastName = it }
         updatedInfo.phone?.let { passenger!!.cellphone = it }
         passengerRepository.update(passenger!!)
-        return "Profile succesfully updated"
+        return ResponseEntity
+            .status(HttpStatus.OK).body("Profile succesfully updated")
     }
 
-    fun deleteFriend(passengerId: Int, friendId: Int): String {
+    fun deleteFriend(passengerId: Int, friendId: Int): ResponseEntity<String> {
         val currentPassenger = getCurrentPassenger(passengerId)
         val friend = getCurrentPassenger(friendId)
         currentPassenger!!.removeFriend(friend!!)
 
         passengerRepository.update(currentPassenger)
-        return "Friend succesfully removed"
+        return ResponseEntity
+            .status(HttpStatus.OK).body("Friend succesfully removed")
     }
 
     fun addFriend(passengerId: Int, friendId: Int): ResponseEntity<String> {

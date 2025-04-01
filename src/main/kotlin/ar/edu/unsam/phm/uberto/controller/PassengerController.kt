@@ -25,7 +25,7 @@ class PassengerController(private val passengerService: PassengerService) {
     }
 
     @PutMapping("")
-    fun updatePassenger(@RequestParam id: Int, @RequestBody updatedInfo: UpdatedPassengerDTO): String {
+    fun updatePassenger(@RequestParam id: Int, @RequestBody updatedInfo: UpdatedPassengerDTO): ResponseEntity<String> {
         return passengerService.updateInfo(id, updatedInfo)
     }
 
@@ -43,7 +43,7 @@ class PassengerController(private val passengerService: PassengerService) {
     }
 
     @DeleteMapping("/friends")
-    fun deleteFriend(@RequestParam passengerId: Int, friendId: Int): String {
+    fun deleteFriend(@RequestParam passengerId: Int, friendId: Int): ResponseEntity<String> {
         return passengerService.deleteFriend(passengerId, friendId)
     }
 
