@@ -13,8 +13,8 @@ import java.time.LocalDateTime
 @RequestMapping("/driver")
 class DriverController(private val driverService: DriverService, val timeTripsService: TravelTimeMockService) {
 
-    @GetMapping
-    fun getByID(@RequestParam id: Int): DriverDTO {
+    @GetMapping("/{id}")
+    fun getByID(@PathVariable id:Int): DriverDTO {
         val driver = driverService.getDriverData(id)
         return driver.toDTO()
     }
@@ -39,8 +39,8 @@ class DriverController(private val driverService: DriverService, val timeTripsSe
     }
 
     @GetMapping("/img")
-    fun getImg(@RequestParam driverid: Int): String{
+    fun getImg(@RequestParam driverid: Int): Map<String, String> {
         val driver = driverService.getDriverData(driverid)
-        return driver.img
+        return mapOf("img" to driver.img)
     }
 }
