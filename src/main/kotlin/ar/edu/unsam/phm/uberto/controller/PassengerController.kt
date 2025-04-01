@@ -20,13 +20,19 @@ class PassengerController(private val passengerService: PassengerService) {
 
 
     @PutMapping("/addBalance")
-    fun addBalance(@RequestParam id: Int, balance: Double): String {
-        return passengerService.addBalance(id, balance)
+    fun addBalance(@RequestParam id: Int, balance: Double): ResponseEntity<String> {
+        val currentPassenger = passengerService.getPassenger(id)
+        return passengerService.addBalance(currentPassenger, balance)
     }
 
     @PutMapping("")
-    fun updatePassenger(@RequestParam id: Int, @RequestBody updatedInfo: UpdatedPassengerDTO): ResponseEntity<String> {
-        return passengerService.updateInfo(id, updatedInfo)
+    fun updatePassenger(
+        @RequestParam id: Int,
+        @RequestBody updatedInfo: UpdatedPassengerDTO): ResponseEntity<String> {
+        //TODO Preguntar!!!
+        val currentPassenger = passengerService.getPassenger(id)
+        return passengerService.updateInfo(currentPassenger,
+            updatedInfo.firstName, updatedInfo.lastName, updatedInfo.phone)
     }
 
     @GetMapping("/{id}/friends")
@@ -39,12 +45,16 @@ class PassengerController(private val passengerService: PassengerService) {
 
     @PostMapping("/friends")
     fun addFriend(@RequestParam passengerId: Int, friendId: Int): ResponseEntity<String> {
-        return passengerService.addFriend(passengerId, friendId)
+        val currentPassenger = passengerService.getPassenger(passengerId)
+        val friend = passengerService.getPassenger(friendId)
+        return passengerService.addFriend(currentPassenger, friend)
     }
 
     @DeleteMapping("/friends")
     fun deleteFriend(@RequestParam passengerId: Int, friendId: Int): ResponseEntity<String> {
-        return passengerService.deleteFriend(passengerId, friendId)
+        val currentPassenger = passengerService.getPassenger(passengerId)
+        val friend = passengerService.getPassenger(friendId)
+        return passengerService.deleteFriend(currentPassenger, friend)
     }
 
     @GetMapping("/{id}/friends/search")
@@ -57,6 +67,7 @@ class PassengerController(private val passengerService: PassengerService) {
 
     @GetMapping("/img")
     fun getImg(@RequestParam passengerId: Int): Map<String,String>{
-        return mapOf("img" to passengerService.getImg(passengerId))
+        val currentPassenger = passengerService.getPassenger(passengerId)
+        return mapOf("img" to currentPassenger.img)
     }
 }
