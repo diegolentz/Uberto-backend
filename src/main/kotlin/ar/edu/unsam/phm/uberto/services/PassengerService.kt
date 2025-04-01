@@ -28,42 +28,38 @@ class PassengerService(val passengerRepository: PassengerRepository) {
     }
 
 
-    fun addBalance(passengerId: Int, balance: Double): String {
-        val currentPassenger = getCurrentPassenger(passengerId)
-        currentPassenger!!.loadBalance(balance)
-        return "Balance succesfully updated"
+    fun addBalance(passenger: Passenger, balance: Double): ResponseEntity<String> {
+        passenger.loadBalance(balance)
+        return ResponseEntity
+            .status(HttpStatus.OK).body("Balance succesfully updated")
     }
 
-    fun updateInfo(passengerId: Int, updatedInfo: UpdatedPassengerDTO): ResponseEntity<String> {
-        val passenger = getCurrentPassenger(passengerId)
-        updatedInfo.firstName?.let { passenger!!.firstName = it }
-        updatedInfo.lastName?.let { passenger!!.lastName = it }
-        updatedInfo.phone?.let { passenger!!.cellphone = it }
-        passengerRepository.update(passenger!!)
+    fun updateInfo(passenger: Passenger, firstName: String?, lastName: String?, cellphone: Int?): ResponseEntity<String> {
+        firstName?.let { passenger.firstName = it }
+        lastName?.let { passenger.lastName = it }
+        cellphone?.let { passenger.cellphone = it }
+        passengerRepository.update(passenger)
         return ResponseEntity
             .status(HttpStatus.OK).body("Profile succesfully updated")
     }
 
-    fun deleteFriend(passengerId: Int, friendId: Int): ResponseEntity<String> {
-        val currentPassenger = getCurrentPassenger(passengerId)
-        val friend = getCurrentPassenger(friendId)
-        currentPassenger!!.removeFriend(friend!!)
-
-        passengerRepository.update(currentPassenger)
+    fun deleteFriend(passenger: Passenger, friend: Passenger): ResponseEntity<String> {
+        passenger.removeFriend(friend)
+        passengerRepository.update(passenger)
         return ResponseEntity
             .status(HttpStatus.OK).body("Friend succesfully removed")
     }
 
-    fun addFriend(passengerId: Int, friendId: Int): ResponseEntity<String> {
-        val currentPassenger = getCurrentPassenger(passengerId) ?: throw NotFoundException("Passenger not found")
-        val friend = getCurrentPassenger(friendId) ?: throw NotFoundException("Passenger not found")
-        currentPassenger.addFriend(friend)
-        passengerRepository.update(currentPassenger)
+    fun addFriend(passenger: Passenger, friend: Passenger): ResponseEntity<String> {
+        passenger.addFriend(friend)
+        passengerRepository.update(passenger)
         return ResponseEntity
             .status(HttpStatus.OK).body("You have a new friend!")
     }
 
     fun searchNonFriends(passengerId: Int, filter: String): List<Passenger> {
+        //Que garron de metodo
+        //Llama a metodos que deberia tener directamente el repo. Futuro refactor
         val passengers:List<Passenger> = passengerRepository.instances.filter { it.id != passengerId }
         if(filter.isEmpty()) return passengers
         val passengerUser:Passenger = passengerRepository.getByID(passengerId)
