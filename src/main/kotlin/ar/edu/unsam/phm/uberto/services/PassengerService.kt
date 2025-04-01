@@ -5,7 +5,13 @@ import ar.edu.unsam.phm.uberto.PassengerNotFoundException
 import ar.edu.unsam.phm.uberto.dto.*
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
+import exceptions.BusinessException
+import exceptions.NotFoundException
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.client.HttpClientErrorException.NotFound
 
 @Service
 class PassengerService(val passengerRepository: PassengerRepository) {
@@ -46,13 +52,13 @@ class PassengerService(val passengerRepository: PassengerRepository) {
         return "Friend succesfully removed"
     }
 
-    fun addFriend(passengerId: Int, friendId: Int): String {
-        val currentPassenger = getCurrentPassenger(passengerId)
-        val friend = getCurrentPassenger(friendId)
-        currentPassenger!!.addFriend(friend!!)
-
+    fun addFriend(passengerId: Int, friendId: Int): ResponseEntity<String> {
+        val currentPassenger = getCurrentPassenger(passengerId) ?: throw NotFoundException("Passenger not found")
+        val friend = getCurrentPassenger(friendId) ?: throw NotFoundException("Passenger not found")
+        currentPassenger.addFriend(friend)
         passengerRepository.update(currentPassenger)
-        return "You have a new friend!"
+        return ResponseEntity
+            .status(HttpStatus.OK).body("You have a new friend!")
     }
 
     fun searchNonFriends(passengerId: Int, filter: String): List<Passenger> {
