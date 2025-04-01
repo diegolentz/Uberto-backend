@@ -4,6 +4,7 @@ import ar.edu.unsam.phm.uberto.dto.*
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.services.PassengerService
 import jakarta.websocket.server.PathParam
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @CrossOrigin(origins = ["http://localhost:8080", "http://localhost:5173"])
@@ -37,7 +38,7 @@ class PassengerController(private val passengerService: PassengerService) {
     }
 
     @PostMapping("/friends")
-    fun addFriend(@RequestParam passengerId: Int, friendId: Int): String {
+    fun addFriend(@RequestParam passengerId: Int, friendId: Int): ResponseEntity<String> {
         return passengerService.addFriend(passengerId, friendId)
     }
 
