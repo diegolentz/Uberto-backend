@@ -15,9 +15,6 @@ import org.springframework.web.client.HttpClientErrorException.NotFound
 
 @Service
 class PassengerService(val passengerRepository: PassengerRepository) {
-
-    fun getCurrentPassenger(passengerId: Int) = passengerRepository.searchByUserID(passengerId)
-
     fun getPassenger(passengerId: Int): Passenger {
         return passengerRepository.searchByUserID(passengerId) ?: throw PassengerNotFoundException()
     }
@@ -76,7 +73,7 @@ class PassengerService(val passengerRepository: PassengerRepository) {
     }
 
     fun getImg(passengerId: Int): String {
-        val passenger = getCurrentPassenger(passengerId)
-        return passenger!!.img
+        val passenger = getPassenger(passengerId)
+        return passenger.img
     }
 }
