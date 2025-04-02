@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*
 
 @CrossOrigin(origins = ["http://localhost:8080", "http://localhost:5173"])
 @RestController
-@RequestMapping("/TripScore")
+@RequestMapping("/tripScore")
 class TripScoreController(private val tripScoreService: TripScoreService){
 //    @GetMapping("/driver")
 //    fun get(@RequestParam userId: Int): List<TripScoreDTO>{
@@ -18,6 +18,7 @@ class TripScoreController(private val tripScoreService: TripScoreService){
 
     @GetMapping()
     fun get(@RequestParam userId: Int): List<TripScoreDTO>{
+
         val trips = tripScoreService.getFromUser(userId)
         return trips.map { it!!.scoreToDTO(userId) }
     }
@@ -28,7 +29,7 @@ class TripScoreController(private val tripScoreService: TripScoreService){
     }
 
     @PostMapping()
-    fun post(@RequestBody tripScoreDTO: TripScoreDTO): ResponseEntity<String>{
+    fun create(@RequestBody tripScoreDTO: TripScoreDTO): ResponseEntity<String>{
         return tripScoreService.create(tripScoreDTO)
     }
 }
