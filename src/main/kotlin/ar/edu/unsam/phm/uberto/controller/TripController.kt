@@ -27,19 +27,15 @@ class TripsController(private val travelTimeService: TravelTimeMockService, priv
         return tripService.getById(id, rol).map { it.toDTO() }
     }
 
-    @GetMapping("/pending")
-    fun getTripsPending(@RequestParam id:Int,rol: String): List<TripDTO> {
-        return tripService.getPending(id, rol).map { it.toDTO() }
-    }
-
-    @GetMapping("/finished")
-    fun getTripsFinished(@RequestParam id:Int,rol: String): List<TripDTO> {
-        return tripService.getFinished(id, rol).map { it.toDTO() }
-    }
-
     @PostMapping("/pending")
     fun getTripsPendingFromDriver(@RequestBody formTripDTO: FormTripDTO): List<TripDTO> {
         return tripService.getTripsPendingFromDriver(formTripDTO).map { it.toDTO() }
     }
 
+    @GetMapping("/passenger")
+    fun getFromPassenger(@RequestParam id:Int, rol: String): Map<String, List<TripDTO>> {
+        val finishedTrips = tripService.getFinished(id, rol).map { it.toDTO() }
+        val pendingTrips = tripService.getPending(id, rol).map { it.toDTO() }
+        return mapOf("pendingTrips" to pendingTrips, "finishedTrips" to finishedTrips)
+    }
 }
