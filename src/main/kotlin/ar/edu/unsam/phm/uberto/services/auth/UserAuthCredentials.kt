@@ -1,10 +1,27 @@
 package ar.edu.unsam.phm.uberto.services.auth
 
-import ar.edu.unsam.phm.uberto.repository.AvaliableInstance
+import jakarta.persistence.*
 
-class UserAuthCredentials(
-    var username:String,
-    var password:String,
-    var rol:String,
-    override var id: Int = 0
-):AvaliableInstance {}
+enum class Role{
+    DRIVER,
+    PASSENGER
+}
+
+@Entity
+class UserAuthCredentials() {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Int = 0
+
+    @Column(length = 255)
+    var username:String = ""
+
+    @Column(length = 255)
+    var password:String = ""
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    var role: Role = Role.DRIVER
+}
+
