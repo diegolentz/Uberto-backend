@@ -25,8 +25,9 @@ abstract class Driver():User {
     @Column
     override  var balance: Double = 0.0
 
-//    override var trips: MutableList<Trip> = mutableListOf(),
-//    los trips deberian mapearse con tabla intermedia?
+
+    @OneToMany(mappedBy = "driver", cascade = [CascadeType.ALL], fetch = FetchType.LAZY, orphanRemoval = true)
+    override var trips: MutableList<Trip> = mutableListOf()
 
     @Column(length = 255)
     override lateinit var img: String
