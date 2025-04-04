@@ -25,14 +25,14 @@ Antes de ejecutar la aplicación, asegurate de tener instalado:
    ```bash
    git clone https://github.com/phm-unsam/backend-2025-grupo3.git
 
-2: **Navegar al directorio del proyecto**:
+2. **Navegar al directorio del proyecto**:
 
-3: **Construir el proyecto**:
+3. **Construir el proyecto**:
   
    ```bash
    ./gradlew build
    ```
-4: **Ejecutar la aplicación**:
+4. **Ejecutar la aplicación**:
    ```bash
    ./gradlew run
    ```
