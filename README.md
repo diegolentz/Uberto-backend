@@ -29,21 +29,21 @@ Antes de ejecutar la aplicación, asegurate de tener instalado:
 
 3: **Construir el proyecto**:
   
-  ```bash
-  ./gradlew build
-  ```
+   ```bash
+   ./gradlew build
+   ```
 4: **Ejecutar la aplicación**:
-```bash
-./gradlew run
-```
+   ```bash
+   ./gradlew run
+   ```
 ## La aplicación quedará corriendo en http://localhost:8080
 
 🧪 Testing
 Podés correr los tests del proyecto con:
 
-```bash
-./gradlew test
-```
+   ```bash
+   ./gradlew test
+   ```
 
 📬 Endpoints principales
 Algunos de los endpoints disponibles:
