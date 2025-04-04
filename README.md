@@ -1,58 +1,5 @@
 # Aplicación Backend en Kotlin
 
-Este proyecto es una aplicación backend desarrollada en Kotlin, diseñada para gestionar eventos, usuarios y recomendaciones dentro de un entorno colaborativo. Forma parte del desarrollo del grupo 3 para la materia Programación con Herramientas Modernas (2025), UNSAM.
-
-## 🚀 Características Principales
-
-- ✅ Backend desarrollado con Kotlin.
-- ✅ Arquitectura modular con separación clara entre controladores, servicios y modelos.
-- ✅ Uso de DTOs para la transferencia de datos.
-- ✅ Control de acceso basado en tipos de usuario.
-- ✅ Soporte para recomendaciones y puntuaciones entre usuarios.
-
-## 📦 Requisitos Previos
-
-Antes de ejecutar la aplicación, asegurate de tener instalado:
-
-- [JDK 17+](https://adoptium.net/)
-- [Gradle](https://gradle.org/) (opcional si usás el wrapper `./gradlew`)
-- IDE recomendado: IntelliJ IDEA
-
-## ⚙️ Instalación y Ejecución
-
-1. **Clonar el repositorio**:
-
-   ```bash
-   git clone https://github.com/phm-unsam/backend-2025-grupo3.git
-
-   # Aplicación Backend en Kotlin
-
-Este proyecto es una aplicación backend desarrollada en Kotlin, diseñada para gestionar eventos, usuarios y recomendaciones dentro de un entorno colaborativo. Forma parte del desarrollo del grupo 3 para la materia Programación con Tipado Estático (2025), UNSAM.
-
-## 🚀 Características Principales
-
-- ✅ Backend desarrollado con Kotlin.
-- ✅ Arquitectura modular con separación clara entre controladores, servicios y modelos.
-- ✅ Uso de DTOs para la transferencia de datos.
-- ✅ Control de acceso basado en tipos de usuario.
-- ✅ Soporte para recomendaciones y puntuaciones entre usuarios.
-
-## 📦 Requisitos Previos
-
-Antes de ejecutar la aplicación, asegurate de tener instalado:
-
-- [JDK 17+](https://adoptium.net/)
-- [Gradle](https://gradle.org/) (opcional si usás el wrapper `./gradlew`)
-- IDE recomendado: IntelliJ IDEA
-
-## ⚙️ Instalación y Ejecución
-
-1. **Clonar el repositorio**:
-
-   ```bash
-   git clone https://github.com/phm-unsam/backend-2025-grupo3.git
-# Aplicación Backend en Kotlin
-
 Este proyecto es una aplicación backend desarrollada en Kotlin, diseñada para gestionar eventos, usuarios y recomendaciones dentro de un entorno colaborativo. Forma parte del desarrollo del grupo 3 para la materia Programación con Tipado Estático (2025), UNSAM.
 
 ## 🚀 Características Principales
