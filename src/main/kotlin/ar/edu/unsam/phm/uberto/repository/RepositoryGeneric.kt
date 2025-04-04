@@ -95,6 +95,6 @@ class TripsRepository(): Repository<Trip>() {
 class TripScoreRepository(): Repository<TripScore>() {
 }
 
-@Component
-class AuthCredentialsRepository(): Repository<UserAuthCredentials>() {
-}
+//@Component
+//class AuthCredentialsRepository(): Repository<UserAuthCredentials>() {
+//}

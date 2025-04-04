@@ -4,8 +4,11 @@ import ar.edu.unsam.phm.uberto.builder.DriverBuilder
 import ar.edu.unsam.phm.uberto.builder.PassengerBuilder
 import ar.edu.unsam.phm.uberto.builder.TripBuilder
 import ar.edu.unsam.phm.uberto.builder.TripScoreBuilder
+import ar.edu.unsam.phm.uberto.factory.AuthFactory
 import ar.edu.unsam.phm.uberto.model.*
 import ar.edu.unsam.phm.uberto.repository.*
+import ar.edu.unsam.phm.uberto.services.auth.AuthRepository
+import ar.edu.unsam.phm.uberto.services.auth.Role
 import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
@@ -21,7 +24,7 @@ class Bootstrap(
     @Autowired val passengerRepo: PassengerRepository,
     @Autowired val driverRepo: DriverRepository,
     @Autowired val tripRepo: TripsRepository,
-    @Autowired val accountsRepo: AuthCredentialsRepository,
+    @Autowired val authRepo: AuthRepository,
     @Autowired val tripScoreRepo: TripScoreRepository
 ) : CommandLineRunner {
 
@@ -34,23 +37,22 @@ class Bootstrap(
     }
 
     private fun createAccounts(){
-        val account01 = UserAuthCredentials(username="adrian", password="adrian", rol="passenger")
-        val account02 = UserAuthCredentials(username="diego", password="diegoo", rol="passenger")
-        val account03 = UserAuthCredentials(username="matias", password="matias", rol="passenger")
-        val account04 = UserAuthCredentials(username="pedro", password="pedroo", rol="passenger")
-        val account05 = UserAuthCredentials(username="valen", password="valenn", rol="passenger")
-        val account06 = UserAuthCredentials(username="premium", password="premium", rol="driver")
-        val account07 = UserAuthCredentials(username="simple", password="simple", rol="driver")
-        val account08 = UserAuthCredentials(username="biker", password="biker", rol="driver")
+        val authFactory:AuthFactory = AuthFactory()
+        val account01 = authFactory.createAccount(username="adrian", password="adrian", role=Role.PASSENGER)
+        val account02 = authFactory.createAccount(username="diego", password="diegoo", role=Role.PASSENGER)
+        val account03 = authFactory.createAccount(username="matias", password="matias", role=Role.PASSENGER)
+        val account04 = authFactory.createAccount(username="pedro", password="pedroo", role=Role.PASSENGER)
+        val account05 = authFactory.createAccount(username="valen", password="valenn", role=Role.PASSENGER)
+        val account06 = authFactory.createAccount(username="premium", password="premium", role=Role.DRIVER)
+        val account07 = authFactory.createAccount(username="simple", password="simple", role=Role.DRIVER)
+        val account08 = authFactory.createAccount(username="biker", password="biker", role=Role.DRIVER)
 
         val accounts = listOf(account01, account02, account03, account04, account05,account06, account07, account08)
 
-        accounts.forEach { account:UserAuthCredentials ->
-            accountsRepo.create(account)
-        }
+        authRepo.saveAll(accounts)
     }
     private fun createPassengers() {
-        val users = accountsRepo.instances.filter { it.rol == "passenger" }
+        val users = authRepo.findByRole(Role.PASSENGER)
         val names = listOf<String>("Adrian", "Diego", "Matias", "Pedro", "Valentin")
         val lastNames = listOf<String>("Perez", "Lentz", "Diaz", "Geragthy", "Pugliese")
         val ages = listOf<Int>(1,2,3,4,5)
@@ -80,7 +82,7 @@ class Bootstrap(
     }
 
     private fun createDrivers() {
-        val users = accountsRepo.instances.filter { it.rol == "driver" }
+        val users = authRepo.findByRole(Role.DRIVER)
         val names = listOf<String>("Dominic", "Franco", "Nicky")
         val lastNames = listOf<String>("Toretto", "Colapinto", "Lauda")
         val balances = listOf<Double>(200.0, 5000.0, 10000.0)

@@ -1,6 +1,7 @@
 package ar.edu.unsam.phm.uberto.dto
 
 import ar.edu.unsam.phm.uberto.model.User
+import ar.edu.unsam.phm.uberto.services.auth.Role
 
 data class LoginRequest(
     var username: String,
@@ -12,10 +13,10 @@ data class LoginResponse(
 )
 data class LoginDTO(
     var id: Int,
-    var rol:String
+    var rol: Role
 )
 
-fun User.toLoginDTO() = LoginDTO(
-    id = id,
-    rol = ""
-)
+//fun User.toLoginDTO() = LoginDTO(
+//    id = id,
+//    rol = role
+//)
