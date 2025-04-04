@@ -58,16 +58,7 @@ abstract class Repository<T : AvaliableInstance> {
 
 }
 
-@Component
-class DriverRepository(): Repository<Driver>() {
 
-    fun searchByUserID(userID:Int): Driver?{
-        return instances.find { it.userId == userID }
-    }
-
-    fun avaliable(date: LocalDateTime, time: Int): List<Driver> = instances.filter { it.avaliable(date, time) }
-
-}
 @Component
 class PassengerRepository(): Repository<Passenger>() {
 
@@ -84,9 +75,9 @@ class TripsRepository(): Repository<Trip>() {
         val tripFromDriver = instances.filter { it.driver.userId == driverId }
         return tripFromDriver.filter{ trip ->
             (form.origin == trip.origin || form.origin == null || form.origin == "") &&
-            (form.destination == trip.destination || form.destination == null || form.destination == "") &&
-            (form.numberPassengers == trip.numberPassengers || form.numberPassengers == null) &&
-            (form.name == trip.client.firstName || form.name == null || form.name == "")
+                    (form.destination == trip.destination || form.destination == null || form.destination == "") &&
+                    (form.numberPassengers == trip.numberPassengers || form.numberPassengers == null) &&
+                    (form.name == trip.client.firstName || form.name == null || form.name == "")
         }
     }
 }

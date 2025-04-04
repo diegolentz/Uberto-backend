@@ -1,6 +1,6 @@
 package ar.edu.unsam.phm.uberto.factory
 
-import ar.edu.unsam.phm.uberto.model.Passenger
+//import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.services.auth.Role
 import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 

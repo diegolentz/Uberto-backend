@@ -20,4 +20,3 @@ data class TripScoreDTO(
 //    passengerId= passenger.userId,
 //    avatarUrl = passenger.img
 //)
-
