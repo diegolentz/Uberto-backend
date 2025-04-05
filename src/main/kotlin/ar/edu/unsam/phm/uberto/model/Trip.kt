@@ -28,21 +28,21 @@ class Trip(
     var numberPassengers: Int = 0
     @Column
     var date: LocalDateTime = LocalDateTime.now()
-    @Column
+    @Column(length = 40)
     var origin: String = ""
-    @Column
+    @Column(length = 40)
     var destination: String = ""
 
     @OneToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "passenger_id", referencedColumnName = "id", unique = true, nullable = false)
     var client: Passenger = Passenger()
 
     @OneToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "driver_id", referencedColumnName = "id", unique = true, nullable = false)
     var driver: Driver = SimpleDriver()
 
     @OneToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "tripscore_id", referencedColumnName = "id", unique = true, nullable = false)
     var score: TripScore? = null
 
     fun addScore(newScore: TripScore){
