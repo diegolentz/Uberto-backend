@@ -4,23 +4,27 @@ import ar.edu.unsam.phm.uberto.BalanceAmmountNotValidException
 import ar.edu.unsam.phm.uberto.FriendAlreadyExistException
 import ar.edu.unsam.phm.uberto.FriendNotExistException
 import ar.edu.unsam.phm.uberto.InsufficientBalanceException
-import ar.edu.unsam.phm.uberto.repository.AvaliableInstance
-import exceptions.BusinessException
+import jakarta.persistence.*
 
-class Passenger(
-    override var firstName: String = "",
-    override var lastName: String = "",
-    override var balance: Double = 0.0,
-    override val trips: MutableList<Trip> = mutableListOf(),
-    var cellphone: Int = 0,
-    var age: Int = 0,
-    override var id: Int = 0,
-    override var img: String = "",
-    val friends: MutableList<Passenger> = mutableListOf(),
-    override var userId: Int = 0
-) : User, AvaliableInstance {
+@Entity
+class Passenger : User {
 
-    //var currentTrip:Trip? = null
+    @Id
+    override var id: Long = 0
+    override var userId: Long = 0
+    @Column(length = 50)
+    override var firstName: String = ""
+    @Column(length = 50)
+    override var lastName: String = ""
+    override var balance: Double = 0.0
+    @OneToMany(fetch = FetchType.LAZY) @OrderColumn
+    override val trips: MutableList<Trip> = mutableListOf()
+    var cellphone: Int = 0
+    var age: Int = 0
+    @Column(length = 150)
+    override var img: String = ""
+    @OneToMany
+    val friends: MutableSet<Passenger> = mutableSetOf()
 
     fun requestTrip(trip: Trip) {
         if (validateTrip(trip)) {
