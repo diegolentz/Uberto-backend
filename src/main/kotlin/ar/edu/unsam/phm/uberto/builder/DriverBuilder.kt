@@ -4,8 +4,8 @@ import ar.edu.unsam.phm.uberto.model.Driver
 
 class DriverBuilder(val newDriver: Driver) {
 
-    fun userId(id: Int): DriverBuilder = apply {
-        newDriver.userId = id
+    fun userId(id: Long): DriverBuilder = apply {
+        newDriver.userId!!.id = id
     }
 
     fun firstName(name: String): DriverBuilder = apply {

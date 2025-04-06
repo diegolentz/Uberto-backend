@@ -12,7 +12,7 @@ class UserAuthCredentials() {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Int = 0
+    var id: Long? = null
 
     @Column(length = 255)
     var username:String = ""

@@ -52,22 +52,24 @@ class Bootstrap(
         authRepo.saveAll(accounts)
     }
     private fun createPassengers() {
+        val passengerList = mutableListOf<Passenger>()
+
         val users = authRepo.findByRole(Role.PASSENGER)
         val names = listOf<String>("Adrian", "Diego", "Matias", "Pedro", "Valentin")
         val lastNames = listOf<String>("Perez", "Lentz", "Diaz", "Geragthy", "Pugliese")
         val ages = listOf<Int>(1,2,3,4,5)
-        val imgenes = listOf<String>(
-            "https://1.bp.blogspot.com/-mX40EP3h9w0/XuEMJ7e7TdI/AAAAAAAAAGw/ABJg-o2m1JEC2-UA22ouBtLBXdSkR8ZoQCLcBGAsYHQ/s1600/013d6285-1a23-41ae-8564-a954e04e60d9.jpg",
-            "https://img.freepik.com/fotos-premium/avatar-digital-fisioterapeuta-inteligencia-artificial-generativa_934475-9204.jpg",
-            "https://img.freepik.com/fotos-premium/persona-avatar-plana-fondo-rojo-personaje-dibujos-animados_1036693-6803.jpg",
-            "https://img.freepik.com/fotos-premium/hombre-joven-sonriente-adam-avatar-3d-personas-vectoriales-ilustracion-personajes-estilo-minimalista-dibujos-animados_1029476-294679.jpg",
-            "https://ar.images.search.yahoo.com/search/images;_ylt=AwrFNzpEaORnzvkjOTCt9Qt.?p=avatar+persona+html+img&fr=mcafee&imgf=face&fr2=p%3As%2Cv%3Ai#id=236&iurl=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F220453%2Fpexels-photo-220453.jpeg%3Fcs%3Dsrgb%26dl%3Dpexels-pixabay-220453.jpg%26fm%3Djpg&action=click")
+        val imgenes = listOf<String>("","","","","")
+//        val imgenes = listOf<String>(
+//            "https://1.bp.blogspot.com/-mX40EP3h9w0/XuEMJ7e7TdI/AAAAAAAAAGw/ABJg-o2m1JEC2-UA22ouBtLBXdSkR8ZoQCLcBGAsYHQ/s1600/013d6285-1a23-41ae-8564-a954e04e60d9.jpg",
+//            "https://img.freepik.com/fotos-premium/avatar-digital-fisioterapeuta-inteligencia-artificial-generativa_934475-9204.jpg",
+//            "https://img.freepik.com/fotos-premium/persona-avatar-plana-fondo-rojo-personaje-dibujos-animados_1036693-6803.jpg",
+//            "https://img.freepik.com/fotos-premium/hombre-joven-sonriente-adam-avatar-3d-personas-vectoriales-ilustracion-personajes-estilo-minimalista-dibujos-animados_1029476-294679.jpg",
+//            "https://ar.images.search.yahoo.com/search/images;_ylt=AwrFNzpEaORnzvkjOTCt9Qt.?p=avatar+persona+html+img&fr=mcafee&imgf=face&fr2=p%3As%2Cv%3Ai#id=236&iurl=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F220453%2Fpexels-photo-220453.jpeg%3Fcs%3Dsrgb%26dl%3Dpexels-pixabay-220453.jpg%26fm%3Djpg&action=click")
         val balances = listOf<Double>(1000000.0, 1000000.0, 1000000.0, 1000000.0, 1000000.0)
         val phones = listOf<Int>(1568568792,1235598763,1556876259,1235468975,1554876255)
 
         users.forEachIndexed { index:Int, user:UserAuthCredentials ->
             val passenger = PassengerBuilder()
-                .userId(user.id)
                 .firstName(names[index])
                 .lastName(lastNames[index])
                 .age(ages[index])
@@ -76,12 +78,14 @@ class Bootstrap(
                 .balance(balances[index])
                 .build()
 
-            passengerRepo.create(passenger)
-        }
+                passengerList.add(passenger)
 
+        }
+        passengerRepo.saveAll(passengerList)
     }
 
     private fun createDrivers() {
+        val driverList = mutableListOf<Driver>()
         val users = authRepo.findByRole(Role.DRIVER)
         val names = listOf<String>("Dominic", "Franco", "Nicky")
         val lastNames = listOf<String>("Toretto", "Colapinto", "Lauda")
@@ -90,15 +94,15 @@ class Bootstrap(
         val brand = listOf("Fiat Uno", "Fiat Uno", "Gilera")
         val serial = listOf("FTG 879", "DEV 666", "AAA 123")
         val model = listOf(2013,1999, 2003)
-        val img = listOf(
-            "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSxIABKumHIEfVtFkRWCdlA9qmyHCZyxV6-N7m_c1Xc4MOXv8s61ssMabL5Ny5mdcBpBYG21zMUqikXJ-6K0xK5n8jm58thk8-9MXSGA0w",
-            "https://imgs.search.brave.com/govkyiYhkWlQIXB_rGkHY0bbnntpI5wjyJDdmJ3Oxfc/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93d3cu/bGFuYWNpb24uY29t/LmFyL3Jlc2l6ZXIv/djIvc2UtdmlyYWxp/em8tdW5hLWZvdG8t/ZGUtZnJhbmNvLWNv/bGFwaW50by1jdWFu/ZG8tUzVIMkpKNEdM/RkVRUEZaTE5NVEE2/QU9NSzQuSlBHP2F1/dGg9ZmJjOWJiMjU3/NDY4ZTdmNDllNDU1/NzBlMTYzYzNmNDIz/ZTUwODZlOTA4ZGFh/ZDBhYzRkNWQ5ZDNl/N2E5ODgxOCZ3aWR0/aD00MjAmaGVpZ2h0/PTI4MCZxdWFsaXR5/PTcwJnNtYXJ0PXRy/dWU",
-            "https://imgs.search.brave.com/ccyEUVl1Jj6vw63RrXeCqblIt0xyl5WfdLyQXdIH8jk/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTA4/OTI5OTY3Mi9lcy9m/b3RvL2JyYW5kcy1o/YXRjaC1lbmdsYW5k/LWF1c3RyaWFuLWYx/LXJhY2luZy1kcml2/ZXItbmlraS1sYXVk/YS1hdC1icmFuZHMt/aGF0Y2gtb24tanVs/eS0wMS0xOTc0LWlu/LmpwZz9zPTYxMng2/MTImdz0wJms9MjAm/Yz1GZ29lUEQ0ZFJE/c3YycFlQVVdDalpy/S0FfaTJjRlgzQmNV/UTN6eThEN2FJPQ"
-        )
+        val img = listOf("","","")
+//        val img = listOf(
+//            "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSxIABKumHIEfVtFkRWCdlA9qmyHCZyxV6-N7m_c1Xc4MOXv8s61ssMabL5Ny5mdcBpBYG21zMUqikXJ-6K0xK5n8jm58thk8-9MXSGA0w",
+//            "https://imgs.search.brave.com/govkyiYhkWlQIXB_rGkHY0bbnntpI5wjyJDdmJ3Oxfc/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93d3cu/bGFuYWNpb24uY29t/LmFyL3Jlc2l6ZXIv/djIvc2UtdmlyYWxp/em8tdW5hLWZvdG8t/ZGUtZnJhbmNvLWNv/bGFwaW50by1jdWFu/ZG8tUzVIMkpKNEdM/RkVRUEZaTE5NVEE2/QU9NSzQuSlBHP2F1/dGg9ZmJjOWJiMjU3/NDY4ZTdmNDllNDU1/NzBlMTYzYzNmNDIz/ZTUwODZlOTA4ZGFh/ZDBhYzRkNWQ5ZDNl/N2E5ODgxOCZ3aWR0/aD00MjAmaGVpZ2h0/PTI4MCZxdWFsaXR5/PTcwJnNtYXJ0PXRy/dWU",
+//            "https://imgs.search.brave.com/ccyEUVl1Jj6vw63RrXeCqblIt0xyl5WfdLyQXdIH8jk/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTA4/OTI5OTY3Mi9lcy9m/b3RvL2JyYW5kcy1o/YXRjaC1lbmdsYW5k/LWF1c3RyaWFuLWYx/LXJhY2luZy1kcml2/ZXItbmlraS1sYXVk/YS1hdC1icmFuZHMt/aGF0Y2gtb24tanVs/eS0wMS0xOTc0LWlu/LmpwZz9zPTYxMng2/MTImdz0wJms9MjAm/Yz1GZ29lUEQ0ZFJE/c3YycFlQVVdDalpy/S0FfaTJjRlgzQmNV/UTN6eThEN2FJPQ"
+//        )
 
         users.forEachIndexed { index:Int, user:UserAuthCredentials ->
             val driver = DriverBuilder(driverType[index])
-                .userId(user.id)
                 .firstName(names[index])
                 .lastName(lastNames[index])
                 .balance(balances[index])
@@ -107,15 +111,13 @@ class Bootstrap(
                 .model(model[index])
                 .img(img[index])
                 .build()
-
-            driverRepo.create(driver)
+            driverList.add(driver)
         }
-
-
+        driverRepo.saveAll(driverList)
     }
 
     private fun createTrips(){
-        var passengers:List<Passenger> = passengerRepo.instances.toList()
+        var passengers:List<Passenger> = passengerRepo.findAll().toList()
         val passengersAmmounts: List<Int> = listOf(
             2, 1, 3, 4, 1, 2, 3, 4, 1, 1,
             3, 2, 4, 1, 2, 3, 4, 1, 3, 2,
@@ -185,19 +187,19 @@ class Bootstrap(
         )
 
 
-        val drivers:List<Driver> = driverRepo.instances.toList()
+        val drivers:List<Driver> = driverRepo.findAll().toList()
 
         //8 viajes de cada tipo. Premium, simple, biker. 24 viajes
         //Cada usuario tiene que tener minimo 2 viajes.
-        val toretto = driverRepo.instances.first{it.lastName == "Toretto"}
-        val colapinto = driverRepo.instances.first{it.lastName == "Colapinto"}
-        val lauda = driverRepo.instances.first{it.lastName == "Lauda"}
+        val toretto = drivers.first{it.lastName == "Toretto"}
+        val colapinto = drivers.first{it.lastName == "Colapinto"}
+        val lauda = drivers.first{it.lastName == "Lauda"}
 
-        val adrian = passengerRepo.instances.first{it.firstName == "Adrian"}
-        val matias = passengerRepo.instances.first{it.firstName == "Matias"}
-        val diego = passengerRepo.instances.first{it.firstName == "Diego"}
-        val pedro = passengerRepo.instances.first{it.firstName == "Pedro"}
-        val valentin = passengerRepo.instances.first{it.firstName == "Valentin"}
+        val adrian = passengers.first{it.firstName == "Adrian"}
+        val matias = passengers.first{it.firstName == "Matias"}
+        val diego = passengers.first{it.firstName == "Diego"}
+        val pedro = passengers.first{it.firstName == "Pedro"}
+        val valentin = passengers.first{it.firstName == "Valentin"}
 
         val lastMonth = LocalDate.now().minus(1, ChronoUnit.MONTHS)
         val pastWeek = LocalDate.now().minus(1, ChronoUnit.WEEKS)
@@ -309,28 +311,30 @@ class Bootstrap(
             tripValentin01, tripValentin02, tripValentin03, tripValentin04, tripValentin05
         )
 
-        allTrips.forEach {
-            tripRepo.create(it)
-            it.driver.addTrip(it)
-            it.client.trips.add(it)
-        }
+//        allTrips.forEach {
+//            tripRepo.create(it)
+//            it.driver.addTrip(it)
+//            it.client.trips.add(it)
+//        }
+
+        tripRepo.saveAll(allTrips)
 
     }
 
 
-    private fun createTripScore(){
-        var passengers:List<Passenger> = passengerRepo.instances.toList()
-        val scoresPoints:List<Int> = listOf(3, 2, 1, 3, 4)
-        val scoresMessages:List<String> = listOf("Excelente", "Bueno", "Malo", "Malisimo", "Nefasto")
-        passengers.forEachIndexed { index:Int, passenger:Passenger ->
-            val score = TripScoreBuilder()
-                .score(scoresPoints[index])
-                .date(LocalDate.now())
-                .message(scoresMessages[index])
-                .build()
-
-            tripScoreRepo.create(score)
-            passenger.trips[0].score = score
-        }
-    }
+//    private fun createTripScore(){
+//        var passengers:List<Passenger> = passengerRepo.instances.toList()
+//        val scoresPoints:List<Int> = listOf(3, 2, 1, 3, 4)
+//        val scoresMessages:List<String> = listOf("Excelente", "Bueno", "Malo", "Malisimo", "Nefasto")
+//        passengers.forEachIndexed { index:Int, passenger:Passenger ->
+//            val score = TripScoreBuilder()
+//                .score(scoresPoints[index])
+//                .date(LocalDate.now())
+//                .message(scoresMessages[index])
+//                .build()
+//
+//            tripScoreRepo.create(score)
+//            passenger.trips[0].score = score
+//        }
+//    }
 }

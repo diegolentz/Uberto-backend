@@ -1,0 +1,7 @@
+package ar.edu.unsam.phm.uberto.repository
+
+import ar.edu.unsam.phm.uberto.model.Trip
+import org.springframework.data.repository.CrudRepository
+
+interface TripsRepository : CrudRepository<Trip, Long> {
+}

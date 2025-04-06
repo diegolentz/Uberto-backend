@@ -12,11 +12,6 @@ data class LoginResponse(
     var jwt: Int
 )
 data class LoginDTO(
-    var id: Int,
+    var id: Long,
     var rol: Role
 )
-
-//fun User.toLoginDTO() = LoginDTO(
-//    id = id,
-//    rol = role
-//)

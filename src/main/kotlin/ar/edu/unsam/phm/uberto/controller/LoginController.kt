@@ -13,6 +13,6 @@ class LoginController(private val authService: AuthService) {
     @PostMapping()
     fun authLogin(@RequestBody loginRequestBody: LoginRequest): LoginDTO {
         val user = authService.validateLogin(loginRequestBody)
-        return LoginDTO(id = user.id, rol = user.role)
+        return LoginDTO(id = user.id!!, rol = user.role)
     }
 }

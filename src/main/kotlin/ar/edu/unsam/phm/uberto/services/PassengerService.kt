@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service
 
 @Service
 class PassengerService(val passengerRepository: PassengerRepository) {
-    fun getPassenger(passengerId: Int): Passenger {
-        return passengerRepository.searchByUserID(passengerId) ?: throw PassengerNotFoundException()
+    fun getPassenger(passengerId: Long): Passenger {
+        return passengerRepository.findById(passengerId).get() ?: throw PassengerNotFoundException()
     }
 
-    fun getFriends(passengerId: Int): List<Passenger> {
-        val friends: List<Passenger> = passengerRepository.getByID(passengerId).friends.toList()
+    fun getFriends(passengerId: Long): List<Passenger> {
+        val friends: List<Passenger> = passengerRepository.findById(passengerId).get().friends.toList()
         return friends
     }
 
@@ -30,44 +30,44 @@ class PassengerService(val passengerRepository: PassengerRepository) {
         firstName?.let { passenger.firstName = it }
         lastName?.let { passenger.lastName = it }
         cellphone?.let { passenger.cellphone = it }
-        passengerRepository.update(passenger)
+        passengerRepository.save(passenger)
         return ResponseEntity
             .status(HttpStatus.OK).body("Profile succesfully updated")
     }
 
     fun deleteFriend(passenger: Passenger, friend: Passenger): ResponseEntity<String> {
         passenger.removeFriend(friend)
-        passengerRepository.update(passenger)
+        passengerRepository.save(passenger)
         return ResponseEntity
             .status(HttpStatus.OK).body("Friend succesfully removed")
     }
 
     fun addFriend(passenger: Passenger, friend: Passenger): ResponseEntity<String> {
         passenger.addFriend(friend)
-        passengerRepository.update(passenger)
+        passengerRepository.save(passenger)
         return ResponseEntity
             .status(HttpStatus.OK).body("You have a new friend!")
     }
 
-    fun searchNonFriends(passengerId: Int, filter: String): List<Passenger> {
-        //Que garron de metodo
-        //Llama a metodos que deberia tener directamente el repo. Futuro refactor
-        val passengers:List<Passenger> = passengerRepository.instances.filter { it.id != passengerId }
-        if(filter.isEmpty()) return passengers
-        val passengerUser:Passenger = passengerRepository.getByID(passengerId)
-        val nonFriendsPassenger:List<Passenger> = passengers.filter { passenger:Passenger->
-            passengerMatch(passenger, filter) && !passengerUser.isFriendOf(passenger)
-        }
-        if(nonFriendsPassenger.isEmpty()) throw NoFriendsFoundException()
-        return nonFriendsPassenger
-    }
+//    fun searchNonFriends(passengerId: Int, filter: String): List<Passenger> {
+//        //Que garron de metodo
+//        //Llama a metodos que deberia tener directamente el repo. Futuro refactor
+//        val passengers:List<Passenger> = passengerRepository.instances.filter { it.id != passengerId }
+//        if(filter.isEmpty()) return passengers
+//        val passengerUser:Passenger = passengerRepository.getByID(passengerId)
+//        val nonFriendsPassenger:List<Passenger> = passengers.filter { passenger:Passenger->
+//            passengerMatch(passenger, filter) && !passengerUser.isFriendOf(passenger)
+//        }
+//        if(nonFriendsPassenger.isEmpty()) throw NoFriendsFoundException()
+//        return nonFriendsPassenger
+//    }
 
     private fun passengerMatch(passenger: Passenger, textFilter: String): Boolean {
         val ignoreCase:Boolean = true
         return passenger.firstName.contains(textFilter, ignoreCase) || passenger.lastName.contains(textFilter, ignoreCase)
     }
 
-    fun getImg(passengerId: Int): String {
+    fun getImg(passengerId: Long): String {
         val passenger = getPassenger(passengerId)
         return passenger.img
     }

@@ -16,20 +16,20 @@ class TripScoreController(private val tripScoreService: TripScoreService){
 //        return tripScoreService.getAllFromDriver(userId).map { it!!.toDTO() }
 //    }
 
-    @GetMapping()
-    fun get(@RequestParam userId: Int): List<TripScoreDTO>{
-
-        val trips = tripScoreService.getFromUser(userId)
-        return trips.map { it!!.scoreToDTO(userId) }
-    }
-
-    @DeleteMapping()
-    fun delete(@RequestParam userId: Int, tripId: Int): ResponseEntity<String>{
-        return tripScoreService.delete(userId, tripId)
-    }
-
-    @PostMapping()
-    fun create(@RequestBody tripScoreDTO: TripScoreDTO): ResponseEntity<String>{
-        return tripScoreService.create(tripScoreDTO)
-    }
+//    @GetMapping()
+//    fun get(@RequestParam userId: Int): List<TripScoreDTO>{
+//
+//        val trips = tripScoreService.getFromUser(userId)
+//        return trips.map { it!!.scoreToDTO(userId) }
+//    }
+//
+//    @DeleteMapping()
+//    fun delete(@RequestParam userId: Int, tripId: Int): ResponseEntity<String>{
+//        return tripScoreService.delete(userId, tripId)
+//    }
+//
+//    @PostMapping()
+//    fun create(@RequestBody tripScoreDTO: TripScoreDTO): ResponseEntity<String>{
+//        return tripScoreService.create(tripScoreDTO)
+//    }
 }

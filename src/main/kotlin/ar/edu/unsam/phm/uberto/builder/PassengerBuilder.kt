@@ -4,8 +4,8 @@ import ar.edu.unsam.phm.uberto.model.Passenger
 
 class PassengerBuilder(val newPassenger: Passenger = Passenger()) {
 
-    fun userId(id: Int): PassengerBuilder = apply {
-        newPassenger.userId = id
+    fun userId(id: Long): PassengerBuilder = apply {
+        newPassenger.userId!!.id = id //arregllaaaaaar
     }
 
     fun firstName(name: String): PassengerBuilder = apply {

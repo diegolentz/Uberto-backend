@@ -4,26 +4,46 @@ import ar.edu.unsam.phm.uberto.BalanceAmmountNotValidException
 import ar.edu.unsam.phm.uberto.FriendAlreadyExistException
 import ar.edu.unsam.phm.uberto.FriendNotExistException
 import ar.edu.unsam.phm.uberto.InsufficientBalanceException
+import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 import jakarta.persistence.*
 
 @Entity
 class Passenger : User {
 
     @Id
-    override var id: Long = 0
-    override var userId: Long = 0
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null
+
+    @OneToOne
+    @JoinColumn(referencedColumnName = "id")
+    var userId: UserAuthCredentials? = null
+
     @Column(length = 50)
     override var firstName: String = ""
+
     @Column(length = 50)
     override var lastName: String = ""
+
+    @Column
     override var balance: Double = 0.0
-    @OneToMany(fetch = FetchType.LAZY) @OrderColumn
+
+    @OneToMany()
+    @JoinColumn(referencedColumnName = "id")
+    @OrderColumn
     override val trips: MutableList<Trip> = mutableListOf()
+
+    @Column
     var cellphone: Int = 0
+
+    @Column
     var age: Int = 0
-    @Column(length = 150)
+
+    @Column(length = 255)
     override var img: String = ""
+
     @OneToMany
+    @JoinColumn(referencedColumnName = "id")
+    @OrderColumn
     val friends: MutableSet<Passenger> = mutableSetOf()
 
     fun requestTrip(trip: Trip) {
@@ -81,7 +101,9 @@ class Passenger : User {
     fun finishedTrips() = trips.filter { trip:Trip ->trip.finished()}
 
     fun scoreTrip(trip: Trip, message:String, scorePoints:Int){
-        val score = TripScore(message=message, scorePoints = scorePoints)
+        val score = TripScore()
+        score.message = message
+        score.scorePoints = scorePoints
         trip.addScore(score)
     }
 
