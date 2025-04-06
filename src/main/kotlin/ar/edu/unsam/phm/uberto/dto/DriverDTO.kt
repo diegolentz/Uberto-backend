@@ -11,7 +11,7 @@ data class DriverDTO(
     val model: Int,
     val price: Double,
 
-)
+    )
 
 fun Driver.toDTO() = DriverDTO(
     id = userId,
@@ -52,5 +52,3 @@ data class DriverCardAndTimeDTO(
     val time: Int,
     val cardDrivers: List<DriverCardDTO>
 )
-
-

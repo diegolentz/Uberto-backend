@@ -36,12 +36,12 @@ class DriverService(val driverRepo: DriverRepository, val timeTripsService: Trav
             .body("Updated profile")
     }
 
-   fun update(driver: Driver): ResponseEntity<String>{
-       //muchas dudas con esto, quiero saber si realmente se lleva a cabo o no
-       driverRepo.update(driver)
-       return ResponseEntity
-               .status(HttpStatus.OK)
-               .body("Updated")
-   }
+    fun update(driver: Driver): ResponseEntity<String>{
+        //muchas dudas con esto, quiero saber si realmente se lleva a cabo o no
+        driverRepo.update(driver)
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body("Updated")
+    }
 
 }

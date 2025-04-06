@@ -18,7 +18,7 @@ class TripDTO( //este es sin confimar, no lleva tripscore
     val imgPassenger: String?,
     val imgDriver: String?,
     val scored: Boolean
-    ) {
+) {
 
 }
 

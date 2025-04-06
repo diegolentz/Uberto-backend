@@ -3,6 +3,7 @@ package ar.edu.unsam.phm.uberto.model
 import ar.edu.unsam.phm.uberto.repository.AvaliableInstance
 import jakarta.persistence.*
 import java.time.LocalDate
+
 @Entity
 class TripScore  {
     @Id

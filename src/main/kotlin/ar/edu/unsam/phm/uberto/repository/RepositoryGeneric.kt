@@ -61,16 +61,7 @@ abstract class Repository<T : AvaliableInstance> {
 
 }
 
-@Component
-class DriverRepository(): Repository<Driver>() {
 
-    fun searchByUserID(userID:Int): Driver?{
-        return instances.find { it.userId == userID }
-    }
-
-    fun avaliable(date: LocalDateTime, time: Int): List<Driver> = instances.filter { it.avaliable(date, time) }
-
-}
 @Component
 class PassengerRepository(): Repository<Passenger>() {
 
@@ -79,6 +70,7 @@ class PassengerRepository(): Repository<Passenger>() {
     }
 
 }
+
 
 //@Component
 //class TripsRepository(): Repository<Trip>() {
