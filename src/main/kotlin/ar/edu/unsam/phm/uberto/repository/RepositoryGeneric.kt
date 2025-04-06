@@ -2,8 +2,11 @@ package ar.edu.unsam.phm.uberto.repository
 
 import ar.edu.unsam.phm.uberto.dto.FormTripDTO
 import ar.edu.unsam.phm.uberto.model.*
+import ar.edu.unsam.phm.uberto.services.auth.Role
 import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 import exceptions.BusinessException
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
@@ -91,8 +94,9 @@ class PassengerRepository(): Repository<Passenger>() {
 //    }
 //}
 
-@Component
-class TripScoreRepository(): Repository<TripScore>() {
+interface TripScoreRepository: CrudRepository<TripScore, Long> {
+
+
 }
 
 //@Component
