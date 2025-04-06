@@ -2,8 +2,11 @@ package ar.edu.unsam.phm.uberto.repository
 
 import ar.edu.unsam.phm.uberto.dto.FormTripDTO
 import ar.edu.unsam.phm.uberto.model.*
+import ar.edu.unsam.phm.uberto.services.auth.Role
 import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 import exceptions.BusinessException
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
@@ -68,22 +71,24 @@ class PassengerRepository(): Repository<Passenger>() {
 
 }
 
-@Component
-class TripsRepository(): Repository<Trip>() {
 
-    fun searchByForm(form: FormTripDTO, driverId: Int): List<Trip>{
-        val tripFromDriver = instances.filter { it.driver.userId == driverId }
-        return tripFromDriver.filter{ trip ->
-            (form.origin == trip.origin || form.origin == null || form.origin == "") &&
-                    (form.destination == trip.destination || form.destination == null || form.destination == "") &&
-                    (form.numberPassengers == trip.numberPassengers || form.numberPassengers == null) &&
-                    (form.name == trip.client.firstName || form.name == null || form.name == "")
-        }
-    }
-}
+//@Component
+//class TripsRepository(): Repository<Trip>() {
+//
+//    fun searchByForm(form: FormTripDTO, driverId: Int): List<Trip>{
+//        val tripFromDriver = instances.filter { it.driver.userId == driverId }
+//        return tripFromDriver.filter{ trip ->
+//            (form.origin == trip.origin || form.origin == null || form.origin == "") &&
+//            (form.destination == trip.destination || form.destination == null || form.destination == "") &&
+//            (form.numberPassengers == trip.numberPassengers || form.numberPassengers == null) &&
+//            (form.name == trip.client.firstName || form.name == null || form.name == "")
+//        }
+//    }
+//}
 
-@Component
-class TripScoreRepository(): Repository<TripScore>() {
+interface TripScoreRepository: CrudRepository<TripScore, Long> {
+
+
 }
 
 //@Component
