@@ -2,16 +2,11 @@ package ar.edu.unsam.phm.uberto.services
 
 import ar.edu.unsam.phm.uberto.NoFriendsFoundException
 import ar.edu.unsam.phm.uberto.PassengerNotFoundException
-import ar.edu.unsam.phm.uberto.dto.*
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
-import exceptions.BusinessException
-import exceptions.NotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.client.HttpClientErrorException.NotFound
 
 @Service
 class PassengerService(val passengerRepository: PassengerRepository) {
@@ -20,7 +15,7 @@ class PassengerService(val passengerRepository: PassengerRepository) {
     }
 
     fun getFriends(passengerId: Int): List<Passenger> {
-        val friends: List<Passenger> = passengerRepository.getByID(passengerId).friends
+        val friends: List<Passenger> = passengerRepository.getByID(passengerId).friends.toList()
         return friends
     }
 
