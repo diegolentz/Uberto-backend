@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/trip")
 class TripsController(private val travelTimeService: TravelTimeMockService, private val tripService: TripService) {
 
-        @PostMapping("/create")
+    @PostMapping("/create")
     fun createTrip(@RequestBody trip: TripDTO): ResponseEntity<String> {
         return tripService.createTrip(trip)
     }

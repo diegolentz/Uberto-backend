@@ -19,8 +19,8 @@ class TripService(val passengerRepo: PassengerRepository, val driverRepo: Driver
     @Transactional
     fun createTrip(trip: TripDTO): ResponseEntity<String> {
 
-        val client = passengerRepo.findById(trip.userId!!).get()
-        val driver = driverRepo.findById(trip.driverId!!).get()
+        val client = passengerRepo.findById(trip.userId).get()
+        val driver = driverRepo.findById(trip.driverId).get()
 
         val newTrip = Trip().apply {
             duration = trip.duration
@@ -36,8 +36,6 @@ class TripService(val passengerRepo: PassengerRepository, val driverRepo: Driver
         driver.responseTrip(newTrip, trip.duration)
 
         try{
-            passengerRepo.save(client)
-            driverRepo.save(driver)
             tripRepo.save(newTrip)
         }catch (e: SQLException){
             throw RuntimeException("Error en la creación del viaje")
@@ -54,10 +52,10 @@ class TripService(val passengerRepo: PassengerRepository, val driverRepo: Driver
 //    }
 
     fun getById(id: Long, rol: String): List<Trip> {
-        if(rol == "PASSENGER"){
-            return tripRepo.findByClient_Id(id)
+        return if(rol == "PASSENGER"){
+            tripRepo.findByClient_Id(id)
         }else{
-            return tripRepo.findByDriver_Id(id)
+            tripRepo.findByDriver_Id(id)
         }
     }
 
