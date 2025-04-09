@@ -28,6 +28,8 @@ class DriverService(val driverRepo: DriverRepository, val timeTripsService: Trav
         return driver
     }
 
+
+
     fun changeProfile(driverDTO: DriverDTO, driver: Driver): ResponseEntity<String> {
         driver.firstName = driverDTO.firstName
         driver.lastName = driverDTO.lastName

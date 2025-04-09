@@ -38,9 +38,9 @@ class DriverController(private val driverService: DriverService, val timeTripsSe
 //        return driverService.update(driver)
 //    }
 //
-//    @GetMapping("/img")
-//    fun getImg(@RequestParam driverid: Long): Map<String, String> {
-//        val driver = driverService.getDriverData(driverid)
-//        return mapOf("img" to driver.img)
-//    }
+    @GetMapping("/img")
+    fun getImg(@RequestParam driverid: Int): Map<String, String> {
+        val driver = driverService.getDriverData(driverid)
+        return mapOf("img" to driver.img)
+    }
 }
