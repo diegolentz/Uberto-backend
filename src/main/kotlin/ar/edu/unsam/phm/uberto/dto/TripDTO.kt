@@ -47,6 +47,7 @@ fun Trip.toDTO() : TripDTO{
 }
 
 fun Trip.scoreToDTO(userId: Long) = TripScoreDTO(
+    tripId = id,
     message = score!!.message,
     scorePoints = score!!.scorePoints,
     date = date.toString(),
@@ -54,7 +55,6 @@ fun Trip.scoreToDTO(userId: Long) = TripScoreDTO(
     driverName = driver.firstName + ' ' + driver.lastName,
     avatarUrlPassenger = client.img,
     avatarUrlDriver = driver.img,
-    tripId = id!!,
     delete = canDeleteScore(userId)
 )
 
