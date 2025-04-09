@@ -16,7 +16,7 @@ abstract class Driver():User {
     var id: Long? = null
 
     @OneToOne
-    @JoinColumn(referencedColumnName = "id")
+    @JoinColumn(name="user_id", referencedColumnName = "id")
     var userId: UserAuthCredentials? = null
 
     @Column(length = 50)

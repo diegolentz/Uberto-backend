@@ -1,10 +1,12 @@
 package ar.edu.unsam.phm.uberto.builder
 
 import ar.edu.unsam.phm.uberto.model.Driver
+import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 
 class DriverBuilder(val newDriver: Driver) {
 
     fun userId(id: Long): DriverBuilder = apply {
+        if (newDriver.userId == null) newDriver.userId = UserAuthCredentials()
         newDriver.userId!!.id = id
     }
 
@@ -34,6 +36,10 @@ class DriverBuilder(val newDriver: Driver) {
 
     fun img(img: String): DriverBuilder = apply {
         newDriver.img = img
+    }
+
+    fun basePrice(price: Double): DriverBuilder = apply {
+        newDriver.basePrice = price
     }
 
     fun build(): Driver = newDriver
