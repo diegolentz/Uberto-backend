@@ -6,6 +6,8 @@ import ar.edu.unsam.phm.uberto.dto.DriverDTO
 import ar.edu.unsam.phm.uberto.dto.toCardDTO
 import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.repository.DriverRepository
+import ar.edu.unsam.phm.uberto.services.auth.AuthRepository
+import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 import exceptions.BusinessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -13,15 +15,16 @@ import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 @Service
-class DriverService(val driverRepo: DriverRepository, val timeTripsService: TravelTimeMockService) {
+class DriverService(val driverRepo: DriverRepository, val timeTripsService: TravelTimeMockService, val autrepo : AuthRepository) {
     ///TODO Puede ser que haya metodos como searchById (que buscan la FK) que fueron MAL reemplazados por findById
 
 //    fun getDriversAvailable(date: LocalDateTime, time: Int): List<Driver>{
 //        return driverRepo.avaliable(date, time)
 //    }
 
-    fun getDriverData(userID: Long):Driver{
-        val driver = driverRepo.findById(userID).get() ?: throw BusinessException("Driver not found")
+    fun getDriverData(userID: Int):Driver{
+        val uss: UserAuthCredentials = autrepo.findById(userID).orElseThrow { BusinessException("UserAuthCredentials not found") }
+        val driver = driverRepo.findByUserId(uss) ?: throw BusinessException("Driver not found")
         return driver
     }
 
