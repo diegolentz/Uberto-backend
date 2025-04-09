@@ -12,7 +12,7 @@ interface TripsRepository : CrudRepository<Trip, Long> {
 
     @Query(nativeQuery = true, value = """
         SELECT id  FROM driver d
-        WHERE d.id  IN (
+        WHERE d.id NOT IN (
             SELECT driver_id FROM trip t
             WHERE t.date = :startDate
 
