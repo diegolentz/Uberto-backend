@@ -9,6 +9,7 @@ import ar.edu.unsam.phm.uberto.repository.DriverRepository
 import ar.edu.unsam.phm.uberto.services.auth.AuthRepository
 import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 import exceptions.BusinessException
+import jakarta.transaction.Transactional
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -22,32 +23,40 @@ class DriverService(val driverRepo: DriverRepository, val timeTripsService: Trav
 //        return driverRepo.avaliable(date, time)
 //    }
 
-    fun getDriverData(userID: Int):Driver{
-        val uss: UserAuthCredentials = autrepo.findById(userID).orElseThrow { BusinessException("UserAuthCredentials not found") }
-        val driver = driverRepo.findByUserId(uss) ?: throw BusinessException("Driver not found")
-        return driver
+    fun getDriverData(userID: Long):Driver{
+        try{
+            val driver = driverRepo.findDriverByCredentials_Id(userID)
+            return driver
+        }catch (e : Exception){
+            throw BusinessException("Driver not found")
+        }
+    }
+    @Transactional
+    fun updateProfile(dto : DriverDTO) : ResponseEntity<String> {
+        try {
+            val driver = getDriverData(dto.id)
+            val changed = changeProfile(dto, driver)
+            driverRepo.save(changed)
+            return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("Updated profile")
+
+        } catch (e: BusinessException) {
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body("Driver cant be updated")
+        }
+
     }
 
-
-
-    fun changeProfile(driverDTO: DriverDTO, driver: Driver): ResponseEntity<String> {
+    fun changeProfile(driverDTO: DriverDTO, driver: Driver): Driver {
         driver.firstName = driverDTO.firstName
         driver.lastName = driverDTO.lastName
         driver.serial = driverDTO.serial
         driver.brand = driverDTO.brand
         driver.model = driverDTO.model
         driver.balance = driverDTO.price
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body("Updated profile")
-    }
-
-    fun update(driver: Driver): ResponseEntity<String>{
-        //muchas dudas con esto, quiero saber si realmente se lleva a cabo o no
-        driverRepo.save(driver) //revisar el save
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body("Updated")
+        return driver
     }
 
 }

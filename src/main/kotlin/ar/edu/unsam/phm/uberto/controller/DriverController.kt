@@ -14,9 +14,8 @@ import java.time.LocalDateTime
 class DriverController(private val driverService: DriverService, val timeTripsService: TravelTimeMockService) {
 
     @GetMapping("/{id}")
-    fun getByID(@PathVariable id:Int): DriverDTO {
-        val driver = driverService.getDriverData(id)
-        return driver.toDTO()
+    fun getByID(@PathVariable id:Long): DriverDTO {
+        return driverService.getDriverData(id).toDTO()
     }
 
 //    @GetMapping("/avaliable")
@@ -30,16 +29,14 @@ class DriverController(private val driverService: DriverService, val timeTripsSe
 //        val driverCardDTO = avaliableDrivers.map{it.toCardDTO(timeMap["time"]!!, numberpassengers)}
 //        return DriverCardAndTimeDTO(timeMap["time"]!!, driverCardDTO)
 //    }
-//
-//    @PostMapping()
-//    fun changeProfile(@RequestBody driverDTO: DriverDTO): ResponseEntity<String>{
-//        val driver = driverService.getDriverData(driverDTO.id)
-//        driverService.changeProfile(driverDTO, driver)
-//        return driverService.update(driver)
-//    }
-//
+
+    @PostMapping()
+    fun changeProfile(@RequestBody driverDTO: DriverDTO): ResponseEntity<String>{
+        return driverService.updateProfile(driverDTO)
+    }
+
     @GetMapping("/img")
-    fun getImg(@RequestParam driverid: Int): Map<String, String> {
+    fun getImg(@RequestParam driverid: Long): Map<String, String> {
         val driver = driverService.getDriverData(driverid)
         return mapOf("img" to driver.img)
     }

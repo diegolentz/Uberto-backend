@@ -9,7 +9,8 @@ import org.springframework.data.repository.CrudRepository
 
 interface DriverRepository : CrudRepository<Driver, Long> {
 
-    fun findByUserId(id : UserAuthCredentials): Driver?
+    fun findDriverByCredentials_Id (id : Long): Driver
+
 
 
 

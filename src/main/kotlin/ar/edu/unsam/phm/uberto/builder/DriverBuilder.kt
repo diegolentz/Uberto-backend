@@ -6,8 +6,8 @@ import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 class DriverBuilder(val newDriver: Driver) {
 
     fun userId(id: Long): DriverBuilder = apply {
-        if (newDriver.userId == null) newDriver.userId = UserAuthCredentials()
-        newDriver.userId!!.id = id
+        if (newDriver.credentials == null) newDriver.credentials = UserAuthCredentials()
+        newDriver.credentials!!.id = id
     }
 
     fun firstName(name: String): DriverBuilder = apply {

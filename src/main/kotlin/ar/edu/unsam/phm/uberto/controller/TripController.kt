@@ -25,6 +25,7 @@ class TripsController(private val travelTimeService: TravelTimeMockService, priv
 //    @GetMapping()
 //    fun getTrips(@RequestParam id:Int,rol: String): List<TripDTO> {
 //        return tripService.getById(id, rol).map { it.toDTO() }
+
 //    }
 //
 //    @PostMapping("/pending")
