@@ -13,20 +13,34 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/trip")
 class TripsController(private val travelTimeService: TravelTimeMockService, private val tripService: TripService) {
 
-//    @PostMapping("/create")
-//    fun createTrip(@RequestBody trip: TripDTO): ResponseEntity<String> {
-//        return tripService.createTrip(trip)
-//    }
-//
+        @PostMapping("/create")
+    fun createTrip(@RequestBody trip: TripDTO): ResponseEntity<String> {
+        return tripService.createTrip(trip)
+    }
+
     @GetMapping()
-    fun getTrips(@RequestParam id:Long, rol: String): List<TripDTO> {
+    fun getTrips(@RequestParam id: Long, rol: String): List<TripDTO> {
         return tripService.getById(id, rol).map { it.toDTO() }
     }
-//
-//    @PostMapping("/pending")
-//    fun getTripsPendingFromDriver(@RequestBody formTripDTO: FormTripDTO): List<TripDTO> {
-//        return tripService.getTripsPendingFromDriver(formTripDTO).map { it.toDTO() }
-//    }
+
+    @PostMapping("/pending")
+    fun getTripsPendingFromDriver(@RequestBody formTripDTO: FormTripDTO): List<TripDTO> {
+        //esto es una negrada
+        val origin = formTripDTO.origin
+        val destination = formTripDTO.destination
+        val driverId = formTripDTO.userId
+        val name = formTripDTO.name
+        val numberPassenger = formTripDTO.numberPassengers
+
+        return tripService.getTripsPendingFromDriver(
+            origin,
+            destination,
+            numberPassenger,
+            name,
+            driverId,
+        ).map { it.toDTO() }
+    }
+
 //
 //    @GetMapping("/passenger")
 //    fun getFromPassenger(@RequestParam id:Int, rol: String): Map<String, List<TripDTO>> {

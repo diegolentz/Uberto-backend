@@ -19,7 +19,13 @@ class TripDTO(
     val imgDriver: String?,
     val scored: Boolean
 ) {
-
+    fun toTrip(tripDTO: TripDTO): Trip = Trip().apply {
+        duration = tripDTO.duration
+        numberPassengers = tripDTO.numberPassengers
+        date = tripDTO.date
+        origin = tripDTO.origin
+        destination = tripDTO.destination
+    }
 }
 
 fun Trip.toDTO() : TripDTO{
@@ -59,9 +65,9 @@ fun Trip.scoreToDTO(userId: Long) = TripScoreDTO(
 )
 
 data class FormTripDTO(
-    val userId: Long,
     val origin: String,
     val destination: String,
     val numberPassengers: Int,
-    val name: String
+    val name: String,
+    val userId: Long
 ){}

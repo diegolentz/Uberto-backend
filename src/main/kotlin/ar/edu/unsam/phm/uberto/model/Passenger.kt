@@ -44,6 +44,8 @@ class Passenger : User {
     @JoinColumn(referencedColumnName = "id")
     val friends: MutableSet<Passenger> = mutableSetOf()
 
+    fun nameComplete() = firstName + " " +lastName
+
     fun requestTrip(trip: Trip) {
         if (validateTrip(trip)) {
             throw InsufficientBalanceException()
