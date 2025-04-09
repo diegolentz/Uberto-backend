@@ -14,13 +14,14 @@ import java.time.LocalDateTime
 
 @Service
 class DriverService(val driverRepo: DriverRepository, val timeTripsService: TravelTimeMockService) {
+    ///TODO Puede ser que haya metodos como searchById (que buscan la FK) que fueron MAL reemplazados por findById
 
-    fun getDriversAvailable(date: LocalDateTime, time: Int): List<Driver>{
-        return driverRepo.avaliable(date, time)
-    }
+//    fun getDriversAvailable(date: LocalDateTime, time: Int): List<Driver>{
+//        return driverRepo.avaliable(date, time)
+//    }
 
-    fun getDriverData(userID:Int):Driver{
-        val driver = driverRepo.searchByUserID(userID) ?: throw BusinessException("Driver not found")
+    fun getDriverData(userID: Long):Driver{
+        val driver = driverRepo.findById(userID).get() ?: throw BusinessException("Driver not found")
         return driver
     }
 
@@ -36,12 +37,12 @@ class DriverService(val driverRepo: DriverRepository, val timeTripsService: Trav
             .body("Updated profile")
     }
 
-   fun update(driver: Driver): ResponseEntity<String>{
-       //muchas dudas con esto, quiero saber si realmente se lleva a cabo o no
-       driverRepo.update(driver)
-       return ResponseEntity
-               .status(HttpStatus.OK)
-               .body("Updated")
-   }
+    fun update(driver: Driver): ResponseEntity<String>{
+        //muchas dudas con esto, quiero saber si realmente se lleva a cabo o no
+        driverRepo.save(driver) //revisar el save
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body("Updated")
+    }
 
 }

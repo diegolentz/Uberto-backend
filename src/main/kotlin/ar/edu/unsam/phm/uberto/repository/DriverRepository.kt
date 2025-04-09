@@ -1,8 +1,12 @@
 package ar.edu.unsam.phm.uberto.repository
 
-//@Component
-//class TripsRepository(): Repository<Trip>() {
-//
+import ar.edu.unsam.phm.uberto.dto.FormTripDTO
+import ar.edu.unsam.phm.uberto.model.Driver // ✅ Importa la entidad correcta
+import ar.edu.unsam.phm.uberto.model.Trip
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.repository.CrudRepository
+
+interface DriverRepository : CrudRepository<Driver, Long> {
 //    fun searchByForm(form: FormTripDTO, driverId: Int): List<Trip>{
 //        val tripFromDriver = instances.filter { it.driver.userId == driverId }
 //        return tripFromDriver.filter{ trip ->
@@ -12,4 +16,4 @@ package ar.edu.unsam.phm.uberto.repository
 //            (form.name == trip.client.firstName || form.name == null || form.name == "")
 //        }
 //    }
-//}
+}

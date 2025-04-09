@@ -4,8 +4,8 @@ import ar.edu.unsam.phm.uberto.model.Trip
 import java.time.LocalDateTime
 
 class TripDTO( //este es sin confimar, no lleva tripscore
-    var userId: Int,
-    var driverId: Int,
+    var userId: Long,
+    var driverId: Long,
     var duration: Int,
     val numberPassengers: Int,
     val date: LocalDateTime,
@@ -14,17 +14,17 @@ class TripDTO( //este es sin confimar, no lleva tripscore
     val price: Double,
     val driverName: String,
     val passengerName: String,
-    val id: Int,
+    val id: Long,
     val imgPassenger: String?,
     val imgDriver: String?,
     val scored: Boolean
-    ) {
+) {
 
 }
 
 fun Trip.toDTO() = TripDTO(
-    userId = client.userId,
-    driverId = driver.userId,
+    userId = client.userId!!.id!!,
+    driverId = driver.userId!!.id!!,
     driverName = driver.firstName + " " + driver.lastName,
     passengerName = client.firstName + " " + client.lastName,
     duration = duration,
@@ -33,13 +33,13 @@ fun Trip.toDTO() = TripDTO(
     origin = origin,
     destination = destination,
     price = driver.fee(duration, numberPassengers),
-    id = id,
+    id = id!!,
     imgPassenger = client.img,
     imgDriver = driver.img,
     scored = this.scored()
 )
 
-fun Trip.scoreToDTO(userId: Int) = TripScoreDTO(
+fun Trip.scoreToDTO(userId: Long) = TripScoreDTO(
     message = score!!.message,
     scorePoints = score!!.scorePoints,
     date = date.toString(),
@@ -47,12 +47,12 @@ fun Trip.scoreToDTO(userId: Int) = TripScoreDTO(
     driverName = driver.firstName + ' ' + driver.lastName,
     avatarUrlPassenger = client.img,
     avatarUrlDriver = driver.img,
-    tripId = id,
+    tripId = id!!,
     delete = canDeleteScore(userId)
 )
 
 data class FormTripDTO(
-    val userId: Int,
+    val userId: Long,
     val origin: String,
     val destination: String,
     val numberPassengers: Int,

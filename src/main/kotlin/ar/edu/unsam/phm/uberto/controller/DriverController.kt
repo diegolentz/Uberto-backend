@@ -14,22 +14,22 @@ import java.time.LocalDateTime
 class DriverController(private val driverService: DriverService, val timeTripsService: TravelTimeMockService) {
 
     @GetMapping("/{id}")
-    fun getByID(@PathVariable id:Int): DriverDTO {
+    fun getByID(@PathVariable id:Long): DriverDTO {
         val driver = driverService.getDriverData(id)
         return driver.toDTO()
     }
 
-    @GetMapping("/avaliable")
-    fun getDriversAvailable(@RequestParam date: LocalDateTime,
-                            @RequestParam origin: String,
-                            @RequestParam destination: String,
-                            @RequestParam numberpassengers: Int): DriverCardAndTimeDTO {
-        val timeMap = timeTripsService.getTime()
-        val time = timeMap["time"] ?: throw BusinessException("Failure in the time calculation system")
-        val avaliableDrivers = driverService.getDriversAvailable(date, time)
-        val driverCardDTO = avaliableDrivers.map{it.toCardDTO(timeMap["time"]!!, numberpassengers)}
-        return DriverCardAndTimeDTO(timeMap["time"]!!, driverCardDTO)
-    }
+//    @GetMapping("/avaliable")
+//    fun getDriversAvailable(@RequestParam date: LocalDateTime,
+//                            @RequestParam origin: String,
+//                            @RequestParam destination: String,
+//                            @RequestParam numberpassengers: Int): DriverCardAndTimeDTO {
+//        val timeMap = timeTripsService.getTime()
+//        val time = timeMap["time"] ?: throw BusinessException("Failure in the time calculation system")
+//        val avaliableDrivers = driverService.getDriversAvailable(date, time)
+//        val driverCardDTO = avaliableDrivers.map{it.toCardDTO(timeMap["time"]!!, numberpassengers)}
+//        return DriverCardAndTimeDTO(timeMap["time"]!!, driverCardDTO)
+//    }
 
     @PostMapping()
     fun changeProfile(@RequestBody driverDTO: DriverDTO): ResponseEntity<String>{
@@ -39,7 +39,7 @@ class DriverController(private val driverService: DriverService, val timeTripsSe
     }
 
     @GetMapping("/img")
-    fun getImg(@RequestParam driverid: Int): Map<String, String> {
+    fun getImg(@RequestParam driverid: Long): Map<String, String> {
         val driver = driverService.getDriverData(driverid)
         return mapOf("img" to driver.img)
     }

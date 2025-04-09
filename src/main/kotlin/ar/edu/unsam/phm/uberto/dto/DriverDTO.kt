@@ -3,7 +3,7 @@ package ar.edu.unsam.phm.uberto.dto
 import ar.edu.unsam.phm.uberto.model.Driver
 
 data class DriverDTO(
-    val id: Int,
+    val id: Long,
     val serial: String,
     val firstName: String,
     val lastName: String,
@@ -11,10 +11,10 @@ data class DriverDTO(
     val model: Int,
     val price: Double,
 
-)
+    )
 
 fun Driver.toDTO() = DriverDTO(
-    id = userId,
+    id = userId!!.id!!,
     serial = serial,
     firstName = firstName,
     lastName = lastName,
@@ -24,7 +24,7 @@ fun Driver.toDTO() = DriverDTO(
 )
 
 data class DriverCardDTO(
-    val id: Int,
+    val id: Long,
     val serial: String,
     val name: String,
     val brand: String,
@@ -37,7 +37,7 @@ data class DriverCardDTO(
 
 
 fun Driver.toCardDTO(time: Int, numberPassenger: Int) = DriverCardDTO(
-    id = userId,
+    id = userId!!.id!!,
     serial = serial,
     brand = brand,
     name = firstName + " " +lastName,
@@ -52,5 +52,3 @@ data class DriverCardAndTimeDTO(
     val time: Int,
     val cardDrivers: List<DriverCardDTO>
 )
-
-

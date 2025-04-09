@@ -4,23 +4,47 @@ import ar.edu.unsam.phm.uberto.BalanceAmmountNotValidException
 import ar.edu.unsam.phm.uberto.FriendAlreadyExistException
 import ar.edu.unsam.phm.uberto.FriendNotExistException
 import ar.edu.unsam.phm.uberto.InsufficientBalanceException
-import ar.edu.unsam.phm.uberto.repository.AvaliableInstance
-import exceptions.BusinessException
+import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
+import jakarta.persistence.*
 
-class Passenger(
-    override var firstName: String = "",
-    override var lastName: String = "",
-    override var balance: Double = 0.0,
-    override val trips: MutableList<Trip> = mutableListOf(),
-    var cellphone: Int = 0,
-    var age: Int = 0,
-    override var id: Int = 0,
-    override var img: String = "",
-    val friends: MutableList<Passenger> = mutableListOf(),
-    override var userId: Int = 0
-) : User, AvaliableInstance {
+@Entity
+class Passenger : User {
 
-    //var currentTrip:Trip? = null
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null
+
+    @OneToOne
+    @JoinColumn(referencedColumnName = "id")
+    var userId: UserAuthCredentials? = null
+
+    @Column(length = 50)
+    override var firstName: String = ""
+
+    @Column(length = 50)
+    override var lastName: String = ""
+
+    @Column
+    override var balance: Double = 0.0
+
+    @OneToMany()
+    @JoinColumn(referencedColumnName = "id")
+    @OrderColumn
+    override val trips: MutableList<Trip> = mutableListOf()
+
+    @Column
+    var cellphone: Int = 0
+
+    @Column
+    var age: Int = 0
+
+    @Column(length = 255)
+    override var img: String = ""
+
+    @OneToMany
+    @JoinColumn(referencedColumnName = "id")
+    @OrderColumn
+    val friends: MutableSet<Passenger> = mutableSetOf()
 
     fun requestTrip(trip: Trip) {
         if (validateTrip(trip)) {
@@ -77,7 +101,9 @@ class Passenger(
     fun finishedTrips() = trips.filter { trip:Trip ->trip.finished()}
 
     fun scoreTrip(trip: Trip, message:String, scorePoints:Int){
-        val score = TripScore(message=message, scorePoints = scorePoints)
+        val score = TripScore()
+        score.message = message
+        score.scorePoints = scorePoints
         trip.addScore(score)
     }
 
