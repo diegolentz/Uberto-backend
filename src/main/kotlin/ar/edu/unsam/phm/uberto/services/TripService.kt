@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class TripService(val passengerRepo: PassengerRepository, val driverRepo: DriverRepository, val tripRepo: TripsRepository) {
-    ///TODO Puede ser que haya metodos como searchById (que buscan la FK) que fueron MAL reemplazados por findById
+///TODO Puede ser que haya metodos como searchById (que buscan la FK) que fueron MAL reemplazados por findById
 
 //    fun createTrip(trip: TripDTO): ResponseEntity<String> {
 //
@@ -54,15 +54,15 @@ class TripService(val passengerRepo: PassengerRepository, val driverRepo: Driver
 //        return tripRepo.instances.toMutableList()
 //    }
 //
-//    fun getById(id: Int, rol: String): List<Trip> {
-//        if(rol == "passenger"){
-//            val passenger = passengerRepo.searchByUserID(id) ?: throw Exception("Pasajero no encontrado")
-//            return passenger.trips
-//        }else{
-//            val driver = driverRepo.searchByUserID(id) ?: throw Exception("Chofer no encontrado")
-//            return driver.trips
-//        }
-//    }
+    fun getById(id: Long, rol: String): List<Trip> {
+        if(rol == "passenger"){
+            val passenger = passengerRepo.findById(id).get() ?: throw Exception("Pasajero no encontrado")
+            return passenger.trips
+        }else{
+            val driver = driverRepo.findById(id).get() ?: throw Exception("Chofer no encontrado")
+            return driver.trips
+        }
+    }
 //
 //    fun getPending(id: Int, rol: String): List<Trip> {
 //        if(rol == "passenger"){
