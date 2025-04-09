@@ -6,6 +6,7 @@ import ar.edu.unsam.phm.uberto.dto.DriverDTO
 import ar.edu.unsam.phm.uberto.dto.toCardDTO
 import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.repository.DriverRepository
+import ar.edu.unsam.phm.uberto.repository.TripsRepository
 import ar.edu.unsam.phm.uberto.services.auth.AuthRepository
 import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 import exceptions.BusinessException
@@ -16,12 +17,8 @@ import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 @Service
-class DriverService(val driverRepo: DriverRepository, val timeTripsService: TravelTimeMockService, val autrepo : AuthRepository) {
+class DriverService(val driverRepo: DriverRepository, val timeTripsService: TravelTimeMockService, val tripsRepo : TripsRepository) {
     ///TODO Puede ser que haya metodos como searchById (que buscan la FK) que fueron MAL reemplazados por findById
-
-//    fun getDriversAvailable(date: LocalDateTime, time: Int): List<Driver>{
-//        return driverRepo.avaliable(date, time)
-//    }
 
     fun getDriverData(userID: Long):Driver{
         try{
@@ -31,6 +28,11 @@ class DriverService(val driverRepo: DriverRepository, val timeTripsService: Trav
             throw BusinessException("Driver not found")
         }
     }
+
+    fun findById(id: Long): Driver {
+        return driverRepo.findById(id).orElseThrow { BusinessException("Driver not found") }
+    }
+
     @Transactional
     fun updateProfile(dto : DriverDTO) : ResponseEntity<String> {
         try {
@@ -58,5 +60,18 @@ class DriverService(val driverRepo: DriverRepository, val timeTripsService: Trav
         driver.balance = driverDTO.price
         return driver
     }
+
+    fun getDriversAvailable(date: LocalDateTime, time: Int): List<Driver> {
+        val driversIds = tripsRepo.findAvailableDrivers(date, time)
+        return driversIds.map { id ->
+            try {
+//                habria que buscar por id de usuario y no por id del repo
+                findById(id)
+            } catch (e: Exception) {
+                throw BusinessException("Driver with ID $id not found")
+            }
+        }
+    }
+
 
 }
