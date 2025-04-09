@@ -23,8 +23,8 @@ class TripDTO( //este es sin confimar, no lleva tripscore
 }
 
 fun Trip.toDTO() = TripDTO(
-    userId = client.userId!!.id!!,
-    driverId = driver.userId!!.id!!,
+    userId = client.id!!,
+    driverId = driver.id!!,
     driverName = driver.firstName + " " + driver.lastName,
     passengerName = client.firstName + " " + client.lastName,
     duration = duration,
