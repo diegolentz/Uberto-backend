@@ -3,9 +3,10 @@ package ar.edu.unsam.phm.uberto.dto
 import ar.edu.unsam.phm.uberto.model.Trip
 import java.time.LocalDateTime
 
-class TripDTO( //este es sin confimar, no lleva tripscore
-    var userId: Long,
-    var driverId: Long,
+class TripDTO(
+    val id: Long?,
+    var userId: Long?,
+    var driverId: Long?,
     var duration: Int,
     val numberPassengers: Int,
     val date: LocalDateTime,
@@ -14,7 +15,6 @@ class TripDTO( //este es sin confimar, no lleva tripscore
     val price: Double,
     val driverName: String,
     val passengerName: String,
-    val id: Long,
     val imgPassenger: String?,
     val imgDriver: String?,
     val scored: Boolean
@@ -22,9 +22,15 @@ class TripDTO( //este es sin confimar, no lleva tripscore
 
 }
 
-fun Trip.toDTO() = TripDTO(
-    userId = client.id!!,
-    driverId = driver.id!!,
+fun Trip.toDTO() : TripDTO{
+
+//    val clientId = requireNotNull(client.id) { "Client ID is null" }
+//    val driverId = requireNotNull(driver.id) { "Driver ID is null" }
+//    val id = requireNotNull(driver.id) { "ID is null" }
+
+    return TripDTO(
+    userId = client.id,
+    driverId = driver.id,
     driverName = driver.firstName + " " + driver.lastName,
     passengerName = client.firstName + " " + client.lastName,
     duration = duration,
@@ -33,11 +39,12 @@ fun Trip.toDTO() = TripDTO(
     origin = origin,
     destination = destination,
     price = driver.fee(duration, numberPassengers),
-    id = id!!,
+    id = id,
     imgPassenger = client.img,
     imgDriver = driver.img,
     scored = this.scored()
 )
+}
 
 fun Trip.scoreToDTO(userId: Long) = TripScoreDTO(
     message = score!!.message,

@@ -5,6 +5,7 @@ import org.springframework.data.repository.CrudRepository
 
 interface TripsRepository : CrudRepository<Trip, Long> {
 
-
     fun findByClient_Id(clientId: Long): List<Trip>
+
+    fun findByDriver_Id(driverId: Long): List<Trip>
 }
