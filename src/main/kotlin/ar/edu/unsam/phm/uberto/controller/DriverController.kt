@@ -1,6 +1,7 @@
 package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.dto.*
+import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.TravelTimeMockService
 import exceptions.BusinessException
@@ -15,27 +16,26 @@ class DriverController(private val driverService: DriverService, val timeTripsSe
 
     @GetMapping("/{id}")
     fun getByID(@PathVariable id:Long): DriverDTO {
-        val driver = driverService.getDriverData(id)
-        return driver.toDTO()
+        return driverService.getDriverData(id).toDTO()
     }
 
-//    @GetMapping("/avaliable")
-//    fun getDriversAvailable(@RequestParam date: LocalDateTime,
-//                            @RequestParam origin: String,
-//                            @RequestParam destination: String,
-//                            @RequestParam numberpassengers: Int): DriverCardAndTimeDTO {
-//        val timeMap = timeTripsService.getTime()
-//        val time = timeMap["time"] ?: throw BusinessException("Failure in the time calculation system")
-//        val avaliableDrivers = driverService.getDriversAvailable(date, time)
-//        val driverCardDTO = avaliableDrivers.map{it.toCardDTO(timeMap["time"]!!, numberpassengers)}
-//        return DriverCardAndTimeDTO(timeMap["time"]!!, driverCardDTO)
-//    }
+    @GetMapping("/avaliable")
+    fun getDriversAvailable(@RequestParam date: LocalDateTime,
+                            @RequestParam origin: String,
+                            @RequestParam destination: String,
+                            @RequestParam numberpassengers: Int): List<DriverCardDTO> {
+        val timeMap = timeTripsService.getTime()
+        val time = timeMap["time"] ?: throw BusinessException("Failure in the time calculation system")
+
+        val avaliableDrivers = driverService.getDriversAvailable(date, time)
+
+        val driverCardDTO = avaliableDrivers.map{it.toCardDTO(timeMap["time"]!!, numberpassengers)}
+        return driverCardDTO
+    }
 
     @PostMapping()
     fun changeProfile(@RequestBody driverDTO: DriverDTO): ResponseEntity<String>{
-        val driver = driverService.getDriverData(driverDTO.id)
-        driverService.changeProfile(driverDTO, driver)
-        return driverService.update(driver)
+        return driverService.updateProfile(driverDTO)
     }
 
     @GetMapping("/img")

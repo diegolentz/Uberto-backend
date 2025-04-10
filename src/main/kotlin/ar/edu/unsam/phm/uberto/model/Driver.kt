@@ -6,7 +6,7 @@ import jakarta.persistence.*
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
-//a jackarta no le gusta mucho recibir parametros por constructor
+
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 abstract class Driver():User {
@@ -16,8 +16,8 @@ abstract class Driver():User {
     var id: Long? = null
 
     @OneToOne
-    @JoinColumn(referencedColumnName = "id")
-    var userId: UserAuthCredentials? = null
+    @JoinColumn(name="user_id", referencedColumnName = "id")
+    var credentials: UserAuthCredentials? = null
 
     @Column(length = 50)
     override lateinit var firstName: String

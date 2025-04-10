@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*
 @CrossOrigin(origins = ["http://localhost:8080", "http://localhost:5173"])
 @RestController
 @RequestMapping("/trip")
+
 class TripsController(private val tripService: TripService) {
 
     @PostMapping("/create")

@@ -28,6 +28,7 @@ class TripDTO(
     }
 }
 
+
 fun Trip.toDTO() : TripDTO{
     //duda Nico si se puede validar aca esto
     val clientId = requireNotNull(client.id) { "Client ID is null" }
