@@ -29,7 +29,6 @@ class Passenger : User {
 
     @OneToMany()
     @JoinColumn(referencedColumnName = "id")
-    @OrderColumn
     override val trips: MutableList<Trip> = mutableListOf()
 
     @Column
@@ -43,8 +42,9 @@ class Passenger : User {
 
     @OneToMany
     @JoinColumn(referencedColumnName = "id")
-    @OrderColumn
     val friends: MutableSet<Passenger> = mutableSetOf()
+
+    fun nameComplete() = firstName + " " +lastName
 
     fun requestTrip(trip: Trip) {
         if (validateTrip(trip)) {
