@@ -19,20 +19,24 @@ const val tripNotFinishedException = "Trip not finished."
 class TripNotFinishedException(msg: String = tripNotFinishedException) : Exception(msg)
 
 const val balanceAmmountNotValidMessage = "Balance must be positive."
-class BalanceAmmountNotValidException(msg: String = balanceAmmountNotValidMessage) : Exception(msg)
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+class BalanceAmmountNotValidException(msg: String = balanceAmmountNotValidMessage) : RuntimeException(msg)
 
 const val insufficientBalanceMessage = "Insufficient balance."
-class InsufficientBalanceException(msg: String = insufficientBalanceMessage) : Exception(msg)
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+class InsufficientBalanceException(msg: String = insufficientBalanceMessage) : RuntimeException(msg)
 
 const val friendAlreadyExistMessage = "Already friend of passenger."
-class FriendAlreadyExistException(msg: String = friendAlreadyExistMessage) : Exception(msg)
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+class FriendAlreadyExistException(msg: String = friendAlreadyExistMessage) : RuntimeException(msg)
 
 const val friendNotExistMessage = "Not friend of passenger"
-class FriendNotExistException(msg: String = friendNotExistMessage) : Exception(msg)
+@ResponseStatus(HttpStatus.NOT_FOUND)
+class FriendNotExistException(msg: String = friendNotExistMessage) : RuntimeException(msg)
 
 const val passengerNotFoundMessage = "Not passenger match for given ID"
 @ResponseStatus(HttpStatus.NOT_FOUND)
-class PassengerNotFoundException(msg: String = passengerNotFoundMessage) : Exception(msg)
+class PassengerNotFoundException(msg: String = passengerNotFoundMessage) : RuntimeException(msg)
 
 const val noFriendsFoundMessage = "No passenger matching the given name or lastname"
 @ResponseStatus(HttpStatus.NOT_FOUND)

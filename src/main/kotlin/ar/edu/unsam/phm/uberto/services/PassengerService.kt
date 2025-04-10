@@ -1,9 +1,9 @@
 package ar.edu.unsam.phm.uberto.services
 
-import ar.edu.unsam.phm.uberto.NoFriendsFoundException
 import ar.edu.unsam.phm.uberto.PassengerNotFoundException
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
+import jakarta.transaction.Transactional
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -20,47 +20,37 @@ class PassengerService(val passengerRepository: PassengerRepository) {
     }
 
 
+    @Transactional
     fun addBalance(passenger: Passenger, balance: Double): ResponseEntity<String> {
         passenger.loadBalance(balance)
         return ResponseEntity
             .status(HttpStatus.OK).body("Balance succesfully updated")
     }
 
+    @Transactional
     fun updateInfo(passenger: Passenger, firstName: String?, lastName: String?, cellphone: Int?): ResponseEntity<String> {
         firstName?.let { passenger.firstName = it }
         lastName?.let { passenger.lastName = it }
         cellphone?.let { passenger.cellphone = it }
-        passengerRepository.save(passenger)
         return ResponseEntity
             .status(HttpStatus.OK).body("Profile succesfully updated")
     }
 
+    @Transactional
     fun deleteFriend(passenger: Passenger, friend: Passenger): ResponseEntity<String> {
         passenger.removeFriend(friend)
-        passengerRepository.save(passenger)
         return ResponseEntity
             .status(HttpStatus.OK).body("Friend succesfully removed")
     }
 
+    @Transactional
     fun addFriend(passenger: Passenger, friend: Passenger): ResponseEntity<String> {
         passenger.addFriend(friend)
-        passengerRepository.save(passenger)
         return ResponseEntity
             .status(HttpStatus.OK).body("You have a new friend!")
     }
 
-//    fun searchNonFriends(passengerId: Int, filter: String): List<Passenger> {
-//        //Que garron de metodo
-//        //Llama a metodos que deberia tener directamente el repo. Futuro refactor
-//        val passengers:List<Passenger> = passengerRepository.instances.filter { it.id != passengerId }
-//        if(filter.isEmpty()) return passengers
-//        val passengerUser:Passenger = passengerRepository.getByID(passengerId)
-//        val nonFriendsPassenger:List<Passenger> = passengers.filter { passenger:Passenger->
-//            passengerMatch(passenger, filter) && !passengerUser.isFriendOf(passenger)
-//        }
-//        if(nonFriendsPassenger.isEmpty()) throw NoFriendsFoundException()
-//        return nonFriendsPassenger
-//    }
+    fun searchNonFriends(passengerId: Long, filter: String): List<Passenger> = passengerRepository.findPossibleFriends(passengerId, filter)
 
     private fun passengerMatch(passenger: Passenger, textFilter: String): Boolean {
         val ignoreCase:Boolean = true

@@ -43,7 +43,6 @@ class Passenger : User {
 
     @OneToMany
     @JoinColumn(referencedColumnName = "id")
-    @OrderColumn
     val friends: MutableSet<Passenger> = mutableSetOf()
 
     fun requestTrip(trip: Trip) {
