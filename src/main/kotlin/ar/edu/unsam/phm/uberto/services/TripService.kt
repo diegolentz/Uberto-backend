@@ -47,10 +47,6 @@ class TripService(val passengerRepo: PassengerRepository, val driverRepo: Driver
 
     }
 
-//    fun getAllTrips(): List<Trip> {
-//        return tripRepo.instances.toMutableList()
-//    }
-
     fun getById(id: Long, rol: String): List<Trip> {
         return if(rol == "PASSENGER"){
             tripRepo.findByClient_Id(id)
@@ -59,28 +55,14 @@ class TripService(val passengerRepo: PassengerRepository, val driverRepo: Driver
         }
     }
 
-//
-//    fun getPending(id: Int, rol: String): List<Trip> {
-//        if(rol == "passenger"){
-//            val passenger = passengerRepo.searchByUserID(id) ?: throw Exception("Pasajero no encontrado")
-//            return passenger.pendingTrips()
-//        }else{
-//            val driver = driverRepo.searchByUserID(id) ?: throw Exception("Chofer no encontrado")
-//            return driver.pendingTrips()
-//        }
-//    }
-//
-//    fun getFinished(id: Int, rol: String): List<Trip> {
-//        if(rol == "passenger"){
-//            val passenger = passengerRepo.searchByUserID(id) ?: throw Exception("Pasajero no encontrado")
-//            return passenger.finishedTrips()
-//        }else{
-//            val driver = driverRepo.searchByUserID(id) ?: throw Exception("Chofer no encontrado")
-//            return driver.finishedTrips()
-//        }
-//    }
-//
-//
+    fun getPending(id: Long, rol: String): List<Trip> {
+        return getById(id, rol).filter { it.pendingTrip() }
+    }
+
+    fun getFinished(id: Long, rol: String): List<Trip> {
+        return getById(id, rol).filter { it.finished() }
+    }
+
     fun getTripsPendingFromDriver(
         origin: String,
         destination: String,

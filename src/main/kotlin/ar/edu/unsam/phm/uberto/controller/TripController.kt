@@ -1,6 +1,7 @@
 package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.dto.FormTripDTO
+import ar.edu.unsam.phm.uberto.dto.PendingAndFinishedTripsDTO
 import ar.edu.unsam.phm.uberto.dto.TripDTO
 import ar.edu.unsam.phm.uberto.dto.toDTO
 import ar.edu.unsam.phm.uberto.services.TravelTimeMockService
@@ -11,10 +12,11 @@ import org.springframework.web.bind.annotation.*
 @CrossOrigin(origins = ["http://localhost:8080", "http://localhost:5173"])
 @RestController
 @RequestMapping("/trip")
-class TripsController(private val travelTimeService: TravelTimeMockService, private val tripService: TripService) {
+class TripsController(private val tripService: TripService) {
 
     @PostMapping("/create")
     fun createTrip(@RequestBody trip: TripDTO): ResponseEntity<String> {
+        //Duda, aca paso DTO, como solucionar
         return tripService.createTrip(trip)
     }
 
@@ -25,6 +27,7 @@ class TripsController(private val travelTimeService: TravelTimeMockService, priv
 
     @PostMapping("/pending")
     fun getTripsPendingFromDriver(@RequestBody formTripDTO: FormTripDTO): List<TripDTO> {
+        //Duda Nico
         //esto es una negrada
         val origin = formTripDTO.origin
         val destination = formTripDTO.destination
@@ -41,11 +44,10 @@ class TripsController(private val travelTimeService: TravelTimeMockService, priv
         ).map { it.toDTO() }
     }
 
-//
-//    @GetMapping("/passenger")
-//    fun getFromPassenger(@RequestParam id:Int, rol: String): Map<String, List<TripDTO>> {
-//        val finishedTrips = tripService.getFinished(id, rol).map { it.toDTO() }
-//        val pendingTrips = tripService.getPending(id, rol).map { it.toDTO() }
-//        return mapOf("pendingTrips" to pendingTrips, "finishedTrips" to finishedTrips)
-//    }
+    @GetMapping("/passenger")
+    fun getFromPassenger(@RequestParam id:Long, rol: String): PendingAndFinishedTripsDTO {
+        val finishedTrips = tripService.getFinished(id, rol).map { it.toDTO() }
+        val pendingTrips = tripService.getPending(id, rol).map { it.toDTO() }
+        return PendingAndFinishedTripsDTO(pendingTrips, finishedTrips)
+    }
 }
