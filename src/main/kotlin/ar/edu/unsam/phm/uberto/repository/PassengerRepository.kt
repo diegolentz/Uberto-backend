@@ -6,6 +6,7 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.query.Param
 
 interface PassengerRepository: CrudRepository<Passenger, Long> {
+
     @Query("SELECT p from Passenger p WHERE p.id != :id AND (p.firstName LIKE :pattern OR p.lastName LIKE :pattern)")
     fun findPossibleFriends(@Param("id") id:Long, @Param("pattern") pattern:String ): List<Passenger>
 }

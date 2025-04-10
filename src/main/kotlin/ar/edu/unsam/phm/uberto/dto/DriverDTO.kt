@@ -14,7 +14,7 @@ data class DriverDTO(
     )
 
 fun Driver.toDTO() = DriverDTO(
-    id = userId!!.id!!,
+    id = credentials!!.id!!,
     serial = serial,
     firstName = firstName,
     lastName = lastName,
@@ -37,7 +37,7 @@ data class DriverCardDTO(
 
 
 fun Driver.toCardDTO(time: Int, numberPassenger: Int) = DriverCardDTO(
-    id = userId!!.id!!,
+    id = credentials!!.id!!,
     serial = serial,
     brand = brand,
     name = firstName + " " +lastName,
