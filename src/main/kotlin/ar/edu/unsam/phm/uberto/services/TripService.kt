@@ -37,7 +37,7 @@ class TripService(val passengerRepo: PassengerRepository, val driverRepo: Driver
 
         try{
             tripRepo.save(newTrip)
-        }catch (e: SQLException){
+        }catch (e: DataAccessException){
             throw RuntimeException("Error en la creación del viaje")
         }
 
