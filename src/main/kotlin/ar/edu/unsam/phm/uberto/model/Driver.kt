@@ -28,9 +28,8 @@ abstract class Driver():User {
     @Column
     override var balance: Double = 0.0
 
-
-    @OneToMany()
-    @JoinColumn(referencedColumnName = "id")
+    @OneToMany( fetch = FetchType.EAGER)
+    @JoinColumn(name = "driver_id")
     override var trips: MutableList<Trip> = mutableListOf()
 
     @Column(length = 255)
@@ -48,6 +47,16 @@ abstract class Driver():User {
     @Column
     var basePrice:Double = 0.0
 
+    override fun getScores(): List<TripScore> {
+        return this.getScoredTrips().map{ it.score!! }
+    }
+
+    abstract fun plusBasePrice(time: Int, numberPassengers: Int):Double
+
+
+    private fun getScoredTrips():List<Trip>{
+        return this.trips.filter { it.score != null }
+    }
 
 
     fun avaliable(tripDate: LocalDateTime, tripDuration: Int):Boolean{
@@ -70,16 +79,6 @@ abstract class Driver():User {
         return this.basePrice + this.plusBasePrice(time, numberPassenger) * time
     }
 
-    abstract fun plusBasePrice(time: Int, numberPassengers: Int):Double
-
-    override fun getScores(): List<TripScore> {
-        return this.getScoredTrips().map{ it.score!! }
-    }
-
-    private fun getScoredTrips():List<Trip>{
-        return this.trips.filter { it.score != null }
-    }
-
     fun addTrip(trip:Trip) {
         this.trips.add(trip)
         acceditTrip(trip.price())
@@ -100,4 +99,3 @@ abstract class Driver():User {
     }
 
 }
-

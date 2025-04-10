@@ -62,16 +62,11 @@ class DriverService(val driverRepo: DriverRepository, val timeTripsService: Trav
     }
 
     fun getDriversAvailable(date: LocalDateTime, time: Int): List<Driver> {
-        val driversIds = tripsRepo.findAvailableDrivers(date, time)
-        return driversIds.map { id ->
-            try {
-//                habria que buscar por id de usuario y no por id del repo
-                findById(id)
-            } catch (e: Exception) {
-                throw BusinessException("Driver with ID $id not found")
-            }
-        }
+//        val driversIds = tripsRepo.findAvailableDrivers(date, time)
+        val drivers = driverRepo.findAll()
+        return drivers.filter { it.avaliable(date, time) }
     }
+
 
 
 }
