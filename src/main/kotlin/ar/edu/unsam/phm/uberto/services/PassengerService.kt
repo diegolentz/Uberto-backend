@@ -28,7 +28,12 @@ class PassengerService(val passengerRepository: PassengerRepository) {
     }
 
     @Transactional
-    fun updateInfo(passenger: Passenger, firstName: String?, lastName: String?, cellphone: Int?): ResponseEntity<String> {
+    fun updateInfo(
+        passenger: Passenger,
+        firstName: String?,
+        lastName: String?,
+        cellphone: Int?
+    ): ResponseEntity<String> {
         firstName?.let { passenger.firstName = it }
         lastName?.let { passenger.lastName = it }
         cellphone?.let { passenger.cellphone = it }
@@ -50,11 +55,15 @@ class PassengerService(val passengerRepository: PassengerRepository) {
             .status(HttpStatus.OK).body("You have a new friend!")
     }
 
-    fun searchNonFriends(passengerId: Long, filter: String): List<Passenger> = passengerRepository.findPossibleFriends(passengerId, filter)
+    fun searchNonFriends(passengerId: Long, filter: String): List<Passenger> =
+        passengerRepository.findPossibleFriends(passengerId, filter.lowercase())
 
     private fun passengerMatch(passenger: Passenger, textFilter: String): Boolean {
-        val ignoreCase:Boolean = true
-        return passenger.firstName.contains(textFilter, ignoreCase) || passenger.lastName.contains(textFilter, ignoreCase)
+        val ignoreCase: Boolean = true
+        return passenger.firstName.contains(textFilter, ignoreCase) || passenger.lastName.contains(
+            textFilter,
+            ignoreCase
+        )
     }
 
     fun getImg(passengerId: Long): String {

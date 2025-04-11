@@ -40,11 +40,10 @@ class Passenger : User {
     @Column(length = 255)
     override var img: String = ""
 
-    @OneToMany
-    @JoinColumn(referencedColumnName = "id")
+    @ManyToMany(fetch = FetchType.LAZY)
     val friends: MutableSet<Passenger> = mutableSetOf()
 
-    fun nameComplete() = firstName + " " +lastName
+    fun nameComplete() = firstName + " " + lastName
 
     fun requestTrip(trip: Trip) {
         if (validateTrip(trip)) {
@@ -67,40 +66,40 @@ class Passenger : User {
     }
 
     fun loadBalance(balance: Double) {
-        if(balance <= 0){
+        if (balance <= 0) {
             throw BalanceAmmountNotValidException()
         }
         this.balance += balance
     }
 
     override fun getScores(): List<TripScore> {
-        return this.getScoredTrips().map { trip:Trip -> trip.score!! }
+        return this.getScoredTrips().map { trip: Trip -> trip.score!! }
     }
 
-    private fun getScoredTrips():List<Trip>{
+    private fun getScoredTrips(): List<Trip> {
         return this.trips.filter { it.score != null }
     }
 
     fun isFriendOf(passenger: Passenger) = this.friends.contains(passenger)
 
     fun addFriend(friend: Passenger) {
-        if(this.isFriendOf(friend)){
+        if (this.isFriendOf(friend)) {
             throw FriendAlreadyExistException()
         }
         friends.add(friend)
     }
 
     fun removeFriend(friend: Passenger) {
-        if(!this.isFriendOf(friend)){
+        if (!this.isFriendOf(friend)) {
             throw FriendNotExistException()
         }
         friends.remove(friend)
     }
 
-    fun pendingTrips() = trips.filter { trip:Trip ->trip.pendingTrip()}
-    fun finishedTrips() = trips.filter { trip:Trip ->trip.finished()}
+    fun pendingTrips() = trips.filter { trip: Trip -> trip.pendingTrip() }
+    fun finishedTrips() = trips.filter { trip: Trip -> trip.finished() }
 
-    fun scoreTrip(trip: Trip, message:String, scorePoints:Int){
+    fun scoreTrip(trip: Trip, message: String, scorePoints: Int) {
         val score = TripScore()
         score.message = message
         score.scorePoints = scorePoints

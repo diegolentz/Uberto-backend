@@ -28,17 +28,20 @@ class PassengerController(private val passengerService: PassengerService) {
     @PutMapping("")
     fun updatePassenger(
         @RequestParam id: Long,
-        @RequestBody updatedInfo: UpdatedPassengerDTO): ResponseEntity<String> {
+        @RequestBody updatedInfo: UpdatedPassengerDTO
+    ): ResponseEntity<String> {
         //TODO Preguntar!!!
         val currentPassenger = passengerService.getPassenger(id)
-        return passengerService.updateInfo(currentPassenger,
-            updatedInfo.firstName, updatedInfo.lastName, updatedInfo.phone)
+        return passengerService.updateInfo(
+            currentPassenger,
+            updatedInfo.firstName, updatedInfo.lastName, updatedInfo.phone
+        )
     }
 
     @GetMapping("/{id}/friends")
     fun getFriends(@PathVariable id: Long): List<FriendDto> {
-        val friends:List<Passenger> = passengerService.getFriends(id)
-        return friends.map { friend:Passenger ->
+        val friends: List<Passenger> = passengerService.getFriends(id)
+        return friends.map { friend: Passenger ->
             friend.toDTOFriend()
         }
     }
@@ -59,14 +62,14 @@ class PassengerController(private val passengerService: PassengerService) {
 
     @GetMapping("/{id}/friends/search")
     fun filter(@PathVariable id: Long, @RequestParam filter: String): List<FriendDto> {
-        val nonFriendsPassengers:List<Passenger> = passengerService.searchNonFriends(id, filter)
-        return nonFriendsPassengers.map { friend:Passenger ->
+        val nonFriendsPassengers: List<Passenger> = passengerService.searchNonFriends(id, filter)
+        return nonFriendsPassengers.map { friend: Passenger ->
             friend.toDTOFriend()
         }
     }
 
     @GetMapping("/img")
-    fun getImg(@RequestParam passengerId: Long): Map<String,String>{
+    fun getImg(@RequestParam passengerId: Long): Map<String, String> {
         val currentPassenger = passengerService.getPassenger(passengerId)
         return mapOf("img" to currentPassenger.img)
     }

@@ -13,7 +13,7 @@ data class PassengerProfileDto(
 )
 
 fun Passenger.toDTOProfile() = PassengerProfileDto(
-    id = userId!!.id!!, //arreglar
+    id = id!!,
     firstname = firstName,
     lastname = lastName,
     age = age,
@@ -30,7 +30,7 @@ data class FriendDto(
 )
 
 fun Passenger.toDTOFriend() = FriendDto(
-    id = userId!!.id!!, //arreglar
+    id = id!!,
     firstname = firstName,
     lastname = lastName,
     img = img
