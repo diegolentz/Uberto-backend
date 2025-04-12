@@ -45,8 +45,13 @@ class PassengerService(val passengerRepository: PassengerRepository) {
             .status(HttpStatus.OK).body("Profile succesfully updated")
     }
 
-    fun deleteFriend(passenger: Passenger, friend: Passenger): ResponseEntity<String> {
-        passenger.removeFriend(friend)
+    fun deleteFriend(passengerId: Long, friendId: Long): ResponseEntity<String> {
+        val currentPassenger = getPassenger(passengerId)
+        val friend = getPassenger(friendId)
+        currentPassenger.removeFriend(friend)
+        friend.removeFriend(currentPassenger)
+        passengerRepository.save(currentPassenger)
+        passengerRepository.save(friend)
         return ResponseEntity
             .status(HttpStatus.OK).body("Friend succesfully removed")
     }

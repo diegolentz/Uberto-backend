@@ -50,9 +50,7 @@ class PassengerController(private val passengerService: PassengerService) {
 
     @DeleteMapping("/friends")
     fun deleteFriend(@RequestParam passengerId: Long, friendId: Long): ResponseEntity<String> {
-        val currentPassenger = passengerService.getPassenger(passengerId)
-        val friend = passengerService.getPassenger(friendId)
-        return passengerService.deleteFriend(currentPassenger, friend)
+        return passengerService.deleteFriend(passengerId, friendId)
     }
 
     @GetMapping("/{id}/friends/search")
