@@ -45,9 +45,7 @@ class PassengerController(private val passengerService: PassengerService) {
 
     @PostMapping("/friends")
     fun addFriend(@RequestParam passengerId: Long, friendId: Long): ResponseEntity<String> {
-        val currentPassenger = passengerService.getPassenger(passengerId)
-        val friend = passengerService.getPassenger(friendId)
-        return passengerService.addFriend(currentPassenger, friend)
+        return passengerService.addFriend(passengerId, friendId)
     }
 
     @DeleteMapping("/friends")

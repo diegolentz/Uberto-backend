@@ -11,25 +11,26 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 
 @Service
+@Transactional
 class PassengerService(val passengerRepository: PassengerRepository) {
+    @Transactional(readOnly = true)
     fun getPassenger(passengerId: Long): Passenger {
         return passengerRepository.findById(passengerId).get() ?: throw PassengerNotFoundException()
     }
 
     @Transactional(readOnly = true)
     fun getFriends(passengerId: Long): List<FriendDto> {
-        return passengerRepository.findById(passengerId).get().friends.map { it.toDTOFriend() }
+        return getPassenger(passengerId).friends.map { it.toDTOFriend() }
     }
 
 
-    @Transactional
     fun addBalance(passenger: Passenger, balance: Double): ResponseEntity<String> {
         passenger.loadBalance(balance)
+        passengerRepository.save(passenger)
         return ResponseEntity
             .status(HttpStatus.OK).body("Balance succesfully updated")
     }
 
-    @Transactional
     fun updateInfo(
         passenger: Passenger,
         firstName: String?,
@@ -39,24 +40,29 @@ class PassengerService(val passengerRepository: PassengerRepository) {
         firstName?.let { passenger.firstName = it }
         lastName?.let { passenger.lastName = it }
         cellphone?.let { passenger.cellphone = it }
+        passengerRepository.save(passenger)
         return ResponseEntity
             .status(HttpStatus.OK).body("Profile succesfully updated")
     }
 
-    @Transactional
     fun deleteFriend(passenger: Passenger, friend: Passenger): ResponseEntity<String> {
         passenger.removeFriend(friend)
         return ResponseEntity
             .status(HttpStatus.OK).body("Friend succesfully removed")
     }
 
-    @Transactional
-    fun addFriend(passenger: Passenger, friend: Passenger): ResponseEntity<String> {
-        passenger.addFriend(friend)
+    fun addFriend(passengerId: Long, friendId: Long): ResponseEntity<String> {
+        val currentPassenger = getPassenger(passengerId)
+        val friend = getPassenger(friendId)
+        currentPassenger.addFriend(friend)
+        friend.addFriend(currentPassenger)
+        passengerRepository.save(currentPassenger)
+        passengerRepository.save(friend)
         return ResponseEntity
             .status(HttpStatus.OK).body("You have a new friend!")
     }
 
+    @Transactional(readOnly = true)
     fun searchNonFriends(passengerId: Long, filter: String): List<Passenger> =
         passengerRepository.findPossibleFriends(passengerId, filter.lowercase())
 
