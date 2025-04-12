@@ -1,23 +1,19 @@
 package ar.edu.unsam.phm.uberto.services
 
 import ar.edu.unsam.phm.uberto.BusinessException
-import ar.edu.unsam.phm.uberto.dto.FormTripDTO
 import ar.edu.unsam.phm.uberto.dto.TripDTO
 import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.Trip
-import ar.edu.unsam.phm.uberto.repository.DriverRepository
-import ar.edu.unsam.phm.uberto.repository.PassengerRepository
 import ar.edu.unsam.phm.uberto.repository.TripsRepository
 import org.springframework.dao.DataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.sql.SQLException
 
 @Service
-class TripService(val passengerRepo: PassengerRepository, val driverRepo: DriverRepository, val tripRepo: TripsRepository) {
+class TripService(val tripRepo: TripsRepository) {
 
     @Transactional
     fun createTrip(trip: TripDTO, client: Passenger, driver: Driver): ResponseEntity<String> {
@@ -61,10 +57,6 @@ class TripService(val passengerRepo: PassengerRepository, val driverRepo: Driver
 
     fun getFinishedTripPassenger(id: Long): List<Trip> {
         return getAllByPassengerId(id).filter { it.finished() }
-    }
-
-    fun getPendingTripDriver(id: Long): List<Trip> {
-        return getAllByDriverId(id).filter { it.pendingTrip() }
     }
 
     fun getFinishedTripDriver(id: Long): List<Trip> {
