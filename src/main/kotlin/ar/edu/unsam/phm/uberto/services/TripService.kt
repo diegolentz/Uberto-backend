@@ -55,12 +55,20 @@ class TripService(val passengerRepo: PassengerRepository, val driverRepo: Driver
         return tripRepo.findByDriver_Id(id)
     }
 
-    fun getPending(id: Long, rol: String): List<Trip> {
-        return getById(id, rol).filter { it.pendingTrip() }
+    fun getPendingTripPassenger(id: Long): List<Trip> {
+        return getAllByPassengerId(id).filter { it.pendingTrip() }
     }
 
-    fun getFinished(id: Long, rol: String): List<Trip> {
-        return getById(id, rol).filter { it.finished() } //paginacion porque son muchos mas que pendientes
+    fun getFinishedTripPassenger(id: Long): List<Trip> {
+        return getAllByPassengerId(id).filter { it.finished() }
+    }
+
+    fun getPendingTripDriver(id: Long): List<Trip> {
+        return getAllByDriverId(id).filter { it.pendingTrip() }
+    }
+
+    fun getFinishedTripDriver(id: Long): List<Trip> {
+        return getAllByDriverId(id).filter { it.finished() }
     }
 
     fun getTripsPendingFromDriver(

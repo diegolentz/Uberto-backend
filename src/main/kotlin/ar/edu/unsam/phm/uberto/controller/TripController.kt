@@ -50,10 +50,17 @@ class TripsController(private val tripService: TripService, private val passenge
         ).map { it.toDTO() }
     }
 
-    @GetMapping("/passenger")
-    fun getFromPassenger(@RequestParam id:Long, rol: String): PendingAndFinishedTripsDTO {
-        val finishedTrips = tripService.getFinished(id, rol).map { it.toDTO() }
-        val pendingTrips = tripService.getPending(id, rol).map { it.toDTO() }
+    @GetMapping("/profile/passenger")
+    fun getProfilePassenger(@RequestParam id:Long): PendingAndFinishedTripsDTO {
+        val finishedTrips = tripService.getFinishedTripPassenger(id).map { it.toDTO() }
+        val pendingTrips = tripService.getPendingTripPassenger(id).map { it.toDTO() }
+        return PendingAndFinishedTripsDTO(pendingTrips, finishedTrips)
+    }
+
+    @GetMapping("/profile/driver")
+    fun getProfileDriver(@RequestParam id:Long): PendingAndFinishedTripsDTO {
+        val finishedTrips = tripService.getFinishedTripDriver(id).map { it.toDTO() }
+        val pendingTrips = listOf<TripDTO>()
         return PendingAndFinishedTripsDTO(pendingTrips, finishedTrips)
     }
 }
