@@ -28,6 +28,7 @@ class TripDTO(
     }
 }
 
+
 fun Trip.toDTO() : TripDTO{
     val clientId = requireNotNull(client.id) { "Client ID is null" }
     val driverId = requireNotNull(driver.id) { "Driver ID is null" }

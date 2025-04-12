@@ -94,7 +94,8 @@ class Bootstrap(
         val brand = listOf("Fiat Uno", "Fiat Uno", "Gilera")
         val serial = listOf("FTG 879", "DEV 666", "AAA 123")
         val model = listOf(2013,1999, 2003)
-        val img = listOf("","","")
+        val img = listOf("imagen1","imagen2","imagen3")
+        val baseP = listOf(900.0, 700.0, 800.0)
 //        val img = listOf(
 //            "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSxIABKumHIEfVtFkRWCdlA9qmyHCZyxV6-N7m_c1Xc4MOXv8s61ssMabL5Ny5mdcBpBYG21zMUqikXJ-6K0xK5n8jm58thk8-9MXSGA0w",
 //            "https://imgs.search.brave.com/govkyiYhkWlQIXB_rGkHY0bbnntpI5wjyJDdmJ3Oxfc/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93d3cu/bGFuYWNpb24uY29t/LmFyL3Jlc2l6ZXIv/djIvc2UtdmlyYWxp/em8tdW5hLWZvdG8t/ZGUtZnJhbmNvLWNv/bGFwaW50by1jdWFu/ZG8tUzVIMkpKNEdM/RkVRUEZaTE5NVEE2/QU9NSzQuSlBHP2F1/dGg9ZmJjOWJiMjU3/NDY4ZTdmNDllNDU1/NzBlMTYzYzNmNDIz/ZTUwODZlOTA4ZGFh/ZDBhYzRkNWQ5ZDNl/N2E5ODgxOCZ3aWR0/aD00MjAmaGVpZ2h0/PTI4MCZxdWFsaXR5/PTcwJnNtYXJ0PXRy/dWU",
@@ -105,11 +106,14 @@ class Bootstrap(
             val driver = DriverBuilder(driverType[index])
                 .firstName(names[index])
                 .lastName(lastNames[index])
+                .userId(user.id!!)
                 .balance(balances[index])
                 .brand(brand[index])
+                .basePrice(baseP[index])
                 .serial(serial[index])
                 .model(model[index])
                 .img(img[index])
+
                 .build()
             driverList.add(driver)
         }
