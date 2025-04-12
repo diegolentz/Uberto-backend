@@ -3,6 +3,8 @@ package ar.edu.unsam.phm.uberto.services
 import ar.edu.unsam.phm.uberto.BusinessException
 import ar.edu.unsam.phm.uberto.dto.FormTripDTO
 import ar.edu.unsam.phm.uberto.dto.TripDTO
+import ar.edu.unsam.phm.uberto.model.Driver
+import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.Trip
 import ar.edu.unsam.phm.uberto.repository.DriverRepository
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
@@ -18,10 +20,7 @@ import java.sql.SQLException
 class TripService(val passengerRepo: PassengerRepository, val driverRepo: DriverRepository, val tripRepo: TripsRepository) {
 
     @Transactional
-    fun createTrip(trip: TripDTO): ResponseEntity<String> {
-
-        val client = passengerRepo.findById(trip.userId).get()
-        val driver = driverRepo.findById(trip.driverId).get()
+    fun createTrip(trip: TripDTO, client: Passenger, driver: Driver): ResponseEntity<String> {
 
         val newTrip = Trip().apply {
             duration = trip.duration
@@ -39,7 +38,7 @@ class TripService(val passengerRepo: PassengerRepository, val driverRepo: Driver
         try{
             tripRepo.save(newTrip)
         }catch (e: DataAccessException){
-            throw RuntimeException("Error en la creación del viaje")
+            throw BusinessException("Error en la creación del viaje")
         }
 
         return ResponseEntity
@@ -48,12 +47,12 @@ class TripService(val passengerRepo: PassengerRepository, val driverRepo: Driver
 
     }
 
-    fun getById(id: Long, rol: String): List<Trip> {
-        return if(rol == "PASSENGER"){
-            tripRepo.findByClient_Id(id)
-        }else{
-            tripRepo.findByDriver_Id(id)
-        }
+    fun getAllByPassengerId(id: Long): List<Trip> {
+        return tripRepo.findByClient_Id(id)
+    }
+
+    fun getAllByDriverId(id: Long): List<Trip> {
+        return tripRepo.findByDriver_Id(id)
     }
 
     fun getPending(id: Long, rol: String): List<Trip> {
@@ -61,7 +60,7 @@ class TripService(val passengerRepo: PassengerRepository, val driverRepo: Driver
     }
 
     fun getFinished(id: Long, rol: String): List<Trip> {
-        return getById(id, rol).filter { it.finished() }
+        return getById(id, rol).filter { it.finished() } //paginacion porque son muchos mas que pendientes
     }
 
     fun getTripsPendingFromDriver(
