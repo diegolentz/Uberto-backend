@@ -40,10 +40,7 @@ class PassengerController(private val passengerService: PassengerService) {
 
     @GetMapping("/{id}/friends")
     fun getFriends(@PathVariable id: Long): List<FriendDto> {
-        val friends: List<Passenger> = passengerService.getFriends(id)
-        return friends.map { friend: Passenger ->
-            friend.toDTOFriend()
-        }
+        return passengerService.getFriends(id)
     }
 
     @PostMapping("/friends")

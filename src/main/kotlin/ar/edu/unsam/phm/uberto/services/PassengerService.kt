@@ -1,10 +1,12 @@
 package ar.edu.unsam.phm.uberto.services
 
 import ar.edu.unsam.phm.uberto.PassengerNotFoundException
+import ar.edu.unsam.phm.uberto.dto.FriendDto
+import ar.edu.unsam.phm.uberto.dto.toDTOFriend
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
-import jakarta.transaction.Transactional
 import org.springframework.http.HttpStatus
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 
@@ -14,9 +16,9 @@ class PassengerService(val passengerRepository: PassengerRepository) {
         return passengerRepository.findById(passengerId).get() ?: throw PassengerNotFoundException()
     }
 
-    fun getFriends(passengerId: Long): List<Passenger> {
-        val friends: List<Passenger> = passengerRepository.findById(passengerId).get().friends.toList()
-        return friends
+    @Transactional(readOnly = true)
+    fun getFriends(passengerId: Long): List<FriendDto> {
+        return passengerRepository.findById(passengerId).get().friends.map { it.toDTOFriend() }
     }
 
 
