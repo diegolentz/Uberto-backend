@@ -1,26 +1,25 @@
 package ar.edu.unsam.phm.uberto.services
 
-import ar.edu.unsam.phm.uberto.PassengerNotFoundException
 import ar.edu.unsam.phm.uberto.dto.FriendDto
 import ar.edu.unsam.phm.uberto.dto.toDTOFriend
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
 import org.springframework.http.HttpStatus
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 @Transactional
 class PassengerService(val passengerRepository: PassengerRepository) {
     @Transactional(readOnly = true)
-    fun getPassenger(passengerId: Long): Passenger {
-        return passengerRepository.findById(passengerId).get() ?: throw PassengerNotFoundException()
+    fun getById(passengerId: Long): Passenger {
+        return passengerRepository.findById(passengerId).get()
     }
 
     @Transactional(readOnly = true)
     fun getFriends(passengerId: Long): List<FriendDto> {
-        return getPassenger(passengerId).friends.map { it.toDTOFriend() }
+        return getById(passengerId).friends.map { it.toDTOFriend() }
     }
 
 
@@ -46,8 +45,8 @@ class PassengerService(val passengerRepository: PassengerRepository) {
     }
 
     fun deleteFriend(passengerId: Long, friendId: Long): ResponseEntity<String> {
-        val currentPassenger = getPassenger(passengerId)
-        val friend = getPassenger(friendId)
+        val currentPassenger = getById(passengerId)
+        val friend = getById(friendId)
         currentPassenger.removeFriend(friend)
         friend.removeFriend(currentPassenger)
         passengerRepository.save(currentPassenger)
@@ -57,8 +56,8 @@ class PassengerService(val passengerRepository: PassengerRepository) {
     }
 
     fun addFriend(passengerId: Long, friendId: Long): ResponseEntity<String> {
-        val currentPassenger = getPassenger(passengerId)
-        val friend = getPassenger(friendId)
+        val currentPassenger = getById(passengerId)
+        val friend = getById(friendId)
         currentPassenger.addFriend(friend)
         friend.addFriend(currentPassenger)
         passengerRepository.save(currentPassenger)
@@ -71,16 +70,5 @@ class PassengerService(val passengerRepository: PassengerRepository) {
     fun searchNonFriends(passengerId: Long, filter: String): List<Passenger> =
         passengerRepository.findPossibleFriends(passengerId, filter.lowercase())
 
-    private fun passengerMatch(passenger: Passenger, textFilter: String): Boolean {
-        val ignoreCase: Boolean = true
-        return passenger.firstName.contains(textFilter, ignoreCase) || passenger.lastName.contains(
-            textFilter,
-            ignoreCase
-        )
-    }
 
-    fun getImg(passengerId: Long): String {
-        val passenger = getPassenger(passengerId)
-        return passenger.img
-    }
 }

@@ -6,6 +6,8 @@ import ar.edu.unsam.phm.uberto.FriendNotExistException
 import ar.edu.unsam.phm.uberto.InsufficientBalanceException
 import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 import jakarta.persistence.*
+import java.time.LocalDate
+import java.time.Period
 
 @Entity
 class Passenger : User {
@@ -28,14 +30,13 @@ class Passenger : User {
     override var balance: Double = 0.0
 
     @OneToMany()
-    @JoinColumn(referencedColumnName = "id")
     override val trips: MutableList<Trip> = mutableListOf()
 
     @Column
     var cellphone: Int = 0
 
     @Column
-    var age: Int = 0
+    var birthDate: LocalDate = LocalDate.now()
 
     @Column(length = 255)
     override var img: String = ""
@@ -43,7 +44,6 @@ class Passenger : User {
     @ManyToMany(fetch = FetchType.LAZY)
     val friends: MutableSet<Passenger> = mutableSetOf()
 
-    fun nameComplete() = firstName + " " + lastName
 
     fun requestTrip(trip: Trip) {
         if (validateTrip(trip)) {
@@ -52,32 +52,11 @@ class Passenger : User {
         this.addTrip(trip)
     }
 
-    private fun validateTrip(trip: Trip): Boolean {
-        return this.balance < trip.price()
-    }
-
-    private fun addTrip(trip: Trip) {
-        this.payTrip(trip.price())
-        this.trips.add(trip)
-    }
-
-    private fun payTrip(price: Double) {
-        this.balance -= price
-    }
-
     fun loadBalance(balance: Double) {
         if (balance <= 0) {
             throw BalanceAmmountNotValidException()
         }
         this.balance += balance
-    }
-
-    override fun getScores(): List<TripScore> {
-        return this.getScoredTrips().map { trip: Trip -> trip.score!! }
-    }
-
-    private fun getScoredTrips(): List<Trip> {
-        return this.trips.filter { it.score != null }
     }
 
     fun isFriendOf(passenger: Passenger) = this.friends.contains(passenger)
@@ -105,5 +84,30 @@ class Passenger : User {
         score.scorePoints = scorePoints
         trip.addScore(score)
     }
+
+    fun age(): Int = Period.between(birthDate, LocalDate.now()).years
+
+    private fun validateTrip(trip: Trip): Boolean {
+        return this.balance < trip.price()
+    }
+
+    private fun addTrip(trip: Trip) {
+        this.payTrip(trip.price())
+        this.trips.add(trip)
+    }
+
+    private fun payTrip(price: Double) {
+        this.balance -= price
+    }
+
+
+    override fun getScores(): List<TripScore> {
+        return this.getScoredTrips().map { trip: Trip -> trip.score!! }
+    }
+
+    private fun getScoredTrips(): List<Trip> {
+        return this.trips.filter { it.score != null }
+    }
+
 
 }

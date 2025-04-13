@@ -16,7 +16,7 @@ fun Passenger.toDTOProfile() = PassengerProfileDto(
     id = id!!,
     firstname = firstName,
     lastname = lastName,
-    age = age,
+    age = age(),
     money = balance,
     cellphone = cellphone,
     img = img
@@ -40,4 +40,13 @@ data class UpdatedPassengerDTO(
     val firstName: String?,
     val lastName: String?,
     val phone: Int?,
+)
+
+
+data class ImgDTO(
+    val img: String
+)
+
+fun Passenger.toDTOImg() = ImgDTO(
+    img = img
 )

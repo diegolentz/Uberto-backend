@@ -11,27 +11,25 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/passenger")
 class PassengerController(private val passengerService: PassengerService) {
 
-    ///TODO Puede ser que haya metodos como searchById (que buscan la FK) que fueron MAL reemplazados por findById
     @GetMapping("/{id}")
     fun getById(@PathVariable id: Long): PassengerProfileDto {
-        val passenger = passengerService.getPassenger(id)
+        val passenger = passengerService.getById(id)
         return passenger.toDTOProfile()
     }
 
 
     @PutMapping("/addBalance")
     fun addBalance(@RequestParam id: Long, balance: Double): ResponseEntity<String> {
-        val currentPassenger = passengerService.getPassenger(id)
+        val currentPassenger = passengerService.getById(id)
         return passengerService.addBalance(currentPassenger, balance)
     }
 
-    @PutMapping("")
+    @PutMapping
     fun updatePassenger(
         @RequestParam id: Long,
         @RequestBody updatedInfo: UpdatedPassengerDTO
     ): ResponseEntity<String> {
-        //TODO Preguntar!!!
-        val currentPassenger = passengerService.getPassenger(id)
+        val currentPassenger = passengerService.getById(id)
         return passengerService.updateInfo(
             currentPassenger,
             updatedInfo.firstName, updatedInfo.lastName, updatedInfo.phone
@@ -62,8 +60,8 @@ class PassengerController(private val passengerService: PassengerService) {
     }
 
     @GetMapping("/img")
-    fun getImg(@RequestParam passengerId: Long): Map<String, String> {
-        val currentPassenger = passengerService.getPassenger(passengerId)
-        return mapOf("img" to currentPassenger.img)
+    fun getImg(@RequestParam passengerId: Long): ImgDTO {
+        val currentPassenger = passengerService.getById(passengerId)
+        return currentPassenger.toDTOImg()
     }
 }
