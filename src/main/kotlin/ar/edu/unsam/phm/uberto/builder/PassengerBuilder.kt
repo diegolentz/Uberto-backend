@@ -1,6 +1,7 @@
 package ar.edu.unsam.phm.uberto.builder
 
 import ar.edu.unsam.phm.uberto.model.Passenger
+import java.time.LocalDate
 
 class PassengerBuilder(val newPassenger: Passenger = Passenger()) {
 
@@ -20,8 +21,8 @@ class PassengerBuilder(val newPassenger: Passenger = Passenger()) {
         newPassenger.lastName = name
     }
 
-    fun age(age: Int): PassengerBuilder = apply {
-        newPassenger.age = age
+    fun birthDate(birthDate: LocalDate): PassengerBuilder = apply {
+        newPassenger.birthDate = birthDate
     }
 
     fun cellphone(cellphoneNumber: Int): PassengerBuilder = apply {

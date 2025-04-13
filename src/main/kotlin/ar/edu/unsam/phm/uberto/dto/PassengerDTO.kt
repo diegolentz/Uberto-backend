@@ -13,10 +13,10 @@ data class PassengerProfileDto(
 )
 
 fun Passenger.toDTOProfile() = PassengerProfileDto(
-    id = userId!!.id!!, //arreglar
+    id = id!!,
     firstname = firstName,
     lastname = lastName,
-    age = age,
+    age = age(),
     money = balance,
     cellphone = cellphone,
     img = img
@@ -30,7 +30,7 @@ data class FriendDto(
 )
 
 fun Passenger.toDTOFriend() = FriendDto(
-    id = userId!!.id!!, //arreglar
+    id = id!!,
     firstname = firstName,
     lastname = lastName,
     img = img
@@ -40,4 +40,13 @@ data class UpdatedPassengerDTO(
     val firstName: String?,
     val lastName: String?,
     val phone: Int?,
+)
+
+
+data class ImgDTO(
+    val img: String
+)
+
+fun Passenger.toDTOImg() = ImgDTO(
+    img = img
 )

@@ -6,6 +6,8 @@ import ar.edu.unsam.phm.uberto.FriendNotExistException
 import ar.edu.unsam.phm.uberto.InsufficientBalanceException
 import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 import jakarta.persistence.*
+import java.time.LocalDate
+import java.time.Period
 
 @Entity
 class Passenger : User {
@@ -28,23 +30,20 @@ class Passenger : User {
     override var balance: Double = 0.0
 
     @OneToMany()
-    @JoinColumn(referencedColumnName = "id")
     override val trips: MutableList<Trip> = mutableListOf()
 
     @Column
     var cellphone: Int = 0
 
     @Column
-    var age: Int = 0
+    var birthDate: LocalDate = LocalDate.now()
 
     @Column(length = 255)
     override var img: String = ""
 
-    @OneToMany
-    @JoinColumn(referencedColumnName = "id")
+    @ManyToMany(fetch = FetchType.LAZY)
     val friends: MutableSet<Passenger> = mutableSetOf()
 
-    fun nameComplete() = firstName + " " +lastName
 
     fun requestTrip(trip: Trip) {
         if (validateTrip(trip)) {
@@ -52,6 +51,41 @@ class Passenger : User {
         }
         this.addTrip(trip)
     }
+
+    fun loadBalance(balance: Double) {
+        if (balance <= 0) {
+            throw BalanceAmmountNotValidException()
+        }
+        this.balance += balance
+    }
+
+    fun isFriendOf(passenger: Passenger) = this.friends.contains(passenger)
+
+    fun addFriend(friend: Passenger) {
+        if (this.isFriendOf(friend)) {
+            throw FriendAlreadyExistException()
+        }
+        friends.add(friend)
+    }
+
+    fun removeFriend(friend: Passenger) {
+        if (!this.isFriendOf(friend)) {
+            throw FriendNotExistException()
+        }
+        friends.remove(friend)
+    }
+
+    fun pendingTrips() = trips.filter { trip: Trip -> trip.pendingTrip() }
+    fun finishedTrips() = trips.filter { trip: Trip -> trip.finished() }
+
+    fun scoreTrip(trip: Trip, message: String, scorePoints: Int) {
+        val score = TripScore()
+        score.message = message
+        score.scorePoints = scorePoints
+        trip.addScore(score)
+    }
+
+    fun age(): Int = Period.between(birthDate, LocalDate.now()).years
 
     private fun validateTrip(trip: Trip): Boolean {
         return this.balance < trip.price()
@@ -66,45 +100,14 @@ class Passenger : User {
         this.balance -= price
     }
 
-    fun loadBalance(balance: Double) {
-        if(balance <= 0){
-            throw BalanceAmmountNotValidException()
-        }
-        this.balance += balance
-    }
 
     override fun getScores(): List<TripScore> {
-        return this.getScoredTrips().map { trip:Trip -> trip.score!! }
+        return this.getScoredTrips().map { trip: Trip -> trip.score!! }
     }
 
-    private fun getScoredTrips():List<Trip>{
+    private fun getScoredTrips(): List<Trip> {
         return this.trips.filter { it.score != null }
     }
 
-    fun isFriendOf(passenger: Passenger) = this.friends.contains(passenger)
-
-    fun addFriend(friend: Passenger) {
-        if(this.isFriendOf(friend)){
-            throw FriendAlreadyExistException()
-        }
-        friends.add(friend)
-    }
-
-    fun removeFriend(friend: Passenger) {
-        if(!this.isFriendOf(friend)){
-            throw FriendNotExistException()
-        }
-        friends.remove(friend)
-    }
-
-    fun pendingTrips() = trips.filter { trip:Trip ->trip.pendingTrip()}
-    fun finishedTrips() = trips.filter { trip:Trip ->trip.finished()}
-
-    fun scoreTrip(trip: Trip, message:String, scorePoints:Int){
-        val score = TripScore()
-        score.message = message
-        score.scorePoints = scorePoints
-        trip.addScore(score)
-    }
 
 }

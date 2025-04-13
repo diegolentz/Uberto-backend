@@ -18,7 +18,6 @@ import java.time.LocalDateTime
 
 @Service
 class DriverService(val driverRepo: DriverRepository, val timeTripsService: TravelTimeMockService, val tripsRepo : TripsRepository) {
-    ///TODO Puede ser que haya metodos como searchById (que buscan la FK) que fueron MAL reemplazados por findById
 
     fun getDriverData(userID: Long):Driver{
         try{
