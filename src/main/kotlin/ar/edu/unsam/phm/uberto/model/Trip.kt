@@ -2,14 +2,7 @@ package ar.edu.unsam.phm.uberto.model
 
 import ar.edu.unsam.phm.uberto.ScoredTripException
 import ar.edu.unsam.phm.uberto.TripNotFinishedException
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
+import jakarta.persistence.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -37,15 +30,15 @@ class Trip(
     @Column(length = 40)
     var destination: String = ""
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "passenger_id", referencedColumnName = "id")
     var client: Passenger = Passenger()
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "driver_id", referencedColumnName = "id")
     var driver: Driver = SimpleDriver()
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tripscore_id", referencedColumnName = "id")
     var score: TripScore? = null
 

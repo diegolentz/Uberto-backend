@@ -1,27 +1,22 @@
 package ar.edu.unsam.phm.uberto.services
 
 import ar.edu.unsam.phm.uberto.BusinessException
-import ar.edu.unsam.phm.uberto.dto.FormTripDTO
 import ar.edu.unsam.phm.uberto.dto.TripDTO
+import ar.edu.unsam.phm.uberto.model.Driver
+import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.Trip
-import ar.edu.unsam.phm.uberto.repository.DriverRepository
-import ar.edu.unsam.phm.uberto.repository.PassengerRepository
 import ar.edu.unsam.phm.uberto.repository.TripsRepository
 import org.springframework.dao.DataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.sql.SQLException
 
 @Service
-class TripService(val passengerRepo: PassengerRepository, val driverRepo: DriverRepository, val tripRepo: TripsRepository) {
+class TripService(val tripRepo: TripsRepository) {
 
     @Transactional
-    fun createTrip(trip: TripDTO): ResponseEntity<String> {
-
-        val client = passengerRepo.findById(trip.userId).get()
-        val driver = driverRepo.findById(trip.driverId).get()
+    fun createTrip(trip: TripDTO, client: Passenger, driver: Driver): ResponseEntity<String> {
 
         val newTrip = Trip().apply {
             duration = trip.duration
@@ -39,7 +34,7 @@ class TripService(val passengerRepo: PassengerRepository, val driverRepo: Driver
         try{
             tripRepo.save(newTrip)
         }catch (e: DataAccessException){
-            throw RuntimeException("Error en la creación del viaje")
+            throw BusinessException("Error en la creación del viaje")
         }
 
         return ResponseEntity
@@ -48,20 +43,24 @@ class TripService(val passengerRepo: PassengerRepository, val driverRepo: Driver
 
     }
 
-    fun getById(id: Long, rol: String): List<Trip> {
-        return if(rol == "PASSENGER"){
-            tripRepo.findByClient_Id(id)
-        }else{
-            tripRepo.findByDriver_Id(id)
-        }
+    fun getAllByPassengerId(id: Long): List<Trip> {
+        return tripRepo.findByClient_Id(id)
     }
 
-    fun getPending(id: Long, rol: String): List<Trip> {
-        return getById(id, rol).filter { it.pendingTrip() }
+    fun getAllByDriverId(id: Long): List<Trip> {
+        return tripRepo.findByDriver_Id(id)
     }
 
-    fun getFinished(id: Long, rol: String): List<Trip> {
-        return getById(id, rol).filter { it.finished() }
+    fun getPendingTripPassenger(id: Long): List<Trip> {
+        return getAllByPassengerId(id).filter { it.pendingTrip() }
+    }
+
+    fun getFinishedTripPassenger(id: Long): List<Trip> {
+        return getAllByPassengerId(id).filter { it.finished() }
+    }
+
+    fun getFinishedTripDriver(id: Long): List<Trip> {
+        return getAllByDriverId(id).filter { it.finished() }
     }
 
     fun getTripsPendingFromDriver(

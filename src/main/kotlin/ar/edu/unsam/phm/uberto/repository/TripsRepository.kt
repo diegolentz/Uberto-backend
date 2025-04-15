@@ -2,6 +2,7 @@ package ar.edu.unsam.phm.uberto.repository
 
 import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.model.Trip
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 
