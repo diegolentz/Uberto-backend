@@ -20,7 +20,7 @@ class TripsController(private val tripService: TripService, private val passenge
 
     @PostMapping("/create")
     fun createTrip(@RequestBody trip: TripDTO): ResponseEntity<String> {
-        val client = passengerService.getPassenger(trip.userId)
+        val client = passengerService.getById(trip.userId)
         val driver = driverService.getDriverData(trip.driverId)
         return tripService.createTrip(trip, client, driver)
     }

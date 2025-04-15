@@ -2,6 +2,7 @@ package ar.edu.unsam.phm.uberto.services
 
 import ar.edu.unsam.phm.uberto.BusinessException
 import ar.edu.unsam.phm.uberto.dto.TripScoreDTO
+import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.Trip
 import ar.edu.unsam.phm.uberto.model.TripScore
 import ar.edu.unsam.phm.uberto.model.User
@@ -20,13 +21,10 @@ class TripScoreService(
     private val driverRepo: DriverRepository,
     private val passengerRepo: PassengerRepository
 ) {
-//    fun getFromUser(userId: Int): List<Trip?>{
-////        Con JPA, se consulta directamente a los viajes que tengan una calificacion con ESE ID
-//        val users = driverRepo.instances.toList() + passengerRepo.instances.toList()
-//        val user: User? = users.find { it.userId == userId} ?: throw Exception("ERROR id")
-//
-//        return user!!.trips.filter{ it.score != null}
-//    }
+    fun getFromPassenger(trips:List<Trip>): List<Trip?>{
+        val tripsScore  = trips.filter { it.score != null }
+        return tripsScore
+    }
 
 
 //    fun delete(userId: Int, tripId: Int): ResponseEntity<String> {
