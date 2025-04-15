@@ -1,7 +1,6 @@
 package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.dto.*
-import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.TravelTimeMockService
 import exceptions.BusinessException
@@ -15,15 +14,10 @@ import java.time.LocalDateTime
 class DriverController(private val driverService: DriverService, val timeTripsService: TravelTimeMockService) {
 
     @GetMapping("/{id}")
-    fun getByID(@PathVariable id:Long): DriverDTO {
-        return driverService.getDriverData(id).toDTO()
-    }
+    fun getByID(@PathVariable id:Long): DriverDTO = driverService.getDriverData(id).toDTO()
 
     @GetMapping("/img")
-    fun getImg(@RequestParam driverid: Long): DriverImg {
-        val driver = driverService.getDriverData(driverid).toImgDTO()
-        return driver
-    }
+    fun getImg(@RequestParam driverid: Long): DriverImg = driverService.getDriverData(driverid).toImgDTO()
 
     @GetMapping("/avaliable")
     fun getDriversAvailable(@RequestParam date: LocalDateTime,
@@ -40,9 +34,6 @@ class DriverController(private val driverService: DriverService, val timeTripsSe
     }
 
     @PostMapping()
-    fun changeProfile(@RequestBody driverDTO: DriverDTO): ResponseEntity<String>{
-        return driverService.updateProfile(driverDTO)
-    }
-
+    fun changeProfile(@RequestBody driverDTO: DriverDTO): ResponseEntity<String> =  driverService.updateProfile(driverDTO)
 
 }

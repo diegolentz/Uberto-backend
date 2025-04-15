@@ -1,19 +1,12 @@
 package ar.edu.unsam.phm.uberto.repository
 
-import ar.edu.unsam.phm.uberto.dto.FormTripDTO
-import ar.edu.unsam.phm.uberto.model.Driver // ✅ Importa la entidad correcta
-import ar.edu.unsam.phm.uberto.model.Trip
-import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
+import ar.edu.unsam.phm.uberto.model.Driver
 import org.springframework.data.jpa.repository.EntityGraph
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
-import org.springframework.data.repository.query.Param
-import java.time.LocalDateTime
 
 interface DriverRepository : CrudRepository<Driver, Long> {
 
-    @EntityGraph(attributePaths = ["trips","id"])
+    @EntityGraph(attributePaths = ["trips"])
     override fun findAll(): List<Driver>
 
 //    fun searchByForm(form: FormTripDTO, driverId: Int): List<Trip>{

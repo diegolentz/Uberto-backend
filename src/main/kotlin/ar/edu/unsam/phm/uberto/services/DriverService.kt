@@ -1,24 +1,17 @@
 package ar.edu.unsam.phm.uberto.services
 
-import ar.edu.unsam.phm.uberto.dto.DateDTO
-import ar.edu.unsam.phm.uberto.dto.DriverCardAndTimeDTO
 import ar.edu.unsam.phm.uberto.dto.DriverDTO
-import ar.edu.unsam.phm.uberto.dto.toCardDTO
 import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.repository.DriverRepository
-import ar.edu.unsam.phm.uberto.repository.TripsRepository
-import ar.edu.unsam.phm.uberto.services.auth.AuthRepository
-import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 import exceptions.BusinessException
 import jakarta.transaction.Transactional
-import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 @Service
-class DriverService(val driverRepo: DriverRepository, val timeTripsService: TravelTimeMockService, val tripsRepo : TripsRepository) {
+class DriverService(val driverRepo: DriverRepository) {
 
     fun getDriverData(userID: Long):Driver{
         try{
@@ -28,11 +21,6 @@ class DriverService(val driverRepo: DriverRepository, val timeTripsService: Trav
             throw BusinessException("Driver not found")
         }
     }
-
-    fun findById(id: Long): Driver {
-        return driverRepo.findById(id).orElseThrow { BusinessException("Driver not found") }
-    }
-
 
     @Transactional
     fun updateProfile(dto : DriverDTO) : ResponseEntity<String> {
@@ -49,12 +37,10 @@ class DriverService(val driverRepo: DriverRepository, val timeTripsService: Trav
                 .status(HttpStatus.NOT_FOUND)
                 .body("Driver cant be updated")
         }
-
     }
+
     fun getDriversAvailable(date: LocalDateTime, time: Int): List<Driver> {
         return  driverRepo.findAll().filter { it.avaliable(date,time) }
     }
-
-
 
 }
