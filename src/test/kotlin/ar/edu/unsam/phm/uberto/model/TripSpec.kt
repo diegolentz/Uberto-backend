@@ -19,7 +19,7 @@ import java.time.temporal.ChronoUnit
 
 class TripSpec: DescribeSpec({
     isolationMode = IsolationMode.InstancePerTest
-    var trip: Trip = TripBuilder().build()
+    val trip: Trip = TripBuilder().build()
     describe(name="Given a trip"){
 
         it(name="Start date") {
@@ -65,7 +65,9 @@ class TripSpec: DescribeSpec({
                 val yesterday:LocalDateTime = today.minus(1, ChronoUnit.DAYS)
                 trip.date = yesterday
                 trip.finished() shouldBeEqual true
-                val score:TripScore = TripScore(message = "Score message", scorePoints = 5)
+                val score:TripScore = TripScore().apply {
+                    message = "Score message"
+                    scorePoints = 5 }
                 trip.scored() shouldBeEqual false
                 trip.addScore(score)
                 trip.scored() shouldBeEqual true
@@ -76,7 +78,9 @@ class TripSpec: DescribeSpec({
                 val tomorrow:LocalDateTime = today.plus(1, ChronoUnit.DAYS)
                 trip.date = tomorrow
                 trip.finished() shouldBeEqual false
-                val score:TripScore = TripScore(message = "Score message", scorePoints = 5)
+                val score:TripScore = TripScore().apply {
+                    message = "Score message"
+                    scorePoints = 5 }
                 shouldThrow<TripNotFinishedException> {
                     trip.addScore(score)
                 }
@@ -87,7 +91,9 @@ class TripSpec: DescribeSpec({
                 val yesterday:LocalDateTime = today.minus(1, ChronoUnit.DAYS)
                 trip.date = yesterday
                 trip.finished() shouldBeEqual true
-                val score:TripScore = TripScore(message = "Score message", scorePoints = 5)
+                val score:TripScore = TripScore().apply {
+                    message = "Score message"
+                    scorePoints = 5 }
                 trip.addScore(score)
                 shouldThrow<ScoredTripException> {
                     trip.addScore(score)
@@ -99,7 +105,9 @@ class TripSpec: DescribeSpec({
                 val yesterday:LocalDateTime = today.minus(1, ChronoUnit.DAYS)
                 trip.date = yesterday
                 trip.finished() shouldBeEqual true
-                val score:TripScore = TripScore(message = "Score message", scorePoints = 5)
+                val score: TripScore = TripScore().apply {
+                    message = "Score message"
+                    scorePoints = 5 }
 
                 trip.scored() shouldBeEqual false
                 trip.addScore(score)
