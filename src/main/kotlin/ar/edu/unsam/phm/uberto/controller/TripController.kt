@@ -32,7 +32,7 @@ class TripsController(private val tripService: TripService, private val passenge
 
     @GetMapping("/driver") //Metodo desdoblado (antes ruta "/trips?rol= & id=" )
     fun getAllByDriverId(@RequestParam id: Long): List<TripDTO> {
-        return tripService.getAllByDriverId(id).map { it.toDTO() }
+            return tripService.getAllByDriverId(id).map { it.toDTO() }
     }
 
     @PostMapping("/pending")
