@@ -13,15 +13,20 @@ data class DriverDTO(
 
     )
 
-fun Driver.toDTO() = DriverDTO(
-    id = credentials!!.id!!,
-    serial = serial,
-    firstName = firstName,
-    lastName = lastName,
-    brand = brand,
-    model = model,
-    price = basePrice,
-)
+fun Driver.toDTO(): DriverDTO {
+    val credId = requireNotNull(credentials?.id) { "UserAuthCredentials ID is null" }
+
+    return DriverDTO(
+        id = credId,
+        serial = serial,
+        firstName = firstName,
+        lastName = lastName,
+        brand = brand,
+        model = model,
+        price = basePrice
+    )
+}
+
 
 data class DriverCardDTO(
     val id: Long,
@@ -36,17 +41,22 @@ data class DriverCardDTO(
 )
 
 
-fun Driver.toCardDTO(time: Int, numberPassenger: Int) = DriverCardDTO(
-    id = id!!,
-    serial = serial,
-    brand = brand,
-    name = firstName + " " +lastName,
-    model = model,
-    price = fee(time, numberPassenger),
-    img = img,
-    rating = scoreAVG(),
-    type = toString()
-)
+fun Driver.toCardDTO(time: Int, numberPassenger: Int): DriverCardDTO {
+    val driverId = requireNotNull(id) { "Driver entity ID is null" }
+
+    return DriverCardDTO(
+        id = driverId,
+        serial = serial,
+        brand = brand,
+        name = "$firstName $lastName",
+        model = model,
+        price = fee(time, numberPassenger),
+        img = img,
+        rating = scoreAVG(),
+        type = toString()
+    )
+}
+
 
 data class DriverCardAndTimeDTO(
     val time: Int,
