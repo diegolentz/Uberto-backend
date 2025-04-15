@@ -20,7 +20,7 @@ fun Driver.toDTO() = DriverDTO(
     lastName = lastName,
     brand = brand,
     model = model,
-    price = balance,
+    price = basePrice,
 )
 
 data class DriverCardDTO(
@@ -37,7 +37,7 @@ data class DriverCardDTO(
 
 
 fun Driver.toCardDTO(time: Int, numberPassenger: Int) = DriverCardDTO(
-    id = credentials!!.id!!,
+    id = id!!,
     serial = serial,
     brand = brand,
     name = firstName + " " +lastName,
@@ -52,3 +52,9 @@ data class DriverCardAndTimeDTO(
     val time: Int,
     val cardDrivers: List<DriverCardDTO>
 )
+
+data class DriverImg(var img: String)
+fun Driver.toImgDTO() = DriverImg(
+    img = img
+)
+

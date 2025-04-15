@@ -1,6 +1,7 @@
 package ar.edu.unsam.phm.uberto.model
 
 import ar.edu.unsam.phm.uberto.DriverNotAvaliableException
+import ar.edu.unsam.phm.uberto.dto.DriverDTO
 import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 import jakarta.persistence.*
 import java.time.LocalDateTime
@@ -28,8 +29,7 @@ abstract class Driver():User {
     @Column
     override var balance: Double = 0.0
 
-    @OneToMany( fetch = FetchType.EAGER)
-    @JoinColumn(name = "driver_id")
+    @OneToMany(mappedBy = "driver", fetch = FetchType.LAZY)
     override var trips: MutableList<Trip> = mutableListOf()
 
     @Column(length = 255)
@@ -61,14 +61,17 @@ abstract class Driver():User {
 
     fun avaliable(tripDate: LocalDateTime, tripDuration: Int):Boolean{
         val finishedDate =  tripDate.plus(tripDuration.toLong(), ChronoUnit.MINUTES)
-        return !this.tripOverlapping(tripDate, finishedDate) || trips.isEmpty()
+        return pendingTrips().isEmpty() && !this.tripOverlapping(tripDate, finishedDate)
+
     }
 
     fun tripOverlapping(tripStart: LocalDateTime, tripEnd: LocalDateTime):Boolean{
         return this.pendingTrips().any{ pending:Trip ->
-            tripStart < pending.finalizationDate() && tripEnd > pending.date
+            tripStart > pending.finalizationDate() || tripEnd < pending.date
         }
     }
+
+
 
     fun scoreAVG():Double{
         val avg = getScoredTrips().map { it.score!!.scorePoints }.average()
@@ -96,6 +99,16 @@ abstract class Driver():User {
             throw DriverNotAvaliableException()
         }
         addTrip(newTrip)
+    }
+
+    fun update(dto: DriverDTO): Driver {
+        this.firstName = dto.firstName
+        this.lastName = dto.lastName
+        this.serial = dto.serial
+        this.brand = dto.brand
+        this.model = dto.model
+        this.basePrice = dto.price
+        return this
     }
 
 }

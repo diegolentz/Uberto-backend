@@ -11,6 +11,7 @@ import ar.edu.unsam.phm.uberto.services.auth.AuthRepository
 import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 import exceptions.BusinessException
 import jakarta.transaction.Transactional
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -21,7 +22,7 @@ class DriverService(val driverRepo: DriverRepository, val timeTripsService: Trav
 
     fun getDriverData(userID: Long):Driver{
         try{
-            val driver = driverRepo.findDriverByCredentials_Id(userID)
+            val driver = driverRepo.findById(userID).orElseThrow { BusinessException("Driver not found") }
             return driver
         }catch (e : Exception){
             throw BusinessException("Driver not found")
@@ -32,12 +33,13 @@ class DriverService(val driverRepo: DriverRepository, val timeTripsService: Trav
         return driverRepo.findById(id).orElseThrow { BusinessException("Driver not found") }
     }
 
+
     @Transactional
     fun updateProfile(dto : DriverDTO) : ResponseEntity<String> {
         try {
             val driver = getDriverData(dto.id)
-            val changed = changeProfile(dto, driver)
-            driverRepo.save(changed)
+            val update = driver.update(dto)
+            driverRepo.save(update)
             return ResponseEntity
                 .status(HttpStatus.OK)
                 .body("Updated profile")
@@ -49,19 +51,7 @@ class DriverService(val driverRepo: DriverRepository, val timeTripsService: Trav
         }
 
     }
-
-    fun changeProfile(driverDTO: DriverDTO, driver: Driver): Driver {
-        driver.firstName = driverDTO.firstName
-        driver.lastName = driverDTO.lastName
-        driver.serial = driverDTO.serial
-        driver.brand = driverDTO.brand
-        driver.model = driverDTO.model
-        driver.balance = driverDTO.price
-        return driver
-    }
-
     fun getDriversAvailable(date: LocalDateTime, time: Int): List<Driver> {
-//        val driversIds = tripsRepo.findAvailableDrivers(date, time)
         val drivers = driverRepo.findAll()
         return drivers.filter { it.avaliable(date, time) }
     }
