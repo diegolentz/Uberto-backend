@@ -52,8 +52,7 @@ class DriverService(val driverRepo: DriverRepository, val timeTripsService: Trav
 
     }
     fun getDriversAvailable(date: LocalDateTime, time: Int): List<Driver> {
-        val drivers = driverRepo.findAll()
-        return drivers.filter { it.avaliable(date, time) }
+        return  driverRepo.findAll().filter { it.avaliable(date,time) }
     }
 
 

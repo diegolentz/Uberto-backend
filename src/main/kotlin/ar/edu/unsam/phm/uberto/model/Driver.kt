@@ -61,16 +61,14 @@ abstract class Driver():User {
 
     fun avaliable(tripDate: LocalDateTime, tripDuration: Int):Boolean{
         val finishedDate =  tripDate.plus(tripDuration.toLong(), ChronoUnit.MINUTES)
-        return pendingTrips().isEmpty() && !this.tripOverlapping(tripDate, finishedDate)
-
+        return !this.tripOverlapping(tripDate, finishedDate) || trips.isEmpty()
     }
 
     fun tripOverlapping(tripStart: LocalDateTime, tripEnd: LocalDateTime):Boolean{
         return this.pendingTrips().any{ pending:Trip ->
-            tripStart > pending.finalizationDate() || tripEnd < pending.date
+            tripStart < pending.finalizationDate() && tripEnd > pending.date
         }
     }
-
 
 
     fun scoreAVG():Double{
