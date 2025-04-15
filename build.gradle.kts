@@ -27,10 +27,10 @@ dependencies {
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 
 //	basic spring boot
-	implementation("org.springframework.boot:spring-boot-starter-data-rest")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
 
 //	DB CONNECTION
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
