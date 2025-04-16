@@ -1,7 +1,6 @@
 package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.dto.*
-import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.TravelTimeMockService
 import exceptions.BusinessException
@@ -15,11 +14,12 @@ import java.time.LocalDateTime
 class DriverController(private val driverService: DriverService, val timeTripsService: TravelTimeMockService) {
 
     @GetMapping("/{id}")
-    fun getByID(@PathVariable id:Long): DriverDTO {
-        return driverService.getDriverData(id).toDTO()
-    }
+    fun getByID(@PathVariable id:Long): DriverDTO = driverService.getDriverData(id).toDTO()
 
-    @GetMapping("/avaliable")
+    @GetMapping("/img")
+    fun getImg(@RequestParam driverid: Long): DriverImg = driverService.getDriverData(driverid).toImgDTO()
+
+    @GetMapping("/available")
     fun getDriversAvailable(@RequestParam date: LocalDateTime,
                             @RequestParam origin: String,
                             @RequestParam destination: String,
@@ -34,13 +34,6 @@ class DriverController(private val driverService: DriverService, val timeTripsSe
     }
 
     @PostMapping()
-    fun changeProfile(@RequestBody driverDTO: DriverDTO): ResponseEntity<String>{
-        return driverService.updateProfile(driverDTO)
-    }
+    fun changeProfile(@RequestBody driverDTO: DriverDTO): ResponseEntity<String> =  driverService.updateProfile(driverDTO)
 
-    @GetMapping("/img")
-    fun getImg(@RequestParam driverid: Long): Map<String, String> {
-        val driver = driverService.getDriverData(driverid)
-        return mapOf("img" to driver.img)
-    }
 }
