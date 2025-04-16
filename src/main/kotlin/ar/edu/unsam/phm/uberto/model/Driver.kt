@@ -3,6 +3,7 @@ package ar.edu.unsam.phm.uberto.model
 import ar.edu.unsam.phm.uberto.DriverNotAvaliableException
 import ar.edu.unsam.phm.uberto.dto.DriverDTO
 import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
+import exceptions.BusinessException
 import jakarta.persistence.*
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -60,6 +61,9 @@ abstract class Driver():User {
 
 
     fun avaliable(tripDate: LocalDateTime, tripDuration: Int):Boolean{
+        if(tripDate.isBefore(LocalDateTime.now())){
+            throw BusinessException("The date must be later than the current date")
+        }
         val finishedDate =  tripDate.plus(tripDuration.toLong(), ChronoUnit.MINUTES)
         return !this.tripOverlapping(tripDate, finishedDate) || trips.isEmpty()
     }

@@ -33,14 +33,16 @@ class DriverService(val driverRepo: DriverRepository) {
                 .body("Updated profile")
 
         } catch (e: BusinessException) {
-            return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body("Driver cant be updated")
+            throw BusinessException("Driver not found")
         }
     }
 
     fun getDriversAvailable(date: LocalDateTime, time: Int): List<Driver> {
-        return  driverRepo.findAll().filter { it.avaliable(date,time) }
+        try {
+            return  driverRepo.findAll().filter { it.avaliable(date,time) }
+        } catch ( e : Exception) {
+            throw BusinessException(e.message ?: "Error in the driver search")
+        }
     }
 
 }
