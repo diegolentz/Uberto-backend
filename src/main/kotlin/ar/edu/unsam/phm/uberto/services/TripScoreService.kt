@@ -10,6 +10,7 @@ import ar.edu.unsam.phm.uberto.repository.DriverRepository
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
 import ar.edu.unsam.phm.uberto.repository.TripScoreRepository
 import ar.edu.unsam.phm.uberto.repository.TripsRepository
+import jakarta.transaction.Transactional
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -24,6 +25,19 @@ class TripScoreService(
     fun getFromPassenger(trips:List<Trip>): List<Trip?>{
         val tripsScore  = trips.filter { it.score != null }
         return tripsScore
+    }
+
+    fun getFromDriver(trips: List<Trip>): List<Trip?> {
+        val tripsScore  = trips.filter { it.score != null }
+        return tripsScore
+    }
+
+    @Transactional
+    fun create(tripScoreDTO: TripScoreDTO) {
+        val trip = tripRepo.findById(tripScoreDTO.tripId).get()
+        val passenger : Passenger = passengerRepo.findById(trip.client.id!!).get()
+        passenger.scoreTrip(trip,tripScoreDTO.message!!,tripScoreDTO.scorePoints!!)
+        tripRepo.save(trip)
     }
 
 

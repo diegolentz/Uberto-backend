@@ -2,8 +2,10 @@ package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.dto.TripScoreDTO
 import ar.edu.unsam.phm.uberto.dto.scoreToDTO
+import ar.edu.unsam.phm.uberto.repository.TripScoreRepository
 import ar.edu.unsam.phm.uberto.services.TripScoreService
 import ar.edu.unsam.phm.uberto.services.TripService
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 
@@ -12,12 +14,9 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/tripScore")
 class TripScoreController(
     private val tripScoreService: TripScoreService,
-    private val tripService: TripService
+    private val tripService: TripService,
+    private val tripScoreRepository: TripScoreRepository
 ){
-//    @GetMapping("/driver")
-//    fun get(@RequestParam userId: Int): List<TripScoreDTO>{
-//        return tripScoreService.getAllFromDriver(userId).map { it!!.toDTO() }
-//    }
 
     @GetMapping("/passenger")
     fun getScorePassenger(@RequestParam userId: Long): List<TripScoreDTO>{
@@ -25,14 +24,29 @@ class TripScoreController(
         val tripScore = tripScoreService.getFromPassenger(trips)
         return tripScore.map { it!!.scoreToDTO(userId) }
     }
-//
-//    @DeleteMapping()
+
+    @GetMapping("/driver")
+    fun getScoreDriver(@RequestParam userId: Long): List<TripScoreDTO>{
+        val trips = tripService.getAllByDriverId(userId)
+        val tripScore = tripScoreService.getFromDriver(trips)
+        return tripScore.map { it!!.scoreToDTO(userId) }
+    }
+
+    @PostMapping()
+    fun create(@RequestBody tripScoreDTO: TripScoreDTO): ResponseEntity<String> {
+
+        tripScoreService.create(tripScoreDTO)
+        return ResponseEntity.ok().body("Creado con exito")
+    //tripScoreService.create(passenger,trip)
+    }
+    // Traer el viaje serviceTrip.ById(id) EntityGraph
+    // Traigo al cliente a partir del viaje
+    // Una vez que tengo al cliente ya puntuo a partir del mismo
+
+
+    //    @DeleteMapping()
 //    fun delete(@RequestParam userId: Int, tripId: Int): ResponseEntity<String>{
 //        return tripScoreService.delete(userId, tripId)
 //    }
 //
-//    @PostMapping()
-//    fun create(@RequestBody tripScoreDTO: TripScoreDTO): ResponseEntity<String>{
-//        return tripScoreService.create(tripScoreDTO)
-//    }
 }

@@ -1,7 +1,7 @@
 package ar.edu.unsam.phm.uberto.dto
 
 data class TripScoreDTO(
-    val tripId: Long?,
+    val tripId: Long,
     val message: String?,
     val scorePoints: Int?,
     val date: String,
