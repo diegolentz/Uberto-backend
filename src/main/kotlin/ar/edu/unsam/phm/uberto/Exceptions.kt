@@ -55,8 +55,9 @@ class NoFriendsFoundException(msg: String = noFriendsFoundMessage) : Exception(m
 const val isEmptyMessage = "the message cannot be empty"
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-class IsEmptyException(msg: String = isEmptyMessage) : Exception(msg)
+class IsEmptyException(msg: String = isEmptyMessage) : RuntimeException(msg)
 
 const val incorrectValues = "Incorrect values"
 
-class IncorrectValuesException(msg: String = incorrectValues) : Exception(msg)
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+class IncorrectValuesException(msg: String = incorrectValues) : RuntimeException(msg)
