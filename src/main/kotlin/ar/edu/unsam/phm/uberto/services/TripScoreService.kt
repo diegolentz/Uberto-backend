@@ -42,10 +42,10 @@ class TripScoreService(
     @Transactional
     fun delete(passenger: Passenger, trip: Trip) {
         if (trip.client.id != passenger.id) {
-            throw BusinessException("Usuario no posee calificaciones para eliminar")
+            throw BusinessException("User has no ratings to delete")
         }
         if(trip.score == null){
-            throw BusinessException("El viaje no tiene puntuacion")
+            throw BusinessException("The trip has no score")
         }
         trip.deleteScore()
         tripRepo.save(trip)
