@@ -35,7 +35,7 @@ class TripScoreService(
     @Transactional
     fun create(tripScoreDTO: TripScoreDTO) {
         val trip = tripRepo.findById(tripScoreDTO.tripId).get()
-        val passenger : Passenger = passengerRepo.findById(trip.client.id!!).get()
+        val passenger = passengerRepo.findById(trip.client.id!!).get()
         passenger.scoreTrip(trip,tripScoreDTO.message!!,tripScoreDTO.scorePoints!!)
         tripRepo.save(trip)
     }
