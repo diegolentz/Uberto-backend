@@ -51,3 +51,12 @@ const val noFriendsFoundMessage = "No passenger matching the given name or lastn
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
 class NoFriendsFoundException(msg: String = noFriendsFoundMessage) : Exception(msg)
+
+const val isEmptyMessage = "the message cannot be empty"
+
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+class IsEmptyException(msg: String = isEmptyMessage) : Exception(msg)
+
+const val incorrectValues = "Incorrect values"
+
+class IncorrectValuesException(msg: String = incorrectValues) : Exception(msg)
