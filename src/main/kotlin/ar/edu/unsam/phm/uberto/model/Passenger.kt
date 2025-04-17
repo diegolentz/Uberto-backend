@@ -85,6 +85,12 @@ class Passenger : User {
         trip.addScore(score)
     }
 
+    private fun validateScoreTrip(message: String,scorePoints: Int) {
+        if (message.isEmpty() ) {
+
+        }
+    }
+
     fun age(): Int = Period.between(birthDate, LocalDate.now()).years
 
     private fun validateTrip(trip: Trip): Boolean {

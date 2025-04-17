@@ -37,8 +37,8 @@ class TripScoreController(
     fun create(@RequestBody tripScoreDTO: TripScoreDTO): ResponseEntity<String> {
         val trip = tripService.getById(tripScoreDTO.tripId)
         val score = TripScore()
-        score.message = tripScoreDTO.message!!
-        score.scorePoints = tripScoreDTO.scorePoints!!
+        score.message = tripScoreDTO.message
+        score.scorePoints = tripScoreDTO.scorePoints
         tripScoreService.create(trip,score)
         return ResponseEntity.ok().body("Creado con exito")
     }
