@@ -13,7 +13,7 @@ interface TripsRepository : CrudRepository<Trip, Long> {
     @EntityGraph(attributePaths = ["client", "driver", "score"])
     fun findByClient_Id(clientId: Long): List<Trip>
 
-    @EntityGraph(attributePaths = ["client", "driver"])
+    @EntityGraph(attributePaths = ["client", "driver", "score"])
     fun findByDriver_Id(driverId: Long): List<Trip>
 
 @Query("""

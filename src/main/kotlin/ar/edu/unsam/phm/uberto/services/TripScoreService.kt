@@ -58,21 +58,4 @@ class TripScoreService(
 //            .body("Elimino calificacion")
 //    }
 
-//    fun create(tripScore: TripScoreDTO): ResponseEntity<String>{
-//        val trip = tripRepo.getByID(tripScore.tripId)
-//        val passenger = passengerRepo.searchByUserID(trip.client.id)
-//        if(passenger == null){
-//            throw BusinessException("No se encuentra pasajero")
-//        }
-//        passenger!!.scoreTrip(trip, tripScore.message, tripScore.scorePoints)
-//
-//        if(trip.score == null){
-//            throw BusinessException("No se crea recomendacion")
-//        }
-//        tripScoreRepo.create(trip.score!!)
-//
-//        return ResponseEntity
-//            .status(HttpStatus.OK)
-//            .body("Se crea recomendacion")
-//    }
 }

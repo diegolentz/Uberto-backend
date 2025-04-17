@@ -34,19 +34,8 @@ class TripScoreController(
 
     @PostMapping()
     fun create(@RequestBody tripScoreDTO: TripScoreDTO): ResponseEntity<String> {
-
         tripScoreService.create(tripScoreDTO)
         return ResponseEntity.ok().body("Creado con exito")
-    //tripScoreService.create(passenger,trip)
     }
-    // Traer el viaje serviceTrip.ById(id) EntityGraph
-    // Traigo al cliente a partir del viaje
-    // Una vez que tengo al cliente ya puntuo a partir del mismo
 
-
-    //    @DeleteMapping()
-//    fun delete(@RequestParam userId: Int, tripId: Int): ResponseEntity<String>{
-//        return tripScoreService.delete(userId, tripId)
-//    }
-//
 }
