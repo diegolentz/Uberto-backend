@@ -38,7 +38,7 @@ class Trip(
     @JoinColumn(name = "driver_id", referencedColumnName = "id")
     var driver: Driver = SimpleDriver()
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JoinColumn(name = "tripscore_id", referencedColumnName = "id")
     var score: TripScore? = null
 
@@ -49,7 +49,7 @@ class Trip(
     }
 
     fun scored():Boolean = (this.score != null)
-    fun canDeleteScore(userId: Long) = userId == client.userId!!.id //Arreglar
+    fun canDeleteScore(userId: Long) = userId == client.id //Arreglar
 
     fun deleteScore(){
         score = null

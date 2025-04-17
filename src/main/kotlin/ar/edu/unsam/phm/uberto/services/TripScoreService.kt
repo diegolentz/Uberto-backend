@@ -2,6 +2,7 @@ package ar.edu.unsam.phm.uberto.services
 
 import ar.edu.unsam.phm.uberto.BusinessException
 import ar.edu.unsam.phm.uberto.dto.TripScoreDTO
+import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.Trip
 import ar.edu.unsam.phm.uberto.model.TripScore
 import ar.edu.unsam.phm.uberto.model.User
@@ -9,6 +10,7 @@ import ar.edu.unsam.phm.uberto.repository.DriverRepository
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
 import ar.edu.unsam.phm.uberto.repository.TripScoreRepository
 import ar.edu.unsam.phm.uberto.repository.TripsRepository
+import jakarta.transaction.Transactional
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -20,13 +22,22 @@ class TripScoreService(
     private val driverRepo: DriverRepository,
     private val passengerRepo: PassengerRepository
 ) {
-//    fun getFromUser(userId: Int): List<Trip?>{
-////        Con JPA, se consulta directamente a los viajes que tengan una calificacion con ESE ID
-//        val users = driverRepo.instances.toList() + passengerRepo.instances.toList()
-//        val user: User? = users.find { it.userId == userId} ?: throw Exception("ERROR id")
-//
-//        return user!!.trips.filter{ it.score != null}
-//    }
+    fun getFromPassenger(trips:List<Trip>): List<Trip?>{
+        val tripsScore  = trips.filter { it.score != null }
+        return tripsScore
+    }
+
+    fun getFromDriver(trips: List<Trip>): List<Trip?> {
+        val tripsScore  = trips.filter { it.score != null }
+        return tripsScore
+    }
+
+    @Transactional
+    fun create(trip : Trip , score: TripScore) {
+        val passenger = passengerRepo.findById(trip.client.id!!).get()
+        passenger.scoreTrip(trip,score.message,score.scorePoints)
+        tripRepo.save(trip)
+    }
 
 
 //    fun delete(userId: Int, tripId: Int): ResponseEntity<String> {
@@ -46,21 +57,4 @@ class TripScoreService(
 //            .body("Elimino calificacion")
 //    }
 
-//    fun create(tripScore: TripScoreDTO): ResponseEntity<String>{
-//        val trip = tripRepo.getByID(tripScore.tripId)
-//        val passenger = passengerRepo.searchByUserID(trip.client.id)
-//        if(passenger == null){
-//            throw BusinessException("No se encuentra pasajero")
-//        }
-//        passenger!!.scoreTrip(trip, tripScore.message, tripScore.scorePoints)
-//
-//        if(trip.score == null){
-//            throw BusinessException("No se crea recomendacion")
-//        }
-//        tripScoreRepo.create(trip.score!!)
-//
-//        return ResponseEntity
-//            .status(HttpStatus.OK)
-//            .body("Se crea recomendacion")
-//    }
 }
