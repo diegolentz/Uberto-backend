@@ -2,6 +2,7 @@ package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.dto.TripScoreDTO
 import ar.edu.unsam.phm.uberto.dto.scoreToDTO
+import ar.edu.unsam.phm.uberto.model.TripScore
 import ar.edu.unsam.phm.uberto.repository.TripScoreRepository
 import ar.edu.unsam.phm.uberto.services.TripScoreService
 import ar.edu.unsam.phm.uberto.services.TripService
@@ -34,7 +35,11 @@ class TripScoreController(
 
     @PostMapping()
     fun create(@RequestBody tripScoreDTO: TripScoreDTO): ResponseEntity<String> {
-        tripScoreService.create(tripScoreDTO)
+        val trip = tripService.getById(tripScoreDTO.tripId)
+        val score = TripScore()
+        score.message = tripScoreDTO.message!!
+        score.scorePoints = tripScoreDTO.scorePoints!!
+        tripScoreService.create(trip,score)
         return ResponseEntity.ok().body("Creado con exito")
     }
 
