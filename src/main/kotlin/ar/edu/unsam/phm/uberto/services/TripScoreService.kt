@@ -39,22 +39,16 @@ class TripScoreService(
         tripRepo.save(trip)
     }
 
-
-//    fun delete(userId: Int, tripId: Int): ResponseEntity<String> {
-//        val trip = tripRepo.getByID(tripId)
-//        if (trip.client.id != userId) {
-//            throw BusinessException("Usuario no posee calificaciones para eliminar")
-//        }
-//        if(trip.score == null){
-//            throw BusinessException("El viaje no tiene puntuacion")
-//        }
-//        val tripScore = tripScoreRepo.getByID(trip.score!!.id)
-//        tripScoreRepo.delete(tripScore)
-//        trip.deleteScore()
-//        tripRepo.update(trip)
-//        return ResponseEntity
-//            .status(HttpStatus.OK)
-//            .body("Elimino calificacion")
-//    }
+    @Transactional
+    fun delete(passenger: Passenger, trip: Trip) {
+        if (trip.client.id != passenger.id) {
+            throw BusinessException("User has no ratings to delete")
+        }
+        if(trip.score == null){
+            throw BusinessException("The trip has no score")
+        }
+        trip.deleteScore()
+        tripRepo.save(trip)
+    }
 
 }
