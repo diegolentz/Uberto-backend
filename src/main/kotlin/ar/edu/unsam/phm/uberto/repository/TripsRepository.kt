@@ -22,8 +22,11 @@ interface TripsRepository : CrudRepository<Trip, Long> {
         AND ( t.origin = :origin)
         AND ( t.destination = :destination)
         AND ( t.numberPassengers = :numberPassengers)
-        AND (t.client.firstName LIKE %:name%) 
-    """) //TODO arreglar tema de nombre completo
+        AND (
+        LOWER(t.client.firstName) LIKE LOWER(CONCAT('%', :name, '%')) 
+        OR LOWER(t.client.lastName) LIKE LOWER(CONCAT('%', :name, '%'))
+    ) 
+    """)
     fun searchByForm(
         origin: String,
         destination: String,
@@ -31,20 +34,5 @@ interface TripsRepository : CrudRepository<Trip, Long> {
         name: String,
         driverId: Long
     ): List<Trip>
-  
-//
-//    @Query(nativeQuery = true, value = """
-//        SELECT id  FROM driver d
-//        WHERE d.id NOT IN (
-//            SELECT driver_id FROM trip t
-//            WHERE t.date = :startDate
-//
-//)
-//""")
-//    fun findAvailableDrivers(
-//        @Param("startDate") startDate: LocalDateTime,
-//        @Param("endDate") endDate: Int
-//    ): List<Long>
-//
 
 }

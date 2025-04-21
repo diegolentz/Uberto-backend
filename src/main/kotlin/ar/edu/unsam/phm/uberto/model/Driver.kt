@@ -29,7 +29,7 @@ abstract class Driver():User {
     override var balance: Double = 0.0
 
     @OneToMany( fetch = FetchType.EAGER)
-    @JoinColumn(name = "driver_id")
+    //@JoinColumn(name = "driver_id")
     override var trips: MutableList<Trip> = mutableListOf()
 
     @Column(length = 255)
