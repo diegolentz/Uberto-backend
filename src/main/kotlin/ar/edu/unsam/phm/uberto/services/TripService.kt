@@ -1,6 +1,7 @@
 package ar.edu.unsam.phm.uberto.services
 
-import ar.edu.unsam.phm.uberto.BusinessException
+import ar.edu.unsam.phm.uberto.FailSaveEntity
+import ar.edu.unsam.phm.uberto.NotFoundEntityException
 import ar.edu.unsam.phm.uberto.dto.TripDTO
 import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.model.Passenger
@@ -38,7 +39,7 @@ class TripService(val tripRepo: TripsRepository) {
         try{
             tripRepo.save(newTrip)
         }catch (e: DataAccessException){
-            throw BusinessException("Error en la creación del viaje")
+            throw FailSaveEntity("Error en la creación del viaje")
         }
 
         return ResponseEntity
