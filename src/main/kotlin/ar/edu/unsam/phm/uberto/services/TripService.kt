@@ -35,9 +35,8 @@ class TripService(val tripRepo: TripsRepository) {
         }
 
         try{
-
-        client.requestTrip(newTrip)
-        driver.responseTrip(newTrip, trip.duration)
+            client.requestTrip(newTrip)
+            driver.responseTrip(newTrip, trip.duration)
         }catch (e: Exception){
             return ResponseEntity.badRequest().body("${e.message}")
         }
