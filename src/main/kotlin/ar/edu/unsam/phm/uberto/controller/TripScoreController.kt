@@ -41,18 +41,14 @@ class TripScoreController(
         val score = TripScore()
         score.message = tripScoreDTO.message
         score.scorePoints = tripScoreDTO.scorePoints
-        tripScoreService.create(trip,score)
-        return ResponseEntity.ok().body("Creado con exito")
+        return tripScoreService.create(trip,score)
     }
 
     @DeleteMapping()
     fun delete(@RequestParam userId: Long , @RequestParam tripId: Long): ResponseEntity<String>{
         val trip = tripService.getById(tripId)
         val passenger = passengerService.getById(userId)
-        tripScoreService.delete(passenger,trip)
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body("eliminada con exito")
+        return tripScoreService.delete(passenger,trip)
     }
 
 }
