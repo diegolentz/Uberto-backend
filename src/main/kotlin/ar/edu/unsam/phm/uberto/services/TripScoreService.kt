@@ -17,9 +17,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class TripScoreService(
-    private val tripScoreRepo: TripScoreRepository,
     private val tripRepo: TripsRepository,
-    private val driverRepo: DriverRepository,
     private val passengerRepo: PassengerRepository
 ) {
     fun getFromPassenger(trips:List<Trip>): List<Trip?>{

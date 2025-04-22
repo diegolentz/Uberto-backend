@@ -42,7 +42,6 @@ class TripScoreController(
         score.message = tripScoreDTO.message
         score.scorePoints = tripScoreDTO.scorePoints
         return tripScoreService.create(trip,score)
-
     }
 
     @DeleteMapping()
