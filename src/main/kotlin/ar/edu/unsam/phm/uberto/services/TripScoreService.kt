@@ -33,14 +33,17 @@ class TripScoreService(
     }
 
     @Transactional
-    fun create(trip : Trip , score: TripScore) {
+    fun create(trip : Trip , score: TripScore) : ResponseEntity<String> {
         val passenger = passengerRepo.findById(trip.client.id!!).get()
         passenger.scoreTrip(trip,score.message,score.scorePoints)
-        tripRepo.save(trip)
+        tripRepo.save(trip) //agregar try catch
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body("Creado con exito")
     }
 
     @Transactional
-    fun delete(passenger: Passenger, trip: Trip) {
+    fun delete(passenger: Passenger, trip: Trip) : ResponseEntity<String> {
         if (trip.client.id != passenger.id) {
             throw BusinessException("User has no ratings to delete")
         }
@@ -48,7 +51,10 @@ class TripScoreService(
             throw BusinessException("The trip has no score")
         }
         trip.deleteScore()
-        tripRepo.save(trip)
+        tripRepo.save(trip) // agregar try catch
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body("Eliminada con exito")
     }
 
 }
