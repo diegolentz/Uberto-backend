@@ -25,6 +25,7 @@ class TestFactory {
             val driver = PremiumDriver().apply {
                 firstName = "Driver Premium ${i}"
                 lastName = "Test Premium ${i}"
+                img = ""
             }
             listDriver.add(driver)
         }

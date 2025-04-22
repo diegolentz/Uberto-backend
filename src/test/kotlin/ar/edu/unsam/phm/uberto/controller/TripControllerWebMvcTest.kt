@@ -1,6 +1,7 @@
 package ar.edu.unsam.phm.uberto.controller
 
 
+import ar.edu.unsam.phm.uberto.factory.TestFactory
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.PremiumDriver
 import ar.edu.unsam.phm.uberto.model.Trip
@@ -50,6 +51,8 @@ class TripControllerWebMvcTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
+    val testFactory = TestFactory()
+
     @Test
     fun `Pido los trip de un pasajero que no existe - no tiene pendientes`(){
         Mockito.`when`(tripService.getAllByPassengerId(1)).thenReturn(emptyList())
@@ -60,20 +63,21 @@ class TripControllerWebMvcTest {
 
     @Test
     fun `Pido los trip de un pasajero que si tiene viajes`(){
-        val passenger = Passenger().apply {
+        val trip = testFactory.createTripFinished(1).get(0)
+
+        val passenger = trip.client.apply {
             firstName = "Mandarina"
             lastName = "Solution"}
         passengerRepository.save(passenger)
 
-        val driver = PremiumDriver().apply {
-            firstName = "Juan"
-            lastName = "Pérez"
-            img=""
-        }
-        driverRepository.save(driver)
-        driverRepository.save(driver)
+        val driver = trip.driver
+        driverRepository.save(trip.driver)
 
-        val trip = Trip().apply {
+        driverRepository.save(driver)
+        driverRepository.save(driver)
+        tripRepository.save(trip)
+
+        trip.apply {
             client = passenger
             this.driver = driver
             numberPassengers = 2
@@ -91,7 +95,7 @@ class TripControllerWebMvcTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$[0].destination").value("destino"))
             .andExpect(MockMvcResultMatchers.jsonPath("$[0].numberPassengers").value(2))
             .andExpect(MockMvcResultMatchers.jsonPath("$[0].passengerName").value("Mandarina Solution"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].driverName").value("Juan Pérez"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].driverName").value("Driver Premium 0 Test Premium 0"))
     }
 
 }
