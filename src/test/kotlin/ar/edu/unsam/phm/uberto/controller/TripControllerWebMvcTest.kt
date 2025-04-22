@@ -170,4 +170,25 @@ class TripControllerWebMvcTest {
             .andExpect(MockMvcResultMatchers.content().string("Insufficient balance."))
     }
 
+
+    @Test
+    fun `Todos los viajes de un diver`(){
+
+        val tripPending = testFactory.createTripPending(1).get(1)
+        val tripFinished = testFactory.createTripFinished(1).get(1)
+
+        driverRepository.save(tripPending.driver)
+        passengerRepository.save(tripPending.client)
+
+        tripFinished.driver = tripPending.driver
+        tripFinished.client = tripPending.client
+
+        tripRepository.saveAll(listOf(tripPending, tripFinished))
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/trip/driver/${tripPending.driver.id}")
+        )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2)) 
+    }
 }
