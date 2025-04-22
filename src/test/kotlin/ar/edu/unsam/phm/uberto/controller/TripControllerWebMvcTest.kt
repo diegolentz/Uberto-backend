@@ -30,13 +30,13 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 @ActiveProfiles("test")
 @DisplayName("Dado un controller de Trips")
 class TripControllerWebMvcTest {
-    @MockitoBean
+    @Autowired
     lateinit var  tripService: TripService
 
-    @MockitoBean
+    @Autowired
     lateinit var passengerService: PassengerService
 
-    @MockitoBean
+    @Autowired
     lateinit var driverService: DriverService
 
     @Autowired
@@ -55,8 +55,7 @@ class TripControllerWebMvcTest {
 
     @Test
     fun `Pido los trip de un pasajero que no existe - no tiene pendientes`(){
-        Mockito.`when`(tripService.getAllByPassengerId(1)).thenReturn(emptyList())
-        mockMvc.perform(MockMvcRequestBuilders.get("/trip/passenger/1"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/trip/passenger/2313213"))
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.content().json("[]"))
     }
@@ -86,8 +85,6 @@ class TripControllerWebMvcTest {
         }
         tripRepository.save(trip)
 
-        //Act
-        Mockito.`when`(tripService.getAllByPassengerId(passenger.id!!)).thenReturn(listOf(trip))
 
         // Act & Assert
         mockMvc.perform(MockMvcRequestBuilders.get("/trip/passenger/${passenger.id}"))
