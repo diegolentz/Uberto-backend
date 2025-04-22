@@ -71,7 +71,7 @@ class Bootstrap(
 //            "https://img.freepik.com/fotos-premium/persona-avatar-plana-fondo-rojo-personaje-dibujos-animados_1036693-6803.jpg",
 //            "https://img.freepik.com/fotos-premium/hombre-joven-sonriente-adam-avatar-3d-personas-vectoriales-ilustracion-personajes-estilo-minimalista-dibujos-animados_1029476-294679.jpg",
 //            "https://ar.images.search.yahoo.com/search/images;_ylt=AwrFNzpEaORnzvkjOTCt9Qt.?p=avatar+persona+html+img&fr=mcafee&imgf=face&fr2=p%3As%2Cv%3Ai#id=236&iurl=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F220453%2Fpexels-photo-220453.jpeg%3Fcs%3Dsrgb%26dl%3Dpexels-pixabay-220453.jpg%26fm%3Djpg&action=click")
-        val balances = listOf<Double>(1000000.0, 1000000.0, 1000000.0, 1000000.0, 1000000.0)
+        val balances = listOf<Double>(1000000.0, 1000000.0, 1000000.0, 1000000.0, 1.0)
         val phones = listOf<Int>(1568568792, 1235598763, 1556876259, 1235468975, 1554876255)
 
         users.forEachIndexed { index: Int, user: UserAuthCredentials ->
