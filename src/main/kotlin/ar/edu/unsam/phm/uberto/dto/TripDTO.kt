@@ -53,7 +53,7 @@ fun Trip.toDTO() : TripDTO{
 }
 
 fun Trip.scoreToDTO(userId: Long) = TripScoreDTO(
-    tripId = id,
+    tripId = id!!,
     message = score!!.message,
     scorePoints = score!!.scorePoints,
     date = date.toString(),

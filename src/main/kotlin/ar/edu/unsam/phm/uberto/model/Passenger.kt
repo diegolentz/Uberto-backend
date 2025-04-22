@@ -1,9 +1,6 @@
 package ar.edu.unsam.phm.uberto.model
 
-import ar.edu.unsam.phm.uberto.BalanceAmmountNotValidException
-import ar.edu.unsam.phm.uberto.FriendAlreadyExistException
-import ar.edu.unsam.phm.uberto.FriendNotExistException
-import ar.edu.unsam.phm.uberto.InsufficientBalanceException
+import ar.edu.unsam.phm.uberto.*
 import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 import jakarta.persistence.*
 import java.time.LocalDate
@@ -79,10 +76,16 @@ class Passenger : User {
     fun finishedTrips() = trips.filter { trip: Trip -> trip.finished() }
 
     fun scoreTrip(trip: Trip, message: String, scorePoints: Int) {
+        validateScoreTrip(message,scorePoints)
         val score = TripScore()
         score.message = message
         score.scorePoints = scorePoints
         trip.addScore(score)
+    }
+
+    private fun validateScoreTrip(message: String,scorePoints: Int) {
+        if (message.isEmpty()) { throw IsEmptyException() }
+        if (scorePoints <= 0 || scorePoints > 6) { throw IncorrectValuesException() }
     }
 
     fun age(): Int = Period.between(birthDate, LocalDate.now()).years

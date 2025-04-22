@@ -3,6 +3,7 @@ package ar.edu.unsam.phm.uberto.bootstrap
 import ar.edu.unsam.phm.uberto.builder.DriverBuilder
 import ar.edu.unsam.phm.uberto.builder.PassengerBuilder
 import ar.edu.unsam.phm.uberto.builder.TripBuilder
+import ar.edu.unsam.phm.uberto.builder.TripScoreBuilder
 import ar.edu.unsam.phm.uberto.factory.AuthFactory
 import ar.edu.unsam.phm.uberto.model.*
 import ar.edu.unsam.phm.uberto.repository.*
@@ -357,7 +358,7 @@ class Bootstrap(
 
 
 //    private fun createTripScore(){
-//        var passengers:List<Passenger> = passengerRepo.instances.toList()
+//        var passengers: MutableIterable<Passenger> = passengerRepo.findAll()
 //        val scoresPoints:List<Int> = listOf(3, 2, 1, 3, 4)
 //        val scoresMessages:List<String> = listOf("Excelente", "Bueno", "Malo", "Malisimo", "Nefasto")
 //        passengers.forEachIndexed { index:Int, passenger:Passenger ->

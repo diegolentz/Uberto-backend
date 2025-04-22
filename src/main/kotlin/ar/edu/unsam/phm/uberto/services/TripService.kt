@@ -16,6 +16,10 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class TripService(val tripRepo: TripsRepository) {
 
+    fun getById(id: Long): Trip {
+        return tripRepo.findById(id).get()
+    }
+
     @Transactional
     fun createTrip(trip: TripDTO, client: Passenger, driver: Driver): ResponseEntity<String> {
 
