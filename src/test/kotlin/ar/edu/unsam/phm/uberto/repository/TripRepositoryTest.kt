@@ -1,5 +1,6 @@
 package ar.edu.unsam.phm.uberto.repository
 
+import ar.edu.unsam.phm.uberto.factory.TestFactory
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.PremiumDriver
 import ar.edu.unsam.phm.uberto.model.Trip
@@ -18,21 +19,23 @@ class TripRepositoryTest {
     @Autowired
     lateinit var driverRepository: DriverRepository
 
+    val testFactory = TestFactory()
+
     @Test
     fun `buscar un trip asociado a un passenger`(){
         //Arrange
-        val passenger = Passenger().apply { firstName = "Mandarina" }
+        val passenger = testFactory.createPassenger(1).get(1)
         passengerRepository.save(passenger)
-        val driver = PremiumDriver()
+
+        val driver = testFactory.createDriverPremium(1).get(1)
         driverRepository.save(driver)
 
-        val trip = Trip().apply {
-            client = passenger
-            this.driver = driver
-        }
+        val trip = testFactory.createTrip(passenger, driver)
         tripRepository.save(trip)
+
         //Act
         val client = tripRepository.findByClient_Id(passenger.id!!)
+
         //Assert
         assertFalse(client.isEmpty())
     }
@@ -40,21 +43,20 @@ class TripRepositoryTest {
     @Test
     fun `buscar un trip asociado a un formulario de driver`(){
         //Arrange
-        val passenger = Passenger().apply {
-            firstName = "Mandarina"
-            lastName = "Solution"}
-        passengerRepository.save(passenger)
-
-        val driver = PremiumDriver()
-        driverRepository.save(driver)
-
-        val trip = Trip().apply {
-            client = passenger
-            this.driver = driver
+        val trip = testFactory.createTripFinished(1).get(0)
+        trip.apply {
             numberPassengers = 2
             destination = "destino"
             origin = "origen"
         }
+        val passenger = trip.client.apply {
+            firstName = "Mandarina"
+            }
+        passengerRepository.save(passenger)
+
+        val driver = trip.driver
+        driverRepository.save(trip.driver)
+
         tripRepository.save(trip)
 
         //Act
@@ -72,27 +74,28 @@ class TripRepositoryTest {
     @Test
     fun `buscar un trip asociado a un formulario de driver con nombres similares`(){
         //Arrange
-        val passenger = Passenger().apply {
+        val listTrips = testFactory.createTripFinished(2)
+
+        val driver = listTrips.get(0).driver
+        driverRepository.save(driver)
+
+        val passenger = listTrips.get(0).client.apply {
             firstName = "Mandarina"
             lastName = "Solution"}
-        val passenger2 = Passenger().apply {
+        val passenger2 = listTrips.get(1).client.apply {
             firstName = "Mandarina"
             lastName = "Manzana"}
         passengerRepository.save(passenger)
         passengerRepository.save(passenger2)
 
-        val driver = PremiumDriver()
-        driverRepository.save(driver)
 
-        val trip = Trip().apply {
+        val trip = listTrips.get(0).apply {
             client = passenger
-            this.driver = driver
             numberPassengers = 2
             destination = "destino"
             origin = "origen"
         }
-
-        val trip2 = Trip().apply {
+        val trip2 = listTrips.get(1).apply {
             client = passenger2
             this.driver = driver
             numberPassengers = 2
