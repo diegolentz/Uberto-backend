@@ -1,6 +1,7 @@
 package ar.edu.unsam.phm.uberto.controller
 
 
+import ar.edu.unsam.phm.uberto.dto.TripDTO
 import ar.edu.unsam.phm.uberto.factory.TestFactory
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.PremiumDriver
@@ -11,6 +12,7 @@ import ar.edu.unsam.phm.uberto.repository.TripsRepository
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.PassengerService
 import ar.edu.unsam.phm.uberto.services.TripService
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -24,6 +26,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import java.time.LocalDateTime
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -93,6 +96,78 @@ class TripControllerWebMvcTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$[0].numberPassengers").value(2))
             .andExpect(MockMvcResultMatchers.jsonPath("$[0].passengerName").value("Mandarina Solution"))
             .andExpect(MockMvcResultMatchers.jsonPath("$[0].driverName").value("Driver Premium 0 Test Premium 0"))
+    }
+
+    @Test
+    fun `Se crea un trip`(){
+        val driver = testFactory.createDriverPremium(1).get(0)
+        val passenger = testFactory.createPassenger(1).get(0).apply { balance = 100000000.0 }
+        passengerRepository.save(passenger)
+        driverRepository.save(driver)
+        val jsonBody = """
+                        {   
+                            "id": 0,
+                            "userId": ${passenger.id},
+                            "driverId": ${driver.id},
+                            "duration": 60,
+                            "numberPassengers": 2,
+                            "date": "${LocalDateTime.now().plusDays(1)}",
+                            "origin": "origen",
+                            "destination": "destino",
+                            "price": 0,
+                            "driverName": "string",
+                            "passengerName": "string",
+                            "imgPassenger": "string",
+                            "imgDriver": "string",
+                            "scored": true
+                        }
+                        """.trimIndent()
+
+
+        // Act & Assert
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/trip/create")
+                .contentType("application/json")
+                .content(jsonBody)
+        )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.content().string("Se reserva de viaje exitosamente"))
+    }
+
+    @Test
+    fun `Se falla creacion de trip, pasajero sin saldo`(){
+        val driver = testFactory.createDriverPremium(1).get(0)
+        val passenger = testFactory.createPassenger(1).get(0).apply { balance = 1.0 }
+        passengerRepository.save(passenger)
+        driverRepository.save(driver)
+        val jsonBody = """
+                        {   
+                            "id": 0,
+                            "userId": ${passenger.id},
+                            "driverId": ${driver.id},
+                            "duration": 60,
+                            "numberPassengers": 2,
+                            "date": "${LocalDateTime.now().plusDays(1)}",
+                            "origin": "origen",
+                            "destination": "destino",
+                            "price": 110,
+                            "driverName": "string",
+                            "passengerName": "string",
+                            "imgPassenger": "string",
+                            "imgDriver": "string",
+                            "scored": true
+                        }
+                        """.trimIndent()
+
+
+        // Act & Assert
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/trip/create")
+                .contentType("application/json")
+                .content(jsonBody)
+        )
+            .andExpect(MockMvcResultMatchers.status().is4xxClientError)
+            .andExpect(MockMvcResultMatchers.content().string("Insufficient balance."))
     }
 
 }

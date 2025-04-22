@@ -1,6 +1,7 @@
 package ar.edu.unsam.phm.uberto.services
 
 import ar.edu.unsam.phm.uberto.FailSaveEntity
+import ar.edu.unsam.phm.uberto.InsufficientBalanceException
 import ar.edu.unsam.phm.uberto.NotFoundEntityException
 import ar.edu.unsam.phm.uberto.dto.TripDTO
 import ar.edu.unsam.phm.uberto.model.Driver
@@ -33,8 +34,13 @@ class TripService(val tripRepo: TripsRepository) {
             this.driver = driver
         }
 
+        try{
+
         client.requestTrip(newTrip)
         driver.responseTrip(newTrip, trip.duration)
+        }catch (e: Exception){
+            return ResponseEntity.badRequest().body("${e.message}")
+        }
 
         try{
             tripRepo.save(newTrip)

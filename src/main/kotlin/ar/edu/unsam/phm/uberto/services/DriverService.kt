@@ -45,4 +45,8 @@ class DriverService(val driverRepo: DriverRepository) {
         }
     }
 
+    fun getByIdTrip(id: Long): Driver{
+        return driverRepo.getByIdTrip(id)
+    }
+
 }
