@@ -1,7 +1,7 @@
 -- Tabla para el historial de cambios de saldo
 CREATE TABLE IF NOT EXISTS balance_history (
     id SERIAL PRIMARY KEY,
-    passenger_id INTEGER REFERENCES usuarios(id),
+    passenger_id INTEGER REFERENCES passenger(id),
     fecha_modificacion TIMESTAMP DEFAULT now(),
     saldo_anterior NUMERIC,
     saldo_nuevo NUMERIC
@@ -14,16 +14,16 @@ BEGIN
     -- Solo registrar si el saldo cambió
     IF NEW.saldo IS DISTINCT FROM OLD.saldo THEN
         INSERT INTO balance_history (passenger_id, saldo_anterior, saldo_nuevo)
-        VALUES (OLD.id, OLD.saldo, NEW.saldo);
+        VALUES (OLD.id, OLD.balance, NEW.balance);
 END IF;
 RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 -- Trigger que llama a la función antes de cada UPDATE en usuarios
-DROP TRIGGER IF EXISTS trigger_cambio_saldo ON Passenger;
+DROP TRIGGER IF EXISTS trigger_cambio_saldo ON passenger;
 
 CREATE TRIGGER trigger_cambio_saldo
-    BEFORE UPDATE ON Passenger
+    BEFORE UPDATE ON passenger
     FOR EACH ROW
     EXECUTE FUNCTION registrar_cambio_saldo();
