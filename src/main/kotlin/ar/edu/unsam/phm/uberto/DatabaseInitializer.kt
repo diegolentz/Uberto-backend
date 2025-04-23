@@ -6,7 +6,9 @@
     import org.springframework.jdbc.core.JdbcTemplate
     import org.springframework.stereotype.Component
     import ar.edu.unsam.phm.uberto.sql.CONSTRAINT_BASE_PRICE// Archivo: kotlin/ar/edu/unsam/phm/uberto/sql/SqlConstants.kt
-
+    import ar.edu.unsam.phm.uberto.sql.CREATE_BALANCE_HISTORY_TABLE
+    import ar.edu.unsam.phm.uberto.sql.CREATE_REGISTRAR_BALANCE_CHANGE_FUNCTION
+    import ar.edu.unsam.phm.uberto.sql.CREATE_TRIGGER_BALANCE_CHANGE
 
 
     @Profile("!test")
@@ -19,45 +21,10 @@
 
         @PostConstruct
         fun init() {
-            //Tabla donde se registrarán los cambios del balance
-            val createBalanceHistoryTable = """
-                DROP TABLE IF EXISTS balance_history CASCADE;
-                CREATE TABLE IF NOT EXISTS balance_history (
-                    id SERIAL PRIMARY KEY,
-                    passenger_id INTEGER REFERENCES passenger(id),
-                    modification_date TIMESTAMP DEFAULT now(),
-                    old_balance NUMERIC,
-                    new_balance NUMERIC
-                );
-            """.trimIndent()
-
-            // Función que se ejecuta en el trigger
-            val createRegistrarBalanceChangeFunction = """
-                DROP FUNCTION IF EXISTS record_balance_change();
-                CREATE FUNCTION record_balance_change()
-                RETURNS TRIGGER AS $$
-                BEGIN
-                    IF NEW.balance IS DISTINCT FROM OLD.balance THEN
-                        INSERT INTO balance_history (passenger_id, old_balance, new_balance)
-                        VALUES (OLD.id, OLD.balance, NEW.balance);
-                    END IF;
-                    RETURN NEW;
-                END;
-                $$ LANGUAGE plpgsql;
-            """.trimIndent()
-
-            val createTriggerBalanceChange = """
-                DROP TRIGGER IF EXISTS trigger_balance_change ON passenger;
-                CREATE TRIGGER trigger_balance_change
-                    BEFORE UPDATE ON passenger
-                    FOR EACH ROW
-                    EXECUTE FUNCTION record_balance_change();
-            """.trimIndent()
-
-//            se ejecutan las queries
+            // se ejecuta codigo SQL
             jdbcTemplate.execute(CONSTRAINT_BASE_PRICE.trimIndent())
-            jdbcTemplate.execute(createBalanceHistoryTable)
-            jdbcTemplate.execute(createRegistrarBalanceChangeFunction)
-            jdbcTemplate.execute(createTriggerBalanceChange)
+            jdbcTemplate.execute(CREATE_BALANCE_HISTORY_TABLE.trimIndent())
+            jdbcTemplate.execute(CREATE_REGISTRAR_BALANCE_CHANGE_FUNCTION.trimIndent())
+            jdbcTemplate.execute(CREATE_TRIGGER_BALANCE_CHANGE.trimIndent())
         }
     }
