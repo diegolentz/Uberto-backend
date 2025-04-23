@@ -21,18 +21,18 @@ class TripScoreController(
     private val passengerService: PassengerService
 ){
 
-    @GetMapping("/passenger")
-    fun getScorePassenger(@RequestParam userId: Long): List<TripScoreDTO>{
-        val trips = tripService.getAllByPassengerId(userId)
+    @GetMapping("/passenger/{id}")
+    fun getScorePassenger(@PathVariable id: Long): List<TripScoreDTO>{
+        val trips = tripService.getAllByPassengerId(id)
         val tripScore = tripScoreService.getFromPassenger(trips)
-        return tripScore.map { it!!.scoreToDTO(userId) }
+        return tripScore.map { it!!.scoreToDTO(id) }
     }
 
-    @GetMapping("/driver")
-    fun getScoreDriver(@RequestParam userId: Long): List<TripScoreDTO>{
-        val trips = tripService.getAllByDriverId(userId)
+    @GetMapping("/driver/{id}")
+    fun getScoreDriver(@PathVariable id: Long): List<TripScoreDTO>{
+        val trips = tripService.getAllByDriverId(id)
         val tripScore = tripScoreService.getFromDriver(trips)
-        return tripScore.map { it!!.scoreToDTO(userId) }
+        return tripScore.map { it!!.scoreToDTO(id) }
     }
 
     @PostMapping()
