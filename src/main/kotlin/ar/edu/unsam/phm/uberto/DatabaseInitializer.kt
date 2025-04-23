@@ -2,9 +2,11 @@
 
     import jakarta.annotation.PostConstruct
     import org.springframework.beans.factory.annotation.Autowired
+    import org.springframework.context.annotation.Profile
     import org.springframework.jdbc.core.JdbcTemplate
     import org.springframework.stereotype.Component
 
+    @Profile("!test")
     @Component
     class DatabaseInitializer {
         //Esta es la manera que encontre para solucionar problemas en el orden
