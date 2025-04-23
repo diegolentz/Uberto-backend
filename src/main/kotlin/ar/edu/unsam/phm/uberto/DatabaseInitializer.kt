@@ -26,11 +26,12 @@ class DatabaseInitializer {
 
         // Crear la función registrar_cambio_saldo
         val createRegistrarCambioSaldoFunction = """
+            DROP FUNCTION IF EXISTS registrar_cambio_saldo();
             CREATE FUNCTION registrar_cambio_saldo()
             RETURNS TRIGGER AS $$
             BEGIN
                 -- Solo registrar si el saldo cambió
-                IF NEW.saldo IS DISTINCT FROM OLD.saldo THEN
+                IF NEW.balance IS DISTINCT FROM OLD.balance THEN
                     INSERT INTO balance_history (passenger_id, saldo_anterior, saldo_nuevo)
                     VALUES (OLD.id, OLD.balance, NEW.balance);
                 END IF;
