@@ -1,58 +1,56 @@
-package ar.edu.unsam.phm.uberto
+    package ar.edu.unsam.phm.uberto
 
-import jakarta.annotation.PostConstruct
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.stereotype.Component
+    import jakarta.annotation.PostConstruct
+    import org.springframework.beans.factory.annotation.Autowired
+    import org.springframework.jdbc.core.JdbcTemplate
+    import org.springframework.stereotype.Component
 
-@Component
-class DatabaseInitializer {
+    @Component
+    class DatabaseInitializer {
+        //Esta es la manera que encontre para solucionar problemas en el orden
+        //de ejecución, preguntar a Nico/Agus si es la manera correcta
+        @Autowired
+        private lateinit var jdbcTemplate: JdbcTemplate
 
-    @Autowired
-    private lateinit var jdbcTemplate: JdbcTemplate
+        @PostConstruct
+        fun init() {
+            //Tabla donde se registrarán los cambios del balance
+            val createBalanceHistoryTable = """
+                DROP TABLE IF EXISTS balance_history CASCADE;
+                CREATE TABLE IF NOT EXISTS balance_history (
+                    id SERIAL PRIMARY KEY,
+                    passenger_id INTEGER REFERENCES passenger(id),
+                    modification_date TIMESTAMP DEFAULT now(),
+                    old_balance NUMERIC,
+                    new_balance NUMERIC
+                );
+            """.trimIndent()
 
-    @PostConstruct
-    fun init() {
-        // Crear la tabla balance_history
-        val createBalanceHistoryTable = """
-            CREATE TABLE IF NOT EXISTS balance_history (
-                id SERIAL PRIMARY KEY,
-                passenger_id INTEGER REFERENCES passenger(id),
-                fecha_modificacion TIMESTAMP DEFAULT now(),
-                saldo_anterior NUMERIC,
-                saldo_nuevo NUMERIC
-            );
-        """.trimIndent()
+            // Función que se ejecuta en el trigger
+            val createRegistrarBalanceChangeFunction = """
+                DROP FUNCTION IF EXISTS record_balance_change();
+                CREATE FUNCTION record_balance_change()
+                RETURNS TRIGGER AS $$
+                BEGIN
+                    IF NEW.balance IS DISTINCT FROM OLD.balance THEN
+                        INSERT INTO balance_history (passenger_id, old_balance, new_balance)
+                        VALUES (OLD.id, OLD.balance, NEW.balance);
+                    END IF;
+                    RETURN NEW;
+                END;
+                $$ LANGUAGE plpgsql;
+            """.trimIndent()
 
-        // Crear la función registrar_cambio_saldo
-        val createRegistrarCambioSaldoFunction = """
-            DROP FUNCTION IF EXISTS registrar_cambio_saldo();
-            CREATE FUNCTION registrar_cambio_saldo()
-            RETURNS TRIGGER AS $$
-            BEGIN
-                -- Solo registrar si el saldo cambió
-                IF NEW.balance IS DISTINCT FROM OLD.balance THEN
-                    INSERT INTO balance_history (passenger_id, saldo_anterior, saldo_nuevo)
-                    VALUES (OLD.id, OLD.balance, NEW.balance);
-                END IF;
-                RETURN NEW;
-            END;
-            $$ LANGUAGE plpgsql;
-        """.trimIndent()
+            val createTriggerBalanceChange = """
+                DROP TRIGGER IF EXISTS trigger_cambio_saldo ON passenger;
+                CREATE TRIGGER trigger_cambio_saldo
+                    BEFORE UPDATE ON passenger
+                    FOR EACH ROW
+                    EXECUTE FUNCTION record_balance_change();
+            """.trimIndent()
 
-        // Crear el trigger trigger_cambio_saldo
-        val createTriggerCambioSaldo = """
-            DROP TRIGGER IF EXISTS trigger_cambio_saldo ON passenger;
-
-            CREATE TRIGGER trigger_cambio_saldo
-                BEFORE UPDATE ON passenger
-                FOR EACH ROW
-                EXECUTE FUNCTION registrar_cambio_saldo();
-        """.trimIndent()
-
-        // Ejecutar los scripts SQL
-        jdbcTemplate.execute(createBalanceHistoryTable)
-        jdbcTemplate.execute(createRegistrarCambioSaldoFunction)
-        jdbcTemplate.execute(createTriggerCambioSaldo)
+            jdbcTemplate.execute(createBalanceHistoryTable)
+            jdbcTemplate.execute(createRegistrarBalanceChangeFunction)
+            jdbcTemplate.execute(createTriggerBalanceChange)
+        }
     }
-}
