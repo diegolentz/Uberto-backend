@@ -5,6 +5,9 @@
     import org.springframework.context.annotation.Profile
     import org.springframework.jdbc.core.JdbcTemplate
     import org.springframework.stereotype.Component
+    import ar.edu.unsam.phm.uberto.sql.CONSTRAINT_BASE_PRICE// Archivo: kotlin/ar/edu/unsam/phm/uberto/sql/SqlConstants.kt
+
+
 
     @Profile("!test")
     @Component
@@ -51,6 +54,8 @@
                     EXECUTE FUNCTION record_balance_change();
             """.trimIndent()
 
+//            se ejecutan las queries
+            jdbcTemplate.execute(CONSTRAINT_BASE_PRICE.trimIndent())
             jdbcTemplate.execute(createBalanceHistoryTable)
             jdbcTemplate.execute(createRegistrarBalanceChangeFunction)
             jdbcTemplate.execute(createTriggerBalanceChange)
