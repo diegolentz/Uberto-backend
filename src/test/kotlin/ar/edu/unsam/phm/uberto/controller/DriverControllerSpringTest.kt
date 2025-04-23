@@ -22,7 +22,7 @@ import java.time.LocalDateTime
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @DisplayName("Dado un controller de Trips")
-class DriverControllerWebMvsTest {
+class DriverControllerSpringTest {
 
     @Autowired
     private lateinit var passengerRepository: PassengerRepository
