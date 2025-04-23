@@ -42,8 +42,8 @@
             """.trimIndent()
 
             val createTriggerBalanceChange = """
-                DROP TRIGGER IF EXISTS trigger_cambio_saldo ON passenger;
-                CREATE TRIGGER trigger_cambio_saldo
+                DROP TRIGGER IF EXISTS trigger_balance_change ON passenger;
+                CREATE TRIGGER trigger_balance_change
                     BEFORE UPDATE ON passenger
                     FOR EACH ROW
                     EXECUTE FUNCTION record_balance_change();
