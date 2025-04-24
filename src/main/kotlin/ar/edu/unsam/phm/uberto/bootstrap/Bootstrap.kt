@@ -76,6 +76,7 @@ class Bootstrap(
 
         users.forEachIndexed { index: Int, user: UserAuthCredentials ->
             val passenger = PassengerBuilder()
+                .userId(user.id!!)
                 .firstName(names[index])
                 .lastName(lastNames[index])
                 .birthDate(ages[index])

@@ -1,12 +1,14 @@
 package ar.edu.unsam.phm.uberto.builder
 
 import ar.edu.unsam.phm.uberto.model.Passenger
+import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 import java.time.LocalDate
 
 class PassengerBuilder(val newPassenger: Passenger = Passenger()) {
 
     fun userId(id: Long): PassengerBuilder = apply {
-        newPassenger.userId!!.id = id //arregllaaaaaar
+        if(newPassenger.credentials == null) newPassenger.credentials = UserAuthCredentials()
+        newPassenger.credentials!!.id = id 
     }
 
     fun firstName(name: String): PassengerBuilder = apply {
