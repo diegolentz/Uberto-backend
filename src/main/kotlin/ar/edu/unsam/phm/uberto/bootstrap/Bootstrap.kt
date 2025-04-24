@@ -373,17 +373,26 @@ class Bootstrap(
 
 //    private fun createTripScore(){
 //        var passengers: MutableIterable<Passenger> = passengerRepo.findAll()
-//        val scoresPoints:List<Int> = listOf(3, 2, 1, 3, 4)
-//        val scoresMessages:List<String> = listOf("Excelente", "Bueno", "Malo", "Malisimo", "Nefasto")
-//        passengers.forEachIndexed { index:Int, passenger:Passenger ->
-//            val score = TripScoreBuilder()
-//                .score(scoresPoints[index])
-//                .date(LocalDate.now())
-//                .message(scoresMessages[index])
-//                .build()
+//        val diego = passengers.first { it.firstName == "Diego" }
+//        val travel1 = diego.trips.first { it.date > LocalDateTime.now() }
+//        diego.scoreTrip(travel1, "Buen viaje", 8)
 //
-//            tripScoreRepo.create(score)
-//            passenger.trips[0].score = score
-//        }
+//        val adrian = passengers.first { it.firstName == "adrian" }
+//        val travel2 = adrian.trips.first { it.date < LocalDateTime.now() }
+//        adrian.scoreTrip(travel2, "El auto hacia ruidos", 7)
+//
+//        val pedro = passengers.first { it.firstName == "pedro" }
+//        val travel5 = adrian.trips.first { it.date < LocalDateTime.now() }
+//        pedro.scoreTrip(travel5, "Buen paisaje", 9)
+//
+//        val valentin = passengers.first { it.firstName == "valentin" }
+//        val travel3 = adrian.trips.first { it.date < LocalDateTime.now() }
+//        valentin.scoreTrip(travel3, "El auto largaba humo", 6)
+//
+//        val matias = passengers.first { it.firstName == "matias" }
+//        val travel4 = adrian.trips.first { it.date < LocalDateTime.now() }
+//        matias.scoreTrip(travel4, "Excelente recorrido", 10)
+//
+//
 //    }
 }
