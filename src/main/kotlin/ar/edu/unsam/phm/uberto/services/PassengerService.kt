@@ -18,6 +18,11 @@ class PassengerService(val passengerRepository: PassengerRepository) {
     }
 
     @Transactional(readOnly = true)
+    fun getByIdTrip(passengerId: Long): Passenger {
+        return passengerRepository.getByIdTrip(passengerId)
+    }
+
+    @Transactional(readOnly = true)
     fun getFriends(passengerId: Long): List<FriendDto> {
         return getById(passengerId).friends.map { it.toDTOFriend() }
     }

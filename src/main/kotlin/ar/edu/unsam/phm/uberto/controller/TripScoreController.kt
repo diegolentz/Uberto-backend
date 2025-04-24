@@ -4,8 +4,10 @@ import ar.edu.unsam.phm.uberto.dto.TripScoreDTO
 import ar.edu.unsam.phm.uberto.dto.scoreToDTO
 import ar.edu.unsam.phm.uberto.model.TripScore
 import ar.edu.unsam.phm.uberto.repository.TripScoreRepository
+import ar.edu.unsam.phm.uberto.services.PassengerService
 import ar.edu.unsam.phm.uberto.services.TripScoreService
 import ar.edu.unsam.phm.uberto.services.TripService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.*
 class TripScoreController(
     private val tripScoreService: TripScoreService,
     private val tripService: TripService,
-    private val tripScoreRepository: TripScoreRepository
+    private val passengerService: PassengerService
 ){
 
     @GetMapping("/passenger")
@@ -39,8 +41,14 @@ class TripScoreController(
         val score = TripScore()
         score.message = tripScoreDTO.message
         score.scorePoints = tripScoreDTO.scorePoints
-        tripScoreService.create(trip,score)
-        return ResponseEntity.ok().body("Creado con exito")
+        return tripScoreService.create(trip,score)
+    }
+
+    @DeleteMapping()
+    fun delete(@RequestParam userId: Long , @RequestParam tripId: Long): ResponseEntity<String>{
+        val trip = tripService.getById(tripId)
+        val passenger = passengerService.getById(userId)
+        return tripScoreService.delete(passenger,trip)
     }
 
 }

@@ -30,6 +30,7 @@ abstract class Driver():User {
     @Column
     override var balance: Double = 0.0
 
+
     @OneToMany(mappedBy = "driver", fetch = FetchType.LAZY)
     override var trips: MutableList<Trip> = mutableListOf()
 

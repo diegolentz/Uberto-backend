@@ -17,9 +17,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class TripScoreService(
-    private val tripScoreRepo: TripScoreRepository,
     private val tripRepo: TripsRepository,
-    private val driverRepo: DriverRepository,
     private val passengerRepo: PassengerRepository
 ) {
     fun getFromPassenger(trips:List<Trip>): List<Trip?>{
@@ -33,28 +31,28 @@ class TripScoreService(
     }
 
     @Transactional
-    fun create(trip : Trip , score: TripScore) {
+    fun create(trip : Trip , score: TripScore) : ResponseEntity<String> {
         val passenger = passengerRepo.findById(trip.client.id!!).get()
         passenger.scoreTrip(trip,score.message,score.scorePoints)
-        tripRepo.save(trip)
+        tripRepo.save(trip) //agregar try catch
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body("Creado con exito")
     }
 
-
-//    fun delete(userId: Int, tripId: Int): ResponseEntity<String> {
-//        val trip = tripRepo.getByID(tripId)
-//        if (trip.client.id != userId) {
-//            throw BusinessException("Usuario no posee calificaciones para eliminar")
-//        }
-//        if(trip.score == null){
-//            throw BusinessException("El viaje no tiene puntuacion")
-//        }
-//        val tripScore = tripScoreRepo.getByID(trip.score!!.id)
-//        tripScoreRepo.delete(tripScore)
-//        trip.deleteScore()
-//        tripRepo.update(trip)
-//        return ResponseEntity
-//            .status(HttpStatus.OK)
-//            .body("Elimino calificacion")
-//    }
+    @Transactional
+    fun delete(passenger: Passenger, trip: Trip) : ResponseEntity<String> {
+        if (trip.client.id != passenger.id) {
+            throw BusinessException("User has no ratings to delete")
+        }
+        if(trip.score == null){
+            throw BusinessException("The trip has no score")
+        }
+        trip.deleteScore()
+        tripRepo.save(trip) // agregar try catch
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body("Eliminada con exito")
+    }
 
 }

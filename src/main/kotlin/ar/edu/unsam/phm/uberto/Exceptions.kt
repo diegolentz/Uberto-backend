@@ -3,6 +3,7 @@ package ar.edu.unsam.phm.uberto
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ResponseStatus
 
+class FailSaveEntity(msg: String) : RuntimeException(msg)
 class BusinessException(msg: String) : Exception(msg)
 
 const val invalidCredentialsMessage = "Incorrect Username or Password"
@@ -42,6 +43,9 @@ const val friendNotExistMessage = "Not friend of passenger"
 @ResponseStatus(HttpStatus.NOT_FOUND)
 class FriendNotExistException(msg: String = friendNotExistMessage) : RuntimeException(msg)
 
+@ResponseStatus(HttpStatus.NOT_FOUND)
+class NotFoundEntityException(msg: String) : RuntimeException(msg)
+
 const val passengerNotFoundMessage = "Not passenger match for given ID"
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -51,3 +55,13 @@ const val noFriendsFoundMessage = "No passenger matching the given name or lastn
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
 class NoFriendsFoundException(msg: String = noFriendsFoundMessage) : Exception(msg)
+
+const val isEmptyMessage = "the message cannot be empty"
+
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+class IsEmptyException(msg: String = isEmptyMessage) : RuntimeException(msg)
+
+const val incorrectValues = "Incorrect values"
+
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+class IncorrectValuesException(msg: String = incorrectValues) : RuntimeException(msg)
