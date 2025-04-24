@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class   TripService(val tripRepo: TripsRepository) {
+class TripService(val tripRepo: TripsRepository) {
 
     fun getById(id: Long): Trip {
         return tripRepo.findById(id).get()
