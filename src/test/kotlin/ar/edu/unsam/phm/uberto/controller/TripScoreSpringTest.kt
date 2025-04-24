@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -37,7 +38,18 @@ class TripScoreSpringTest {
     val testFactory = TestFactory()
 
     @Test
-    fun `si busco la calificacion de un pasajero que no existe` {
-        mockMvc.perform(MockMvcRequestBuilders.post("/tripScore/passenger/1"))
+    fun `busco las calificaciones de un pasajero que no realizo ninguna calificacion`(){
+        mockMvc.perform(MockMvcRequestBuilders.get("/tripScore/passenger/1"))
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(0))
     }
+
+    @Test
+    fun `busco las calificaciones de un conductor que no tiene calificaciones`(){
+        mockMvc.perform(MockMvcRequestBuilders.get("/tripScore/driver/1"))
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(0))
+    }
+
+
 }
