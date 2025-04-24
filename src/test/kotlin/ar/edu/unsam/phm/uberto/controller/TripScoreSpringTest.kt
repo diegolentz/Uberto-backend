@@ -55,12 +55,25 @@ class TripScoreSpringTest {
 
     @Test
     fun `Si creo una calificacion tanto el pasajero como el conductor podran ver la misma`() {
-        val trip = testFactory.createTripFinished(1).get(0)
+        val trip      = testFactory.createTripFinished(1).get(0)
         val passenger = trip.client
-        val driver = trip.driver
+        val driver0    = trip.driver
 
+        passenger.apply {
+            firstName = "Pica"
+            lastName = ""
+        }
+        driver0.apply {
+            firstName = "Colorado"
+            lastName  = ""
+        }
+
+        trip.apply {
+            client = passenger
+            driver = driver0
+        }
         passengerRepository.save(passenger)
-        driverRepository.save(driver)
+        driverRepository.save(driver0)
         tripRepository.save(trip)
 
         val tripScore = TripScoreDTO(
@@ -68,11 +81,11 @@ class TripScoreSpringTest {
              "Viaje copado",
              3,
              "30/05/2025",
-             "Pica",
-             "Colorado",
+             passenger.firstName,
+             driver0.firstName,
              "",
              "",
-             false
+             true
         )
 
         val objectMapper = ObjectMapper()
@@ -82,6 +95,19 @@ class TripScoreSpringTest {
             .contentType("application/json")
             .content(createInfoJson))
             .andExpect(MockMvcResultMatchers.status().isOk)
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/tripScore/passenger/${passenger.id}"))
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(1))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].tripId").value(trip.id!!))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].message").value(tripScore.message))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].scorePoints").value(tripScore.scorePoints))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].passengerName").value(tripScore.passengerName))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].driverName").value(tripScore.driverName))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].avatarUrlPassenger").value(tripScore.avatarUrlPassenger))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].avatarUrlDriver").value(tripScore.avatarUrlDriver))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].delete").value(tripScore.delete))
+
     }
 
 }
