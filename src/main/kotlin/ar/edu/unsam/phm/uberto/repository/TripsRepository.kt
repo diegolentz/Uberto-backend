@@ -27,6 +27,7 @@ interface TripsRepository : CrudRepository<Trip, Long> {
         OR LOWER(t.client.lastName) LIKE LOWER(CONCAT('%', :name, '%'))
     ) 
     """)
+@EntityGraph(attributePaths = ["driver", "client"])
     fun searchByForm(
         origin: String,
         destination: String,
