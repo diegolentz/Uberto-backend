@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.query.Param
+import java.util.*
 
 interface PassengerRepository : CrudRepository<Passenger, Long> {
 
@@ -33,4 +34,6 @@ interface PassengerRepository : CrudRepository<Passenger, Long> {
     )
     @EntityGraph(attributePaths = ["trips"])
     fun getByIdTrip(@Param("id") id: Long): Passenger
+
+    fun findByCredentials_Id(id : Long): Optional <Passenger>
 }

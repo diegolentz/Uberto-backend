@@ -21,4 +21,7 @@ interface DriverRepository : CrudRepository<Driver, Long> {
     )
     @EntityGraph(attributePaths = ["trips"])
     fun getByIdTrip(@Param("id") id: Long): Driver
+
+    fun findByCredentials_Id(id : Long): Optional<Driver>
 }
+

@@ -15,7 +15,7 @@ class Passenger : User {
 
     @OneToOne
     @JoinColumn(referencedColumnName = "id")
-    var userId: UserAuthCredentials? = null
+    var credentials: UserAuthCredentials? = null
 
     @Column(length = 50)
     override var firstName: String = ""

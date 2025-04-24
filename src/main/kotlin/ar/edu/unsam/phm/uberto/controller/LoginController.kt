@@ -2,7 +2,9 @@ package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.dto.LoginDTO
 import ar.edu.unsam.phm.uberto.dto.LoginRequest
+import ar.edu.unsam.phm.uberto.repository.DriverRepository
 import ar.edu.unsam.phm.uberto.services.auth.AuthService
+import ar.edu.unsam.phm.uberto.services.auth.Role
 import org.springframework.web.bind.annotation.*
 
 
@@ -13,6 +15,13 @@ class LoginController(private val authService: AuthService) {
     @PostMapping()
     fun authLogin(@RequestBody loginRequestBody: LoginRequest): LoginDTO {
         val user = authService.validateLogin(loginRequestBody)
-        return LoginDTO(id = user.id!!, rol = user.role)
+
+        if(user.role == Role.DRIVER){
+            val driver = authService.driverRepository.findByCredentials_Id(user.id!!)
+            return LoginDTO(id = driver.get().id!!, rol = user.role)
+        }else{
+            val passenger = authService.passengerRepository.findByCredentials_Id(user.id!!)
+        return LoginDTO(id = passenger.get().id!!, rol = user.role)
+        }
     }
 }
