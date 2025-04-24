@@ -11,7 +11,5 @@ BEGIN
 END;
 $$;
 
-
+-- Ejemplo con el resultado
 SELECT * FROM current_year_trips(5);
-
-DROP Function current_year_trips(p_id INT)
