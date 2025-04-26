@@ -1,6 +1,7 @@
 package ar.edu.unsam.phm.uberto.services
 
 import ar.edu.unsam.phm.uberto.BusinessException
+import ar.edu.unsam.phm.uberto.FailSaveEntity
 import ar.edu.unsam.phm.uberto.dto.TripScoreDTO
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.Trip
@@ -34,7 +35,13 @@ class TripScoreService(
     fun create(trip : Trip , score: TripScore) : ResponseEntity<String> {
         val passenger = passengerRepo.findById(trip.client.id!!).get()
         passenger.scoreTrip(trip,score.message,score.scorePoints)
-        tripRepo.save(trip) //agregar try catch
+
+        try {
+            tripRepo.save(trip)
+        } catch (e: Exception) {
+            throw FailSaveEntity("Error en la calificacion de un viaje")
+        }
+
         return ResponseEntity
             .status(HttpStatus.OK)
             .body("Creado con exito")
@@ -42,14 +49,12 @@ class TripScoreService(
 
     @Transactional
     fun delete(passenger: Passenger, trip: Trip) : ResponseEntity<String> {
-        if (trip.client.id != passenger.id) {
-            throw BusinessException("User has no ratings to delete")
+        trip.deleteScore(passenger)
+        try {
+            tripRepo.save(trip)
+        } catch (e: Exception) {
+            throw FailSaveEntity("Error en la eliminacion de una calificacion")
         }
-        if(trip.score == null){
-            throw BusinessException("The trip has no score")
-        }
-        trip.deleteScore()
-        tripRepo.save(trip) // agregar try catch
         return ResponseEntity
             .status(HttpStatus.OK)
             .body("Eliminada con exito")

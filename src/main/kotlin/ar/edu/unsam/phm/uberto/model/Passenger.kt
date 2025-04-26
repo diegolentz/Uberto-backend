@@ -72,9 +72,6 @@ class Passenger : User {
         friends.remove(friend)
     }
 
-    fun pendingTrips() = trips.filter { trip: Trip -> trip.pendingTrip() }
-    fun finishedTrips() = trips.filter { trip: Trip -> trip.finished() }
-
     fun scoreTrip(trip: Trip, message: String, scorePoints: Int) {
         validateScoreTrip(message,scorePoints)
         val score = TripScore()
@@ -83,12 +80,12 @@ class Passenger : User {
         trip.addScore(score)
     }
 
+    fun age(): Int = Period.between(birthDate, LocalDate.now()).years
+
     private fun validateScoreTrip(message: String,scorePoints: Int) {
         if (message.isEmpty()) { throw IsEmptyException() }
         if (scorePoints <= 0 || scorePoints > 6) { throw IncorrectValuesException() }
     }
-
-    fun age(): Int = Period.between(birthDate, LocalDate.now()).years
 
     private fun validateTrip(trip: Trip): Boolean {
         return this.balance < trip.price()

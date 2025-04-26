@@ -1,5 +1,6 @@
 package ar.edu.unsam.phm.uberto.model
 
+import ar.edu.unsam.phm.uberto.BusinessException
 import ar.edu.unsam.phm.uberto.ScoredTripException
 import ar.edu.unsam.phm.uberto.TripNotFinishedException
 import jakarta.persistence.*
@@ -48,12 +49,22 @@ class Trip(
         this.score = newScore
     }
 
-    fun scored():Boolean = (this.score != null)
-    fun canDeleteScore(userId: Long) = userId == client.id
-
-    fun deleteScore(){
+    fun deleteScore(passenger: Passenger){
+        validateDeleteScore(passenger)
         score = null
     }
+
+    private fun validateDeleteScore(passenger: Passenger) {
+        if (!canDeleteScore(passenger.id!!)) {
+            throw BusinessException("User has no ratings to delete")
+        }
+        if(!scored()){
+            throw BusinessException("The trip has no score")
+        }
+    }
+
+    fun scored():Boolean = (this.score != null)
+    fun canDeleteScore(userId: Long) = userId == client.id
 
     fun price(): Double = this.driver.fee(duration, numberPassengers)
 
