@@ -34,7 +34,7 @@ class TripRepositoryTest {
         tripRepository.save(trip)
 
         //Act
-        val client = tripRepository.findByClient_Id(passenger.id!!)
+        val client = tripRepository.findByClient(passenger)
 
         //Assert
         assertFalse(client.isEmpty())

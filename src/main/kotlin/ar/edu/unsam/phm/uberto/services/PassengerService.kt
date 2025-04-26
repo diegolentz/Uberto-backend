@@ -2,8 +2,11 @@ package ar.edu.unsam.phm.uberto.services
 
 import ar.edu.unsam.phm.uberto.dto.FriendDto
 import ar.edu.unsam.phm.uberto.dto.toDTOFriend
+import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
+import exceptions.NotFoundException
+import org.springframework.dao.DataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -19,7 +22,13 @@ class PassengerService(val passengerRepository: PassengerRepository) {
 
     @Transactional(readOnly = true)
     fun getByIdTrip(passengerId: Long): Passenger {
-        return passengerRepository.getByIdTrip(passengerId)
+        val passenger: Passenger
+        try{
+            passenger = passengerRepository.getByIdTrip(passengerId)
+        }catch (error: DataAccessException){
+            throw NotFoundException("Passenger with id ${passengerId} not found")
+        }
+        return passenger
     }
 
     @Transactional(readOnly = true)
