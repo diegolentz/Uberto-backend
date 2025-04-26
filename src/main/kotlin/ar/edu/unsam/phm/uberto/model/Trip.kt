@@ -55,12 +55,8 @@ class Trip(
     }
 
     private fun validateDeleteScore(passenger: Passenger) {
-        if (!canDeleteScore(passenger.id!!)) {
-            throw BusinessException("User has no ratings to delete")
-        }
-        if(!scored()){
-            throw BusinessException("The trip has no score")
-        }
+        if (!canDeleteScore(passenger.id!!)) { throw BusinessException("User has no ratings to delete") }
+        if (!scored()){ throw BusinessException("The trip has no score") }
     }
 
     fun scored():Boolean = (this.score != null)
