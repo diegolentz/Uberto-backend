@@ -4,7 +4,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ResponseStatus
 
 class FailSaveEntity(msg: String) : RuntimeException(msg)
-class BusinessException(msg: String) : Exception(msg)
+@ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE)
+class BusinessException(msg: String) : RuntimeException(msg)
 
 const val invalidCredentialsMessage = "Incorrect Username or Password"
 

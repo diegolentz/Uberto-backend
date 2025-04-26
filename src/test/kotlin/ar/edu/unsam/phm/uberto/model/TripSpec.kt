@@ -103,6 +103,7 @@ class TripSpec: DescribeSpec({
             it(name="Score can be deleted"){
                 val today:LocalDateTime = LocalDateTime.now()
                 val yesterday:LocalDateTime = today.minus(1, ChronoUnit.DAYS)
+                val passenger = trip.client
                 trip.date = yesterday
                 trip.finished() shouldBeEqual true
                 val score: TripScore = TripScore().apply {
@@ -112,8 +113,8 @@ class TripSpec: DescribeSpec({
                 trip.scored() shouldBeEqual false
                 trip.addScore(score)
                 trip.scored() shouldBeEqual true
-                trip.deleteScore()
-                trip.scored() shouldBeEqual false
+                trip.deleteScore(passenger)
+                trip.scored() shouldBeEqual true
             }
         }
 
