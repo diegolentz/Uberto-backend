@@ -59,8 +59,7 @@ class TripControllerWebMvcTest {
     @Test
     fun `Pido los trip de un pasajero que no existe - no tiene pendientes`(){
         mockMvc.perform(MockMvcRequestBuilders.get("/trip/passenger/2313213"))
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.content().json("[]"))
+            .andExpect(MockMvcResultMatchers.status().isNotFound)
     }
 
     @Test

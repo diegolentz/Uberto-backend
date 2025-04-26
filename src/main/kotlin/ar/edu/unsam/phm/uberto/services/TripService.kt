@@ -53,24 +53,24 @@ class TripService(val tripRepo: TripsRepository) {
 
     }
 
-    fun getAllByPassengerId(id: Long): List<Trip> {
-        return tripRepo.findByClient_Id(id)
+    fun getAllByPassenger(passenger: Passenger): List<Trip> {
+        return tripRepo.findByClient(passenger)
     }
 
-    fun getAllByDriverId(id: Long): List<Trip> {
-        return tripRepo.findByDriver_Id(id)
+    fun getAllByDriver(driver: Driver): List<Trip> {
+        return tripRepo.findByDriver(driver)
     }
 
-    fun getPendingTripPassenger(id: Long): List<Trip> {
-        return getAllByPassengerId(id).filter { it.pendingTrip() }
+    fun getPendingTripPassenger(passenger: Passenger): List<Trip> {
+        return getAllByPassenger(passenger).filter { it.pendingTrip() }
     }
 
-    fun getFinishedTripPassenger(id: Long): List<Trip> {
-        return getAllByPassengerId(id).filter { it.finished() }
+    fun getFinishedTripPassenger(passenger: Passenger): List<Trip> {
+        return getAllByPassenger(passenger).filter { it.finished() }
     }
 
-    fun getFinishedTripDriver(id: Long): List<Trip> {
-        return getAllByDriverId(id).filter { it.finished() }
+    fun getFinishedTripDriver(diver: Driver): List<Trip> {
+        return getAllByDriver(diver).filter { it.finished() }
     }
 
     fun getTripsPendingFromDriver(

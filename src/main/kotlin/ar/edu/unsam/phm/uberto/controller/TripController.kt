@@ -8,6 +8,7 @@ import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.PassengerService
 import ar.edu.unsam.phm.uberto.services.TravelTimeMockService
 import ar.edu.unsam.phm.uberto.services.TripService
+import exceptions.NotFoundException
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -27,12 +28,14 @@ class TripsController(private val tripService: TripService, private val passenge
 
     @GetMapping("/passenger/{id}")
     fun getAllByPassengerId(@PathVariable id: Long): List<TripDTO> {
-        return tripService.getAllByPassengerId(id).map { it.toDTO() }
+        val passenger = passengerService.getByIdTrip(id)
+        return tripService.getAllByPassenger(passenger).map { it.toDTO() }
     }
 
     @GetMapping("/driver/{id}")
     fun getAllByDriverId(@PathVariable id: Long): List<TripDTO> {
-            return tripService.getAllByDriverId(id).map { it.toDTO() }
+        val driver = driverService.getByIdTrip(id)
+        return tripService.getAllByDriver(driver).map { it.toDTO() }
     }
 
     @PostMapping("/pending")
@@ -54,14 +57,16 @@ class TripsController(private val tripService: TripService, private val passenge
 
     @GetMapping("/profile/passenger/{id}")
     fun getProfilePassenger(@PathVariable id:Long): PendingAndFinishedTripsDTO {
-        val finishedTrips = tripService.getFinishedTripPassenger(id).map { it.toDTO() }
-        val pendingTrips = tripService.getPendingTripPassenger(id).map { it.toDTO() }
+        val passenger = passengerService.getByIdTrip(id)
+        val finishedTrips = tripService.getFinishedTripPassenger(passenger).map { it.toDTO() }
+        val pendingTrips = tripService.getPendingTripPassenger(passenger).map { it.toDTO() }
         return PendingAndFinishedTripsDTO(pendingTrips, finishedTrips)
     }
 
     @GetMapping("/profile/driver/{id}")
     fun getProfileDriver(@PathVariable id:Long): PendingAndFinishedTripsDTO {
-        val finishedTrips = tripService.getFinishedTripDriver(id).map { it.toDTO() }
+        val driver = driverService.getByIdTrip(id)
+        val finishedTrips = tripService.getFinishedTripDriver(driver).map { it.toDTO() }
         val pendingTrips = listOf<TripDTO>()
         return PendingAndFinishedTripsDTO(pendingTrips, finishedTrips)
     }

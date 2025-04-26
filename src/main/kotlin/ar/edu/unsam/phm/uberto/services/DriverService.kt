@@ -4,7 +4,9 @@ import ar.edu.unsam.phm.uberto.dto.DriverDTO
 import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.repository.DriverRepository
 import exceptions.BusinessException
+import exceptions.NotFoundException
 import jakarta.transaction.Transactional
+import org.springframework.dao.DataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -14,12 +16,9 @@ import java.time.LocalDateTime
 class DriverService(val driverRepo: DriverRepository) {
 
     fun getDriverData(userID: Long):Driver{
-        try{
-            val driver = driverRepo.findById(userID).orElseThrow { BusinessException("Driver not found") }
-            return driver
-        }catch (e : Exception){
-            throw BusinessException("Driver not found")
-        }
+        val driver = driverRepo.findById(userID)
+            .orElseThrow { NotFoundException("Driver with id $userID not found") }
+        return driver
     }
 
     @Transactional
@@ -46,7 +45,13 @@ class DriverService(val driverRepo: DriverRepository) {
     }
 
     fun getByIdTrip(id: Long): Driver{
-        return driverRepo.getByIdTrip(id)
+        val driver: Driver
+        try{
+            driver = driverRepo.getByIdTrip(id)
+        }catch (error: DataAccessException){
+            throw NotFoundException("Driver with id ${id} not found")
+        }
+        return driver
     }
 
 }

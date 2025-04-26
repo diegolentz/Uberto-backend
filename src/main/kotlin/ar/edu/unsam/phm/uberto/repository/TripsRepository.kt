@@ -1,6 +1,7 @@
 package ar.edu.unsam.phm.uberto.repository
 
 import ar.edu.unsam.phm.uberto.model.Driver
+import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.Trip
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.Query
@@ -11,10 +12,10 @@ import javax.print.attribute.standard.Destination
 interface TripsRepository : CrudRepository<Trip, Long> {
 
     @EntityGraph(attributePaths = ["client", "driver", "score"])
-    fun findByClient_Id(clientId: Long): List<Trip>
+    fun findByClient(client: Passenger): List<Trip>
 
     @EntityGraph(attributePaths = ["client", "driver", "score"])
-    fun findByDriver_Id(driverId: Long): List<Trip>
+    fun findByDriver(driver: Driver): List<Trip>
 
 @Query("""
         SELECT t FROM Trip t 
