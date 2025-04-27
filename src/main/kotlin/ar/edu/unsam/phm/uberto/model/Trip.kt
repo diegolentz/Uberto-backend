@@ -1,5 +1,6 @@
 package ar.edu.unsam.phm.uberto.model
 
+import ar.edu.unsam.phm.uberto.BusinessException
 import ar.edu.unsam.phm.uberto.ScoredTripException
 import ar.edu.unsam.phm.uberto.TripNotFinishedException
 import jakarta.persistence.*
@@ -38,7 +39,7 @@ class Trip(
     @JoinColumn(name = "driver_id", referencedColumnName = "id")
     var driver: Driver = SimpleDriver()
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.MERGE],  orphanRemoval = true)
     @JoinColumn(name = "tripscore_id", referencedColumnName = "id")
     var score: TripScore? = null
 
@@ -48,12 +49,18 @@ class Trip(
         this.score = newScore
     }
 
-    fun scored():Boolean = (this.score != null)
-    fun canDeleteScore(userId: Long) = userId == client.id
-
-    fun deleteScore(){
+    fun deleteScore(passenger: Passenger){
+        validateDeleteScore(passenger)
         score = null
     }
+
+    private fun validateDeleteScore(passenger: Passenger) {
+        if (!canDeleteScore(passenger.id!!)) { throw BusinessException("User has no ratings to delete") }
+        if (!scored()){ throw BusinessException("The trip has no score") }
+    }
+
+    fun scored():Boolean = (this.score != null)
+    fun canDeleteScore(userId: Long) = userId == client.id
 
     fun price(): Double = this.driver.fee(duration, numberPassengers)
 
