@@ -43,7 +43,7 @@ class DriverService(val driverRepo: DriverRepository) {
 //            find all no retorna nunca null, no funciona orElse
             return  driverRepo.findAll().filter { it.avaliable(date,time) }
         } catch ( e : Exception) {
-            throw NotFoundException(e.message ?: "Error in the driver search")
+            throw BusinessException(e.message ?: "Error in the driver search")
         }
     }
 
