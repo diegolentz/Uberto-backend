@@ -1,7 +1,6 @@
 package ar.edu.unsam.phm.uberto.repository
 
 import ar.edu.unsam.phm.uberto.model.Driver
-import ar.edu.unsam.phm.uberto.model.Passenger
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
@@ -20,7 +19,7 @@ interface DriverRepository : CrudRepository<Driver, Long> {
     """
     )
     @EntityGraph(attributePaths = ["trips"])
-    fun getByIdTrip(@Param("id") id: Long): Driver
+    fun getById(@Param("id") id: Long): Optional<Driver>
 
     fun findByCredentials_Id(id : Long): Optional<Driver>
 }
