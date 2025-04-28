@@ -1,11 +1,9 @@
 package ar.edu.unsam.phm.uberto.repository
 
-import ar.edu.unsam.phm.uberto.builder.DriverBuilder
 import ar.edu.unsam.phm.uberto.factory.TestFactory
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import java.sql.Driver
 
 @DataJpaTest
 class DriverJPATest {
@@ -26,9 +24,9 @@ class DriverJPATest {
         driver.trips.add(trip)
         driverRepository.save(driver)
 
-        val driverQuery = driverRepository.getByIdTrip(driver.id!!)
+        val driverQuery = driverRepository.getById(driver.id!!)
 
         // Assert
-        assert(driverQuery.trips != null)
+        assert(driverQuery.get().trips != null)
     }
 }
