@@ -1,6 +1,7 @@
 package ar.edu.unsam.phm.uberto.dto
 
 import ar.edu.unsam.phm.uberto.model.Driver
+//import ar.edu.unsam.phm.uberto.repository.DriverAvgDTO
 
 data class DriverDTO(
     val id: Long,
@@ -52,7 +53,7 @@ fun Driver.toCardDTO(time: Int, numberPassenger: Int): DriverCardDTO {
         model = model,
         price = fee(time, numberPassenger),
         img = img,
-        rating = scoreAVG(),
+        rating = 0.0,
         type = toString()
     )
 }

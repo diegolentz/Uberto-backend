@@ -43,6 +43,9 @@ class Trip(
     @JoinColumn(name = "tripscore_id", referencedColumnName = "id")
     var score: TripScore? = null
 
+    @Column
+    var finished : LocalDateTime = finalizationDate()
+
     fun addScore(newScore: TripScore){
         if(!this.finished()) throw TripNotFinishedException()
         if(this.scored()) throw ScoredTripException()

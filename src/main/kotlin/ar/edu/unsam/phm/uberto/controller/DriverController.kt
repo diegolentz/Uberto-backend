@@ -1,6 +1,7 @@
 package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.dto.*
+import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.TravelTimeMockService
 import exceptions.BusinessException
@@ -18,20 +19,28 @@ class DriverController(private val driverService: DriverService, val timeTripsSe
 
     @GetMapping("/img")
     fun getImg(@RequestParam driverid: Long): DriverImg = driverService.getDriverData(driverid).toImgDTO()
+//
+//    @GetMapping("/available")
+//    fun getDriversAvailable(@RequestParam date: LocalDateTime,
+//                            @RequestParam origin: String,
+//                            @RequestParam destination: String,
+//                            @RequestParam numberpassengers: Int): List<DriverCardDTO> {
+//        val timeMap = timeTripsService.getTime()
+//        val time = timeMap["time"] ?: throw BusinessException("Failure in the time calculation system")
+//
+//        val avaliableDrivers = driverService.getDriversAvailable(date, time)
+////        val avgs = driverService.findAverages(avaliableDrivers.map { it.id!! })
+////        val driverCardDTO = avaliableDrivers.map{
+////            driver: Driver ->  driver.toCardDTO(timeMap["time"]!!,
+////            numberpassengers,
+////            avgs.first { (it.id == driver.id) })}
+//        return driverCardDTO
+//    }
+//    avgs {
+//        id = driverid
+//        avg = avg
+//    }
 
-    @GetMapping("/available")
-    fun getDriversAvailable(@RequestParam date: LocalDateTime,
-                            @RequestParam origin: String,
-                            @RequestParam destination: String,
-                            @RequestParam numberpassengers: Int): List<DriverCardDTO> {
-        val timeMap = timeTripsService.getTime()
-        val time = timeMap["time"] ?: throw BusinessException("Failure in the time calculation system")
-
-        val avaliableDrivers = driverService.getDriversAvailable(date, time)
-
-        val driverCardDTO = avaliableDrivers.map{it.toCardDTO(timeMap["time"]!!, numberpassengers)}
-        return driverCardDTO
-    }
 
     @PostMapping()
     fun changeProfile(@RequestBody driverDTO: DriverDTO): ResponseEntity<String> =  driverService.updateProfile(driverDTO)

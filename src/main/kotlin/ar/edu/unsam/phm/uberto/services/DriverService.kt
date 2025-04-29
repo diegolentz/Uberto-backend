@@ -2,7 +2,9 @@ package ar.edu.unsam.phm.uberto.services
 
 import ar.edu.unsam.phm.uberto.dto.DriverDTO
 import ar.edu.unsam.phm.uberto.model.Driver
+//import ar.edu.unsam.phm.uberto.repository.DriverAvgDTO
 import ar.edu.unsam.phm.uberto.repository.DriverRepository
+import ar.edu.unsam.phm.uberto.repository.TripsRepository
 import exceptions.BusinessException
 import exceptions.NotFoundException
 import jakarta.transaction.Transactional
@@ -12,7 +14,10 @@ import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 @Service
-class DriverService(val driverRepo: DriverRepository) {
+class DriverService(
+    val driverRepo: DriverRepository,
+    private val tripsRepository: TripsRepository
+) {
 
     fun getDriverData(userID: Long):Driver{
         val driver = driverRepo.getById(userID).orElseThrow { NotFoundException("Driver with id $userID not found") }
@@ -37,14 +42,17 @@ class DriverService(val driverRepo: DriverRepository) {
             throw BusinessException("Driver not found")
         }
     }
+//
+//    fun getDriversAvailable(date: LocalDateTime, time: Int): List<Driver> {
+//        try {
+////            find all no retorna nunca null, no funciona orElse
+//           val availables = tripsRepository.getAvailable(date,time)
+//
+//        } catch ( e : Exception) {
+//            throw BusinessException(e.message ?: "Error in the driver search")
+//        }
+//    }
 
-    fun getDriversAvailable(date: LocalDateTime, time: Int): List<Driver> {
-        try {
-//            find all no retorna nunca null, no funciona orElse
-            return  driverRepo.findAll().filter { it.avaliable(date,time) }
-        } catch ( e : Exception) {
-            throw BusinessException(e.message ?: "Error in the driver search")
-        }
-    }
+//    fun findAverages(ids : List<Long>): List<DriverAvgDTO> = tripsRepository.getAverage(ids)
 
 }
