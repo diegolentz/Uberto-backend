@@ -42,7 +42,7 @@ data class DriverCardDTO(
 )
 
 
-fun Driver.toCardDTO(time: Int, numberPassenger: Int, avg : Double): DriverCardDTO {
+fun Driver.toCardDTO(time: Int, numberPassenger: Int): DriverCardDTO {
     val driverId = requireNotNull(id) { "Driver entity ID is null" }
 
     return DriverCardDTO(
@@ -53,7 +53,23 @@ fun Driver.toCardDTO(time: Int, numberPassenger: Int, avg : Double): DriverCardD
         model = model,
         price = fee(time, numberPassenger),
         img = img,
-        rating = avg,
+        rating = scoreAVG(),
+        type = toString()
+    )
+}
+
+fun Driver.toAvailableDTO(time: Int, numberPassenger: Int, scores: Double): DriverCardDTO {
+    val driverId = requireNotNull(id) { "Driver entity ID is null" }
+
+    return DriverCardDTO(
+        id = driverId,
+        serial = serial,
+        brand = brand,
+        name = "$firstName $lastName",
+        model = model,
+        price = fee(time, numberPassenger),
+        img = img,
+        rating = scores,
         type = toString()
     )
 }
