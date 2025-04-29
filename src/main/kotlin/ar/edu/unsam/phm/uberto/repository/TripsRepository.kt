@@ -42,23 +42,22 @@ interface TripsRepository : CrudRepository<Trip, Long> {
         driverId: Long
     ): List<Trip>
 
-
     @Query("""
-    SELECT
-        new ar.edu.unsam.phm.uberto.dto.DriverAvailableDto(
-            d.id,
-            COALESCE(AVG(ts.scorePoints), 0)
-        )
-    FROM Driver d
-    LEFT JOIN Trip t ON t.driver.id = d.id
-    LEFT JOIN TripScore ts ON t.score.id = ts.id
-    WHERE d.id NOT IN (
-        SELECT t2.driver.id
-        FROM Trip t2
-        WHERE :date BETWEEN t2.date AND :endDate
+SELECT
+    new ar.edu.unsam.phm.uberto.dto.DriverAvailableDto(
+        d.id,
+        COALESCE(AVG(ts.scorePoints), 0)
     )
-    GROUP BY d.id
-    """)
+FROM Driver d
+LEFT JOIN Trip t ON t.driver.id = d.id
+LEFT JOIN t.score ts
+WHERE d.id NOT IN (
+    SELECT t2.driver.id
+    FROM Trip t2
+    WHERE t2.date BETWEEN :date AND :endDate
+)
+GROUP BY d.id
+""")
     fun getAvailable(
         @Param("date") date: LocalDateTime,
         @Param("endDate") endDate: LocalDateTime
