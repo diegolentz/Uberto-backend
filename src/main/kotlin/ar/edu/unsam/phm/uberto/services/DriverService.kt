@@ -1,5 +1,6 @@
 package ar.edu.unsam.phm.uberto.services
 
+import ar.edu.unsam.phm.uberto.dto.DriverAvailableDto
 import ar.edu.unsam.phm.uberto.dto.DriverDTO
 import ar.edu.unsam.phm.uberto.model.Driver
 //import ar.edu.unsam.phm.uberto.repository.DriverAvgDTO
@@ -42,17 +43,16 @@ class DriverService(
             throw BusinessException("Driver not found")
         }
     }
-//
-//    fun getDriversAvailable(date: LocalDateTime, time: Int): List<Driver> {
-//        try {
-////            find all no retorna nunca null, no funciona orElse
-//           val availables = tripsRepository.getAvailable(date,time)
-//
-//        } catch ( e : Exception) {
-//            throw BusinessException(e.message ?: "Error in the driver search")
-//        }
-//    }
 
-//    fun findAverages(ids : List<Long>): List<DriverAvgDTO> = tripsRepository.getAverage(ids)
+    fun getDriversAvailable(date: LocalDateTime, time: Int): List<DriverAvailableDto> {
+        try {
+            val endTime = date.plusMinutes(time.toLong())
+            return tripsRepository.getAvailable(date,endTime)
+//            find all no retorna nunca null, no funciona orElse
+        } catch ( e : Exception) {
+            throw BusinessException(e.message ?: "Error in the driver search")
+        }
+    }
+
 
 }

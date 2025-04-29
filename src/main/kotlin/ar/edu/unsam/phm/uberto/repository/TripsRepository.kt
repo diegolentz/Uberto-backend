@@ -1,5 +1,6 @@
 package ar.edu.unsam.phm.uberto.repository
 
+import ar.edu.unsam.phm.uberto.dto.DriverAvailableDto
 import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.Trip
@@ -41,34 +42,27 @@ interface TripsRepository : CrudRepository<Trip, Long> {
         driverId: Long
     ): List<Trip>
 
-    //
-//@Query(nativeQuery = true,
-//    value = """
-//   SELECT trip.driver_id , AVG(ts.score_points)
-//        FROM trip
-//            JOIN trip_score ts
-//                ON ts.id = trip.tripscore_id
-//                    where trip.driver_id in (:id)
-//                        GROUP BY trip.driver_id
-//""")
-//    fun getAverage(id : List<Long>): List<DriverAvgDTO>
-//
-    @Query(
-        """
-    SELECT d.id, d.serial, d.brand, d.first_name, d.model, d.img,
-           COALESCE(AVG(ts.score_points), 0) AS average_score
-    FROM driver d
-    LEFT JOIN trip t ON t.driver_id = d.id
-    LEFT JOIN trip_score ts ON t.tripscore_id = ts.id
+
+    @Query("""
+    SELECT
+        new ar.edu.unsam.phm.uberto.dto.DriverAvailableDto(
+            d.id,
+            COALESCE(AVG(ts.scorePoints), 0)
+        )
+    FROM Driver d
+    LEFT JOIN Trip t ON t.driver.id = d.id
+    LEFT JOIN TripScore ts ON t.score.id = ts.id
     WHERE d.id NOT IN (
-        SELECT driver_id
-        FROM trip
-        WHERE :date BETWEEN date AND (date + (duration || ' minutes')::interval)
+        SELECT t2.driver.id
+        FROM Trip t2
+        WHERE :date BETWEEN t2.date AND :endDate
     )
     GROUP BY d.id
-""", nativeQuery = true
-    )
+    """)
     fun getAvailable(
-        @Param("date") date: LocalDateTime): List<Driver>
+        @Param("date") date: LocalDateTime,
+        @Param("endDate") endDate: LocalDateTime
+    ): List<DriverAvailableDto>
+
 }
 

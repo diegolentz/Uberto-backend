@@ -23,7 +23,7 @@ class Trip(
     var numberPassengers: Int = 0
 
     @Column
-    var date: LocalDateTime = LocalDateTime.now()
+    lateinit var date: LocalDateTime
 
     @Column(length = 40)
     var origin: String = ""
@@ -42,9 +42,6 @@ class Trip(
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.MERGE],  orphanRemoval = true)
     @JoinColumn(name = "tripscore_id", referencedColumnName = "id")
     var score: TripScore? = null
-
-    @Column
-    var finished : LocalDateTime = finalizationDate()
 
     fun addScore(newScore: TripScore){
         if(!this.finished()) throw TripNotFinishedException()
