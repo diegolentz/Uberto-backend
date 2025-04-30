@@ -21,12 +21,12 @@ class DriverService(
 ) {
 
     fun getDriverData(userID: Long):Driver{
-        val driver = driverRepo.getById(userID).orElseThrow { NotFoundException("Driver with id $userID not found") }
+        val driver = driverRepo.findById(userID).orElseThrow { NotFoundException("Driver with id $userID not found") }
         return driver
     }
 
     fun getByIdTrip(id: Long): Driver =
-        driverRepo.getById(id)
+        driverRepo.getByIdTrip(id)
             .orElseThrow { NotFoundException("Driver with id $id not found") }
 
     @Transactional
