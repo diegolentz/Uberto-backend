@@ -1,7 +1,7 @@
 package ar.edu.unsam.phm.uberto.builder
 
 import ar.edu.unsam.phm.uberto.model.Passenger
-import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
+import ar.edu.unsam.phm.uberto.model.UserAuthCredentials
 import java.time.LocalDate
 
 class PassengerBuilder(val newPassenger: Passenger = Passenger()) {

@@ -3,8 +3,8 @@ package ar.edu.unsam.phm.uberto.controller
 import ar.edu.unsam.phm.uberto.dto.LoginDTO
 import ar.edu.unsam.phm.uberto.dto.LoginRequest
 import ar.edu.unsam.phm.uberto.repository.DriverRepository
-import ar.edu.unsam.phm.uberto.services.auth.AuthService
-import ar.edu.unsam.phm.uberto.services.auth.Role
+import ar.edu.unsam.phm.uberto.services.AuthService
+import ar.edu.unsam.phm.uberto.model.Role
 import org.springframework.web.bind.annotation.*
 
 

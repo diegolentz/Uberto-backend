@@ -2,7 +2,7 @@ package ar.edu.unsam.phm.uberto.model
 
 import ar.edu.unsam.phm.uberto.DriverNotAvaliableException
 import ar.edu.unsam.phm.uberto.dto.DriverDTO
-import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
+import ar.edu.unsam.phm.uberto.model.UserAuthCredentials
 import exceptions.BusinessException
 import jakarta.persistence.*
 import java.time.LocalDateTime

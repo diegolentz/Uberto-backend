@@ -1,7 +1,7 @@
 package ar.edu.unsam.phm.uberto.builder
 
 import ar.edu.unsam.phm.uberto.model.Driver
-import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
+import ar.edu.unsam.phm.uberto.model.UserAuthCredentials
 
 class DriverBuilder(val newDriver: Driver) {
 
