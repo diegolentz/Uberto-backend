@@ -8,7 +8,7 @@ class AuthFactory() {
     fun createAccount(username:String, password:String, role:Role):UserAuthCredentials {
         val account: UserAuthCredentials = UserAuthCredentials()
         account.username = username
-        account.password = password
+        account.setPassword(password)
         account.role = role
         return account
     }

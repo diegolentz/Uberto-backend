@@ -8,10 +8,7 @@ data class LoginRequest(
     var password: String
 )
 
-data class LoginResponse(
-    var jwt: Int
-)
 data class LoginDTO(
-    var id: Long,
+    var id: Long?,
     var rol: Role
 )
