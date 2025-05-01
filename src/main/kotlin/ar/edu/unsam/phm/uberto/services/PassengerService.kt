@@ -17,15 +17,16 @@ import org.springframework.transaction.annotation.Transactional
 class PassengerService(val passengerRepository: PassengerRepository) {
     @Transactional(readOnly = true)
     fun getById(passengerId: Long): Passenger {
-        return passengerRepository.findById(passengerId).get()
+        return passengerRepository.findById(passengerId)
+            .orElseThrow { NotFoundException("Passenger $passengerId Not Found") }
     }
 
     @Transactional(readOnly = true)
     fun getByIdTrip(passengerId: Long): Passenger {
         val passenger: Passenger
-        try{
+        try {
             passenger = passengerRepository.getByIdTrip(passengerId)
-        }catch (error: DataAccessException){
+        } catch (error: DataAccessException) {
             throw NotFoundException("Passenger with id ${passengerId} not found")
         }
         return passenger
