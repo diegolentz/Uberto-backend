@@ -5,8 +5,10 @@ import ar.edu.unsam.phm.uberto.builder.PassengerBuilder
 import ar.edu.unsam.phm.uberto.builder.TripBuilder
 import ar.edu.unsam.phm.uberto.builder.TripScoreBuilder
 import ar.edu.unsam.phm.uberto.factory.AuthFactory
+import ar.edu.unsam.phm.uberto.factory.TestFactory
 import ar.edu.unsam.phm.uberto.model.*
 import ar.edu.unsam.phm.uberto.repository.*
+import ar.edu.unsam.phm.uberto.services.TripService
 import ar.edu.unsam.phm.uberto.services.auth.AuthRepository
 import ar.edu.unsam.phm.uberto.services.auth.Role
 import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
@@ -23,16 +25,18 @@ class Bootstrap(
     @Autowired val passengerRepo: PassengerRepository,
     @Autowired val driverRepo: DriverRepository,
     @Autowired val tripRepo: TripsRepository,
+    @Autowired val tripService: TripService,
     @Autowired val authRepo: AuthRepository,
     @Autowired val tripScoreRepo: TripScoreRepository
 ) : CommandLineRunner {
 
+    val factory = TestFactory()
     override fun run(vararg args: String?) {
         createAccounts()
         createPassengers()
         createDrivers()
         createTrips()
-//        createTripScore()
+        createTripScore()
     }
 
     private fun createAccounts() {
@@ -370,29 +374,21 @@ class Bootstrap(
         )
         tripRepo.saveAll(allTrips)
     }
-//
-//    private fun createTripScore(){
-//        var passengers: Passenger = passengerRepo.findById(1)
-//        val diego = passengers.first { it.firstName == "Diego" }
-//        val travel1 = diego.trips.first { it.date > LocalDateTime.now() }
-//        diego.scoreTrip(travel1, "Buen viaje", 8)
-//
-//        val adrian = passengers.first { it.firstName == "adrian" }
-//        val travel2 = adrian.trips.first { it.date < LocalDateTime.now() }
-//        adrian.scoreTrip(travel2, "El auto hacia ruidos", 7)
-//
-//        val pedro = passengers.first { it.firstName == "pedro" }
-//        val travel5 = adrian.trips.first { it.date < LocalDateTime.now() }
-//        pedro.scoreTrip(travel5, "Buen paisaje", 9)
-//
-//        val valentin = passengers.first { it.firstName == "valentin" }
-//        val travel3 = adrian.trips.first { it.date < LocalDateTime.now() }
-//        valentin.scoreTrip(travel3, "El auto largaba humo", 6)
-//
-//        val matias = passengers.first { it.firstName == "matias" }
-//        val travel4 = adrian.trips.first { it.date < LocalDateTime.now() }
-//        matias.scoreTrip(travel4, "Excelente recorrido", 10)
-//
-//
-//    }
+
+    private fun createTripScore(){
+        val tripPassenger : MutableList<Trip> = mutableListOf()
+        val passenger = passengerRepo.findAll()
+        passenger.forEach{
+            val tripFinished = tripService.getFinishedTripPassenger(it)
+            tripPassenger.addAll(tripFinished)
+        }
+        if(!tripPassenger.isEmpty()){
+            tripPassenger.forEach{
+                factory.createTripScore(it)
+            }
+        }
+
+        tripRepo.saveAll(tripPassenger)
+
+    }
 }
