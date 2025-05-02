@@ -1,6 +1,7 @@
 package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.dto.*
+import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.TravelTimeMockService
 import exceptions.BusinessException
@@ -28,9 +29,13 @@ class DriverController(private val driverService: DriverService, val timeTripsSe
         val time = timeMap["time"] ?: throw BusinessException("Failure in the time calculation system")
 
         val avaliableDrivers = driverService.getDriversAvailable(date, time)
-
-        val driverCardDTO = avaliableDrivers.map{it.toCardDTO(timeMap["time"]!!, numberpassengers)}
-        return driverCardDTO
+        val idsDrivers = avaliableDrivers.map { it.id }
+        val drivers = driverService.driverRepo.findAllById(idsDrivers)
+        val driversCard = drivers.map { driver ->
+            val driverScore = avaliableDrivers.find { it.id == driver.id }?.average_score ?: 0.0
+            driver.toAvailableDTO(time, numberpassengers, driverScore)
+        }
+        return driversCard
     }
 
     @PostMapping()

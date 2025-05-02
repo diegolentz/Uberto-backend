@@ -23,7 +23,7 @@ class Trip(
     var numberPassengers: Int = 0
 
     @Column
-    var date: LocalDateTime = LocalDateTime.now()
+    lateinit var date: LocalDateTime
 
     @Column(length = 40)
     var origin: String = ""

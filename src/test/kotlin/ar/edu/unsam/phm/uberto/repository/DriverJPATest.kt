@@ -24,7 +24,7 @@ class DriverJPATest {
         driver.trips.add(trip)
         driverRepository.save(driver)
 
-        val driverQuery = driverRepository.getById(driver.id!!)
+        val driverQuery = driverRepository.getByIdTrip(driver.id!!)
 
         // Assert
         assert(driverQuery.get().trips != null)

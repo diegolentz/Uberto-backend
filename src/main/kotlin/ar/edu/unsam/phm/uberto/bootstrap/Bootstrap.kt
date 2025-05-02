@@ -370,9 +370,9 @@ class Bootstrap(
         )
         tripRepo.saveAll(allTrips)
     }
-
+//
 //    private fun createTripScore(){
-//        var passengers: MutableIterable<Passenger> = passengerRepo.findAll()
+//        var passengers: Passenger = passengerRepo.findById(1)
 //        val diego = passengers.first { it.firstName == "Diego" }
 //        val travel1 = diego.trips.first { it.date > LocalDateTime.now() }
 //        diego.scoreTrip(travel1, "Buen viaje", 8)

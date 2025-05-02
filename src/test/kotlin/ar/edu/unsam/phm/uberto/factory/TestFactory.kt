@@ -42,6 +42,7 @@ class TestFactory {
             val trip = Trip().apply {
                 client = listPassenger.get(i)
                 driver = listDriver.get(i)
+                date = LocalDateTime.now()
             }
             listTrip.add(trip)
         }
@@ -69,6 +70,7 @@ class TestFactory {
         return Trip().apply {
             client = passenger
             this.driver = driver
+            date = LocalDateTime.now()
         }
     }
 
