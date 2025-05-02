@@ -380,15 +380,13 @@ class Bootstrap(
         val passenger = passengerRepo.findAll()
         passenger.forEach{
             val tripFinished = tripService.getFinishedTripPassenger(it)
-            tripPassenger.addAll(tripFinished)
+            tripPassenger.add(tripFinished[0]) // me piden no valorar todos, solo 1
         }
         if(!tripPassenger.isEmpty()){
             tripPassenger.forEach{
                 factory.createTripScore(it)
             }
         }
-
         tripRepo.saveAll(tripPassenger)
-
     }
 }
