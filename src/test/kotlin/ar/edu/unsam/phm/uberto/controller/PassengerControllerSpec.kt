@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.jayway.jsonpath.JsonPath
+import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.mockk.InternalPlatformDsl.toStr
@@ -116,5 +117,54 @@ class PassengerControllerSpec {
         updatedPassenger.firstName shouldBe newInfo.firstName
         updatedPassenger.lastName shouldBe newInfo.lastName
         updatedPassenger.cellphone shouldBe newInfo.phone
+    }
+
+    @Test
+    fun `se traen los amigos que existen`() {
+        val passenger = PassengerBuilder().build()
+        val friend = PassengerBuilder().build()
+
+        passengerRepository.save(friend)
+        passenger.addFriend(friend)
+        passengerRepository.save(passenger)
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/passenger/${passenger.id}/friends"))
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(friend.id))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].firstname").value(friend.firstName))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].lastname").value(friend.lastName))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].img").value(friend.img))
+    }
+
+    @Test
+    fun `si no hay amigos es una lista vacia`() {
+        val passenger = PassengerBuilder().build()
+        passengerRepository.save(passenger)
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/passenger/${passenger.id}/friends"))
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty)
+    }
+
+    @Test
+    fun `agregar un amigo a un pasajero`() {
+        val passenger = PassengerBuilder().build()
+        val friend = PassengerBuilder().build()
+
+        passengerRepository.save(friend)
+        passengerRepository.save(passenger)
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/passenger/friends")
+                .param("passengerId", passenger.id.toString())
+                .param("friendId", friend.id.toString())
+        ).andExpect(MockMvcResultMatchers.status().isOk)
+
+
+        // Fetch the passenger with friends eagerly loaded
+        val updatedPassengerFriends = passengerRepository.findFriendsByPassengerId(passenger.id!!)
+
+        updatedPassengerFriends shouldContain friend
+
     }
 }

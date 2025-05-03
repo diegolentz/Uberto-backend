@@ -35,5 +35,8 @@ interface PassengerRepository : CrudRepository<Passenger, Long> {
     @EntityGraph(attributePaths = ["trips"])
     fun getByIdTrip(@Param("id") id: Long): Passenger
 
-    fun findByCredentials_Id(id : Long): Optional <Passenger>
+    fun findByCredentials_Id(id: Long): Optional<Passenger>
+
+    @Query("SELECT p.friends FROM Passenger p WHERE p.id = :id")
+    fun findFriendsByPassengerId(@Param("id") id: Long): List<Passenger>
 }
