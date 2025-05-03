@@ -207,6 +207,21 @@ class PassengerControllerSpec {
     }
 
     @Test
+    fun `no se puede eliminar un amigo que no es amigo`() {
+        val passenger = PassengerBuilder().build()
+        val friend = PassengerBuilder().build()
+
+        passengerRepository.save(friend)
+        passengerRepository.save(passenger)
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("/passenger/friends")
+                .param("passengerId", passenger.id.toString())
+                .param("friendId", friend.id.toString())
+        ).andExpect(MockMvcResultMatchers.status().isNotFound)
+    }
+
+    @Test
     fun `el filtro busca correctamente`() {
         val passenger = PassengerBuilder().build()
         val wantedPassenger = PassengerBuilder().firstName("testotesto").build()
