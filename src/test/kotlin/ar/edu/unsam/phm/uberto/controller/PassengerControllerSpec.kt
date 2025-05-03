@@ -2,6 +2,7 @@ package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.builder.PassengerBuilder
 import ar.edu.unsam.phm.uberto.dto.UpdatedPassengerDTO
+import ar.edu.unsam.phm.uberto.dto.toDTOFriend
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
 import ar.edu.unsam.phm.uberto.services.PassengerService
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -10,8 +11,10 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.jayway.jsonpath.JsonPath
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.shouldBe
 import io.mockk.InternalPlatformDsl.toStr
+import jakarta.transaction.Transactional
 import org.junit.jupiter.api.DisplayName
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -147,6 +150,7 @@ class PassengerControllerSpec {
     }
 
     @Test
+    @Transactional
     fun `agregar un amigo a un pasajero`() {
         val passenger = PassengerBuilder().build()
         val friend = PassengerBuilder().build()
@@ -154,17 +158,80 @@ class PassengerControllerSpec {
         passengerRepository.save(friend)
         passengerRepository.save(passenger)
 
-        mockMvc.perform(
+        val response = mockMvc.perform(
             MockMvcRequestBuilders.post("/passenger/friends")
                 .param("passengerId", passenger.id.toString())
                 .param("friendId", friend.id.toString())
         ).andExpect(MockMvcResultMatchers.status().isOk)
+            .andReturn()
 
-
-        // Fetch the passenger with friends eagerly loaded
-        val updatedPassengerFriends = passengerRepository.findFriendsByPassengerId(passenger.id!!)
-
+        val updatedPassengerFriends = passengerRepository.findById(passenger.id!!).get().friends
         updatedPassengerFriends shouldContain friend
+    }
 
+    @Test
+    @Transactional
+    fun `eliminar un amigo a un pasajero`() {
+        val passenger = PassengerBuilder().build()
+        val friend = PassengerBuilder().build()
+
+        passenger.addFriend(friend)
+        friend.addFriend(passenger)
+        passengerRepository.save(friend)
+        passengerRepository.save(passenger)
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("/passenger/friends")
+                .param("passengerId", passenger.id.toString())
+                .param("friendId", friend.id.toString())
+        ).andExpect(MockMvcResultMatchers.status().isOk)
+
+        val updatedPassengerFriends = passengerRepository.findById(passenger.id!!).get().friends
+        updatedPassengerFriends shouldNotContain friend
+    }
+
+    @Test
+    fun `no se puede agregar un amigo que ya lo es`() {
+        val passenger = PassengerBuilder().build()
+        val friend = PassengerBuilder().build()
+
+        passengerRepository.save(friend)
+        passenger.addFriend(friend)
+        passengerRepository.save(passenger)
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/passenger/friends")
+                .param("passengerId", passenger.id.toString())
+                .param("friendId", friend.id.toString())
+        ).andExpect(MockMvcResultMatchers.status().isBadRequest)
+    }
+
+    @Test
+    fun `el filtro busca correctamente`() {
+        val passenger = PassengerBuilder().build()
+        val wantedPassenger = PassengerBuilder().firstName("testotesto").build()
+
+        passengerRepository.saveAll(listOf(passenger, wantedPassenger))
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/passenger/${passenger.id}/friends/search")
+                .param("filter", "testotesto")
+        ).andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(wantedPassenger.id))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].firstname").value(wantedPassenger.firstName))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].lastname").value(wantedPassenger.lastName))
+    }
+
+    @Test
+    fun `si no hay resultados devuelve un array vacio`() {
+        val passenger = PassengerBuilder().build()
+
+        passengerRepository.save(passenger)
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/passenger/${passenger.id}/friends/search")
+                .param("filter", "asdadasdsdadsadasdsa")
+        ).andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty)
     }
 }
