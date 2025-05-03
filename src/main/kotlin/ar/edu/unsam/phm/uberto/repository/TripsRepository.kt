@@ -45,7 +45,7 @@ interface TripsRepository : CrudRepository<Trip, Long> {
     @Query("""
 SELECT
     new ar.edu.unsam.phm.uberto.dto.DriverAvailableDto(
-        d.id,
+        d,
         COALESCE(AVG(ts.scorePoints), 0)
     )
 FROM Driver d

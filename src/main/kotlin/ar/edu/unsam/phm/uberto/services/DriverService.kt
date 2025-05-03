@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 @Service
 class DriverService(
@@ -46,9 +47,8 @@ class DriverService(
 
     fun getDriversAvailable(date: LocalDateTime, time: Int): List<DriverAvailableDto> {
         try {
-            val endTime = date.plusMinutes(time.toLong())
+            val endTime = date.plus(time.toLong(), ChronoUnit.MINUTES)
             return tripsRepository.getAvailable(date,endTime)
-//            find all no retorna nunca null, no funciona orElse
         } catch ( e : Exception) {
             throw BusinessException(e.message ?: "Error in the driver search")
         }

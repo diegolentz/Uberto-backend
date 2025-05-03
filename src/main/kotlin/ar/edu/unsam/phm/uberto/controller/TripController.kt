@@ -17,8 +17,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/trip")
 
 class TripsController(private val tripService: TripService, private val passengerService: PassengerService, private val driverService: DriverService) {
-
-
+    
     @PostMapping("/create")
     fun createTrip(@RequestBody trip: TripDTO): ResponseEntity<String> {
         val client = passengerService.getByIdTrip(trip.userId)
@@ -38,13 +37,14 @@ class TripsController(private val tripService: TripService, private val passenge
         return tripService.getAllByDriver(driver).map { it.toDTO() }
     }
 
-    @PostMapping("/pending")
-    fun getTripsPendingFromDriver(@RequestBody formTripDTO: FormTripDTO): List<TripDTO> {
-        val origin = formTripDTO.origin
-        val destination = formTripDTO.destination
-        val driverId = formTripDTO.userId
-        val name = formTripDTO.name
-        val numberPassenger = formTripDTO.numberPassengers
+    @GetMapping("/pending")
+    fun getTripsPendingFromDriver(
+        @RequestParam origin: String,
+        @RequestParam destination: String,
+        @RequestParam driverId: Long,
+        @RequestParam name: String,
+        @RequestParam numberPassenger: Int,
+    ): List<TripDTO> {
 
         return tripService.getTripsPendingFromDriver(
             origin,
