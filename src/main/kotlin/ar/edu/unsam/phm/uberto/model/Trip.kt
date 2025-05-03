@@ -23,7 +23,7 @@ class Trip(
     var numberPassengers: Int = 0
 
     @Column
-    var date: LocalDateTime = LocalDateTime.now()
+    lateinit var date: LocalDateTime
 
     @Column(length = 40)
     var origin: String = ""
@@ -39,7 +39,7 @@ class Trip(
     @JoinColumn(name = "driver_id", referencedColumnName = "id")
     var driver: Driver = SimpleDriver()
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.MERGE],  orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL],  orphanRemoval = true)
     @JoinColumn(name = "tripscore_id", referencedColumnName = "id")
     var score: TripScore? = null
 

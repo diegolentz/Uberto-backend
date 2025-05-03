@@ -1,6 +1,7 @@
 package ar.edu.unsam.phm.uberto.dto
 
 import ar.edu.unsam.phm.uberto.model.Driver
+//import ar.edu.unsam.phm.uberto.repository.DriverAvgDTO
 
 data class DriverDTO(
     val id: Long,
@@ -56,6 +57,28 @@ fun Driver.toCardDTO(time: Int, numberPassenger: Int): DriverCardDTO {
         type = toString()
     )
 }
+
+fun Driver.toAvailableDTO(time: Int, numberPassenger: Int, scores: Double): DriverCardDTO {
+    val driverId = requireNotNull(id) { "Driver entity ID is null" }
+
+    return DriverCardDTO(
+        id = driverId,
+        serial = serial,
+        brand = brand,
+        name = "$firstName $lastName",
+        model = model,
+        price = fee(time, numberPassenger),
+        img = img,
+        rating = scores,
+        type = toString()
+    )
+}
+
+
+data class DriverAvailableDto(
+    val id: Long,
+    val average_score: Double
+)
 
 
 data class DriverCardAndTimeDTO(

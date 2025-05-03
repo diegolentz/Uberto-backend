@@ -10,7 +10,7 @@ import java.time.temporal.ChronoUnit
 
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 abstract class Driver():User {
 
     @Id
