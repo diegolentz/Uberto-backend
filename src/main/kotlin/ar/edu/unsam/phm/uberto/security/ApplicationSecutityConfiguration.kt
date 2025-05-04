@@ -35,6 +35,7 @@ class ApplicationSecutityConfiguration {
                 authorizeHttpRequests.requestMatchers("/login").permitAll()
                 authorizeHttpRequests.requestMatchers("/error").permitAll()
                 authorizeHttpRequests.requestMatchers(HttpMethod.OPTIONS).permitAll()
+                authorizeHttpRequests.requestMatchers(HttpMethod.GET).permitAll()
             }
             .sessionManagement { session->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

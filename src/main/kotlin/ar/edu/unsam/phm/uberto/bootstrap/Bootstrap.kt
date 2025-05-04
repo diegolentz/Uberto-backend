@@ -8,9 +8,9 @@ import ar.edu.unsam.phm.uberto.factory.TestFactory
 import ar.edu.unsam.phm.uberto.model.*
 import ar.edu.unsam.phm.uberto.repository.*
 import ar.edu.unsam.phm.uberto.services.TripService
-import ar.edu.unsam.phm.uberto.services.auth.AuthRepository
-import ar.edu.unsam.phm.uberto.services.auth.Role
-import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
+import ar.edu.unsam.phm.uberto.repository.AuthRepository
+import ar.edu.unsam.phm.uberto.model.Role
+import ar.edu.unsam.phm.uberto.model.UserAuthCredentials
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder

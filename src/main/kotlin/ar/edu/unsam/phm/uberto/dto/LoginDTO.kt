@@ -10,5 +10,6 @@ data class LoginRequest(
 
 data class LoginDTO(
     var id: Long?,
-    var rol: Role
+    var rol: Role,
+    var token: String?
 )

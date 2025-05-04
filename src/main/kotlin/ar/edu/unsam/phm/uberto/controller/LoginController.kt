@@ -8,6 +8,7 @@ import ar.edu.unsam.phm.uberto.services.AuthService
 import ar.edu.unsam.phm.uberto.model.Role
 import ar.edu.unsam.phm.uberto.model.UserAuthCredentials
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
+import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.*
 
@@ -18,17 +19,18 @@ import org.springframework.web.bind.annotation.*
 class LoginController(
     private val authService: AuthService,
     private val driverRepository: DriverRepository,
-    private val passengerRepository: PassengerRepository
+    private val passengerRepository: PassengerRepository,
+    private val tokenUtil: TokenJwtUtil
 ) {
     @PostMapping()
     fun authLogin(@RequestBody loginRequestBody: LoginRequest): LoginDTO {
         val user: UserAuthCredentials = authService.validateLogin(loginRequestBody)
         if (user.role == Role.DRIVER) {
             val driver = driverRepository.findByCredentials_Id(user.id!!).get()
-            return LoginDTO(id = driver.id!!, rol = user.role)
+            return LoginDTO(id = driver.id!!, rol = user.role, token=tokenUtil.generate(user))
         } else {
             val passenger = passengerRepository.findByCredentials_Id(user.id!!).get()
-            return LoginDTO(id = passenger.id!!, rol = user.role)
+            return LoginDTO(id = passenger.id!!, rol = user.role, token=tokenUtil.generate(user))
         }
 
     }
