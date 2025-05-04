@@ -43,6 +43,9 @@ class Trip(
     @JoinColumn(name = "tripscore_id", referencedColumnName = "id")
     var score: TripScore? = null
 
+    @Column(name= "end_date")
+    var finishedDateTime: LocalDateTime = LocalDateTime.now()
+
     fun addScore(newScore: TripScore){
         if(!this.finished()) throw TripNotFinishedException()
         if(this.scored()) throw ScoredTripException()
@@ -65,6 +68,12 @@ class Trip(
     fun price(): Double = this.driver.fee(duration, numberPassengers)
 
     fun pendingTrip()  : Boolean = date > LocalDateTime.now()
+
+    @PrePersist
+    @PreUpdate
+    fun endDate() {
+        finishedDateTime = finalizationDate()
+    }
 
     fun finalizationDate() : LocalDateTime = date.plus(duration.toLong(), ChronoUnit.MINUTES)
     fun finished() : Boolean  {

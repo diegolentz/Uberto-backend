@@ -54,7 +54,7 @@ LEFT JOIN t.score ts
 WHERE d.id NOT IN (
     SELECT t2.driver.id
     FROM Trip t2
-    WHERE t2.date BETWEEN :date AND :endDate
+    WHERE t2.date < :endDate AND t2.finishedDateTime > :date
 )
 GROUP BY d.id
 """)

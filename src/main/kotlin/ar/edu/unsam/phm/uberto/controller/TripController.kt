@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/trip")
 
 class TripsController(private val tripService: TripService, private val passengerService: PassengerService, private val driverService: DriverService) {
-    
+
     @PostMapping("/create")
     fun createTrip(@RequestBody trip: TripDTO): ResponseEntity<String> {
         val client = passengerService.getByIdTrip(trip.userId)
