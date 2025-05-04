@@ -35,5 +35,5 @@ interface PassengerRepository : CrudRepository<Passenger, Long> {
     @EntityGraph(attributePaths = ["trips"])
     fun getByIdTrip(@Param("id") id: Long): Passenger
 
-    fun findByCredentials_Id(id : Long): Optional <Passenger>
+    fun findByCredentials_Id(id: Long): Optional<Passenger>
 }
