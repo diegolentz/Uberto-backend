@@ -1,7 +1,7 @@
 package ar.edu.unsam.phm.uberto.model
 
 import ar.edu.unsam.phm.uberto.*
-import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
+import ar.edu.unsam.phm.uberto.model.UserAuthCredentials
 import jakarta.persistence.*
 import java.time.LocalDate
 import java.time.Period

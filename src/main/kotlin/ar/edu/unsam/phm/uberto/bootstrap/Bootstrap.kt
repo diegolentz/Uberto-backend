@@ -3,7 +3,6 @@ package ar.edu.unsam.phm.uberto.bootstrap
 import ar.edu.unsam.phm.uberto.builder.DriverBuilder
 import ar.edu.unsam.phm.uberto.builder.PassengerBuilder
 import ar.edu.unsam.phm.uberto.builder.TripBuilder
-import ar.edu.unsam.phm.uberto.builder.TripScoreBuilder
 import ar.edu.unsam.phm.uberto.factory.AuthFactory
 import ar.edu.unsam.phm.uberto.factory.TestFactory
 import ar.edu.unsam.phm.uberto.model.*
@@ -14,10 +13,11 @@ import ar.edu.unsam.phm.uberto.services.auth.Role
 import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 
 @Component
@@ -41,6 +41,7 @@ class Bootstrap(
 
     private fun createAccounts() {
         val authFactory: AuthFactory = AuthFactory()
+
         val account01 = authFactory.createAccount(username = "adrian", password = "adrian", role = Role.PASSENGER)
         val account02 = authFactory.createAccount(username = "diego", password = "diegoo", role = Role.PASSENGER)
         val account03 = authFactory.createAccount(username = "matias", password = "matias", role = Role.PASSENGER)
