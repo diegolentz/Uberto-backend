@@ -24,18 +24,14 @@ class DriverController(private val driverService: DriverService, val timeTripsSe
     fun getDriversAvailable(@RequestParam date: LocalDateTime,
                             @RequestParam origin: String,
                             @RequestParam destination: String,
-                            @RequestParam numberpassengers: Int): List<DriverCardDTO> {
+                            @RequestParam numberpassengers: Int): DriverCardAndTimeDTO {
         val timeMap = timeTripsService.getTime()
         val time = timeMap["time"] ?: throw BusinessException("Failure in the time calculation system")
-
         val avaliableDrivers = driverService.getDriversAvailable(date, time)
-        val idsDrivers = avaliableDrivers.map { it.id }
-        val drivers = driverService.driverRepo.findAllById(idsDrivers)
-        val driversCard = drivers.map { driver ->
-            val driverScore = avaliableDrivers.find { it.id == driver.id }?.average_score ?: 0.0
-            driver.toAvailableDTO(time, numberpassengers, driverScore)
+        val avaliableDriverDTO = avaliableDrivers.map{
+            it.driver.toAvailableDTO(time, numberpassengers, it.averageScore)
         }
-        return driversCard
+        return DriverCardAndTimeDTO(time = time, cardDrivers = avaliableDriverDTO)
     }
 
     @PostMapping()

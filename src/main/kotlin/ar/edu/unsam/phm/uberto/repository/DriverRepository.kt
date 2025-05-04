@@ -12,9 +12,6 @@ interface DriverRepository : CrudRepository<Driver, Long> {
     @EntityGraph(attributePaths = ["trips"])
     override fun findAll(): List<Driver>
 
-
-
-
     @Query(
         """
     SELECT d FROM Driver d 
