@@ -1,8 +1,11 @@
 package ar.edu.unsam.phm.uberto.services
 
+import ar.edu.unsam.phm.uberto.dto.DriverAvailableDto
 import ar.edu.unsam.phm.uberto.dto.DriverDTO
 import ar.edu.unsam.phm.uberto.model.Driver
+//import ar.edu.unsam.phm.uberto.repository.DriverAvgDTO
 import ar.edu.unsam.phm.uberto.repository.DriverRepository
+import ar.edu.unsam.phm.uberto.repository.TripsRepository
 import exceptions.BusinessException
 import exceptions.NotFoundException
 import jakarta.transaction.Transactional
@@ -10,17 +13,21 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 @Service
-class DriverService(val driverRepo: DriverRepository) {
+class DriverService(
+    val driverRepo: DriverRepository,
+    private val tripsRepository: TripsRepository
+) {
 
     fun getDriverData(userID: Long):Driver{
-        val driver = driverRepo.getById(userID).orElseThrow { NotFoundException("Driver with id $userID not found") }
+        val driver = driverRepo.findById(userID).orElseThrow { NotFoundException("Driver with id $userID not found") }
         return driver
     }
 
     fun getByIdTrip(id: Long): Driver =
-        driverRepo.getById(id)
+        driverRepo.getByIdTrip(id)
             .orElseThrow { NotFoundException("Driver with id $id not found") }
 
     @Transactional
@@ -38,13 +45,14 @@ class DriverService(val driverRepo: DriverRepository) {
         }
     }
 
-    fun getDriversAvailable(date: LocalDateTime, time: Int): List<Driver> {
+    fun getDriversAvailable(date: LocalDateTime, time: Int): List<DriverAvailableDto> {
         try {
-//            find all no retorna nunca null, no funciona orElse
-            return  driverRepo.findAll().filter { it.avaliable(date,time) }
+            val endTime = date.plus(time.toLong(), ChronoUnit.MINUTES)
+            return tripsRepository.getAvailable(date,endTime)
         } catch ( e : Exception) {
             throw BusinessException(e.message ?: "Error in the driver search")
         }
     }
+
 
 }

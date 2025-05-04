@@ -23,7 +23,7 @@ class Trip(
     var numberPassengers: Int = 0
 
     @Column
-    var date: LocalDateTime = LocalDateTime.now()
+    lateinit var date: LocalDateTime
 
     @Column(length = 40)
     var origin: String = ""
@@ -39,9 +39,12 @@ class Trip(
     @JoinColumn(name = "driver_id", referencedColumnName = "id")
     var driver: Driver = SimpleDriver()
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.MERGE],  orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL],  orphanRemoval = true)
     @JoinColumn(name = "tripscore_id", referencedColumnName = "id")
     var score: TripScore? = null
+
+    @Column(name= "end_date")
+    var finishedDateTime: LocalDateTime = LocalDateTime.now()
 
     fun addScore(newScore: TripScore){
         if(!this.finished()) throw TripNotFinishedException()
@@ -65,6 +68,12 @@ class Trip(
     fun price(): Double = this.driver.fee(duration, numberPassengers)
 
     fun pendingTrip()  : Boolean = date > LocalDateTime.now()
+
+    @PrePersist
+    @PreUpdate
+    fun endDate() {
+        finishedDateTime = finalizationDate()
+    }
 
     fun finalizationDate() : LocalDateTime = date.plus(duration.toLong(), ChronoUnit.MINUTES)
     fun finished() : Boolean  {

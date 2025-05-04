@@ -4,11 +4,13 @@ import ar.edu.unsam.phm.uberto.builder.DriverBuilder
 import ar.edu.unsam.phm.uberto.builder.PassengerBuilder
 import ar.edu.unsam.phm.uberto.builder.TripBuilder
 import ar.edu.unsam.phm.uberto.factory.AuthFactory
+import ar.edu.unsam.phm.uberto.factory.TestFactory
 import ar.edu.unsam.phm.uberto.model.*
 import ar.edu.unsam.phm.uberto.repository.*
-import ar.edu.unsam.phm.uberto.repository.AuthRepository
-import ar.edu.unsam.phm.uberto.model.Role
-import ar.edu.unsam.phm.uberto.model.UserAuthCredentials
+import ar.edu.unsam.phm.uberto.services.TripService
+import ar.edu.unsam.phm.uberto.services.auth.AuthRepository
+import ar.edu.unsam.phm.uberto.services.auth.Role
+import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder
@@ -23,16 +25,18 @@ class Bootstrap(
     @Autowired val passengerRepo: PassengerRepository,
     @Autowired val driverRepo: DriverRepository,
     @Autowired val tripRepo: TripsRepository,
+    @Autowired val tripService: TripService,
     @Autowired val authRepo: AuthRepository,
     @Autowired val tripScoreRepo: TripScoreRepository
 ) : CommandLineRunner {
 
+    val factory = TestFactory()
     override fun run(vararg args: String?) {
         createAccounts()
         createPassengers()
         createDrivers()
         createTrips()
-//        createTripScore()
+        createTripScore()
     }
 
     private fun createAccounts() {
@@ -65,13 +69,12 @@ class Bootstrap(
             LocalDate.of(1995, 10, 11),
             LocalDate.of(1999, 11, 15)
         )
-        val imgenes = listOf<String>("", "", "", "", "")
-//        val imgenes = listOf<String>(
-//            "https://1.bp.blogspot.com/-mX40EP3h9w0/XuEMJ7e7TdI/AAAAAAAAAGw/ABJg-o2m1JEC2-UA22ouBtLBXdSkR8ZoQCLcBGAsYHQ/s1600/013d6285-1a23-41ae-8564-a954e04e60d9.jpg",
-//            "https://img.freepik.com/fotos-premium/avatar-digital-fisioterapeuta-inteligencia-artificial-generativa_934475-9204.jpg",
-//            "https://img.freepik.com/fotos-premium/persona-avatar-plana-fondo-rojo-personaje-dibujos-animados_1036693-6803.jpg",
-//            "https://img.freepik.com/fotos-premium/hombre-joven-sonriente-adam-avatar-3d-personas-vectoriales-ilustracion-personajes-estilo-minimalista-dibujos-animados_1029476-294679.jpg",
-//            "https://ar.images.search.yahoo.com/search/images;_ylt=AwrFNzpEaORnzvkjOTCt9Qt.?p=avatar+persona+html+img&fr=mcafee&imgf=face&fr2=p%3As%2Cv%3Ai#id=236&iurl=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F220453%2Fpexels-photo-220453.jpeg%3Fcs%3Dsrgb%26dl%3Dpexels-pixabay-220453.jpg%26fm%3Djpg&action=click")
+        val imgenes = listOf<String>("https://res.cloudinary.com/dumcjdzxo/image/upload/adrian_cdouit.jpg",
+            "https://res.cloudinary.com/dumcjdzxo/image/upload/diego_uyhcwb.jpg",
+            "https://res.cloudinary.com/dumcjdzxo/image/upload/matias_tclwsz.jpg",
+            "https://res.cloudinary.com/dumcjdzxo/image/upload/perdo1_jfmu6o.jpg",
+            "https://res.cloudinary.com/dumcjdzxo/image/upload/valen_ilptyh.jpg")
+
         val balances = listOf<Double>(1000000.0, 1000000.0, 1000000.0, 1000000.0, 1.0)
         val phones = listOf<Int>(1568568792, 1235598763, 1556876259, 1235468975, 1554876255)
 
@@ -91,7 +94,6 @@ class Bootstrap(
         }
         passengerRepo.saveAll(passengerList)
     }
-
     private fun createDrivers() {
         val driverList = mutableListOf<Driver>()
         val users = authRepo.findByRole(Role.DRIVER)
@@ -102,13 +104,10 @@ class Bootstrap(
         val brand = listOf("Fiat Uno", "Fiat Uno", "Gilera")
         val serial = listOf("FTG 879", "DEV 666", "AAA 123")
         val model = listOf(2013, 1999, 2003)
-        val img = listOf("imagen1", "imagen2", "imagen3")
+        val img = listOf("https://res.cloudinary.com/dumcjdzxo/image/upload/toreto_wx2me4.jpg",
+            "https://res.cloudinary.com/dumcjdzxo/image/upload/colapinto_bihvlt.jpg",
+            "https://res.cloudinary.com/dumcjdzxo/image/upload/laudo_hmkucz.jpg")
         val baseP = listOf(900.0, 700.0, 800.0)
-//        val img = listOf(
-//            "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSxIABKumHIEfVtFkRWCdlA9qmyHCZyxV6-N7m_c1Xc4MOXv8s61ssMabL5Ny5mdcBpBYG21zMUqikXJ-6K0xK5n8jm58thk8-9MXSGA0w",
-//            "https://imgs.search.brave.com/govkyiYhkWlQIXB_rGkHY0bbnntpI5wjyJDdmJ3Oxfc/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93d3cu/bGFuYWNpb24uY29t/LmFyL3Jlc2l6ZXIv/djIvc2UtdmlyYWxp/em8tdW5hLWZvdG8t/ZGUtZnJhbmNvLWNv/bGFwaW50by1jdWFu/ZG8tUzVIMkpKNEdM/RkVRUEZaTE5NVEE2/QU9NSzQuSlBHP2F1/dGg9ZmJjOWJiMjU3/NDY4ZTdmNDllNDU1/NzBlMTYzYzNmNDIz/ZTUwODZlOTA4ZGFh/ZDBhYzRkNWQ5ZDNl/N2E5ODgxOCZ3aWR0/aD00MjAmaGVpZ2h0/PTI4MCZxdWFsaXR5/PTcwJnNtYXJ0PXRy/dWU",
-//            "https://imgs.search.brave.com/ccyEUVl1Jj6vw63RrXeCqblIt0xyl5WfdLyQXdIH8jk/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTA4/OTI5OTY3Mi9lcy9m/b3RvL2JyYW5kcy1o/YXRjaC1lbmdsYW5k/LWF1c3RyaWFuLWYx/LXJhY2luZy1kcml2/ZXItbmlraS1sYXVk/YS1hdC1icmFuZHMt/aGF0Y2gtb24tanVs/eS0wMS0xOTc0LWlu/LmpwZz9zPTYxMng2/MTImdz0wJms9MjAm/Yz1GZ29lUEQ0ZFJE/c3YycFlQVVdDalpy/S0FfaTJjRlgzQmNV/UTN6eThEN2FJPQ"
-//        )
 
         users.forEachIndexed { index: Int, user: UserAuthCredentials ->
             val driver = DriverBuilder(driverType[index])
@@ -127,7 +126,6 @@ class Bootstrap(
         }
         driverRepo.saveAll(driverList)
     }
-
     private fun createTrips() {
         var passengers: List<Passenger> = passengerRepo.findAll().toList()
         val passengersAmmounts: List<Int> = listOf(
@@ -372,28 +370,18 @@ class Bootstrap(
         tripRepo.saveAll(allTrips)
     }
 
-//    private fun createTripScore(){
-//        var passengers: MutableIterable<Passenger> = passengerRepo.findAll()
-//        val diego = passengers.first { it.firstName == "Diego" }
-//        val travel1 = diego.trips.first { it.date > LocalDateTime.now() }
-//        diego.scoreTrip(travel1, "Buen viaje", 8)
-//
-//        val adrian = passengers.first { it.firstName == "adrian" }
-//        val travel2 = adrian.trips.first { it.date < LocalDateTime.now() }
-//        adrian.scoreTrip(travel2, "El auto hacia ruidos", 7)
-//
-//        val pedro = passengers.first { it.firstName == "pedro" }
-//        val travel5 = adrian.trips.first { it.date < LocalDateTime.now() }
-//        pedro.scoreTrip(travel5, "Buen paisaje", 9)
-//
-//        val valentin = passengers.first { it.firstName == "valentin" }
-//        val travel3 = adrian.trips.first { it.date < LocalDateTime.now() }
-//        valentin.scoreTrip(travel3, "El auto largaba humo", 6)
-//
-//        val matias = passengers.first { it.firstName == "matias" }
-//        val travel4 = adrian.trips.first { it.date < LocalDateTime.now() }
-//        matias.scoreTrip(travel4, "Excelente recorrido", 10)
-//
-//
-//    }
+    private fun createTripScore(){
+        val tripPassenger : MutableList<Trip> = mutableListOf()
+        val passenger = passengerRepo.findAll()
+        passenger.forEach{
+            val tripFinished = tripService.getFinishedTripPassenger(it)
+            tripPassenger.add(tripFinished[0]) // me piden no valorar todos, solo 1
+        }
+        if(!tripPassenger.isEmpty()){
+            tripPassenger.forEach{
+                factory.createTripScore(it)
+            }
+        }
+        tripRepo.saveAll(tripPassenger)
+    }
 }

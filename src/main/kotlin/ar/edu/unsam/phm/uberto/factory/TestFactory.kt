@@ -1,9 +1,7 @@
 package ar.edu.unsam.phm.uberto.factory
 
-import ar.edu.unsam.phm.uberto.model.Driver
-import ar.edu.unsam.phm.uberto.model.Passenger
-import ar.edu.unsam.phm.uberto.model.PremiumDriver
-import ar.edu.unsam.phm.uberto.model.Trip
+import ar.edu.unsam.phm.uberto.model.*
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 class TestFactory {
@@ -42,6 +40,7 @@ class TestFactory {
             val trip = Trip().apply {
                 client = listPassenger.get(i)
                 driver = listDriver.get(i)
+                date = LocalDateTime.now()
             }
             listTrip.add(trip)
         }
@@ -69,6 +68,25 @@ class TestFactory {
         return Trip().apply {
             client = passenger
             this.driver = driver
+            date = LocalDateTime.now()
+        }
+    }
+
+    fun createTripScore(trip: Trip){
+        val msj = listOf(
+            "¡Buen trabajo!",
+            "Sigue así.",
+            "Necesitas mejorar.",
+            "Excelente desempeño.",
+            "Puedes hacerlo mejor."
+        )
+        val score = TripScore().apply {
+            scorePoints = (1..5).random()
+            message = msj.random()
+            date = LocalDate.now()
+        }
+        trip.apply {
+            this.score = score
         }
     }
 
