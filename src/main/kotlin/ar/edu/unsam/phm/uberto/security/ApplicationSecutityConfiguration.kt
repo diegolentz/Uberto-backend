@@ -2,7 +2,9 @@ package ar.edu.unsam.phm.uberto.security
 
 
 import ar.edu.unsam.phm.uberto.repository.AuthRepository
+import ar.edu.unsam.phm.uberto.security.filter.JwtTokenValidator
 import ar.edu.unsam.phm.uberto.services.AuthService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -18,28 +20,37 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 
 
 @Configuration
 @EnableWebSecurity
-class ApplicationSecutityConfiguration {
+class ApplicationSecutityConfiguration(
+    @Autowired val jwtUtil: TokenJwtUtil
+) {
 
     @Bean
     fun securityFilterChain(httpSecurity: HttpSecurity): SecurityFilterChain {
         return httpSecurity
             .cors{ it.disable() }
             .csrf{ it.disable() }
-            .authorizeHttpRequests{authorizeHttpRequests ->
-                authorizeHttpRequests.requestMatchers("/login").permitAll()
-                authorizeHttpRequests.requestMatchers("/error").permitAll()
-                authorizeHttpRequests.requestMatchers(HttpMethod.OPTIONS).permitAll()
-                authorizeHttpRequests.requestMatchers(HttpMethod.GET).permitAll()
-            }
+            .httpBasic(Customizer.withDefaults())
+            .exceptionHandling(Customizer.withDefaults())
             .sessionManagement { session->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
-            .httpBasic(Customizer.withDefaults())
-            .exceptionHandling(Customizer.withDefaults())
+            .authorizeHttpRequests{authorizeHttpRequests ->
+                //Publicos
+                authorizeHttpRequests.requestMatchers(HttpMethod.POST, "/login").permitAll()
+                authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/error").permitAll()
+
+                //Privados
+                authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/passenger/").hasAnyRole("PASSENGER")
+
+                //Default
+                authorizeHttpRequests.anyRequest().authenticated()
+            }
+            .addFilterBefore(JwtTokenValidator(jwtUtil), BasicAuthenticationFilter::class.java)
             .build()
     }
 
