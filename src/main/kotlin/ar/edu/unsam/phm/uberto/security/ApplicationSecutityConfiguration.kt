@@ -18,14 +18,12 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
-import java.security.AuthProvider
+
 
 @Configuration
 @EnableWebSecurity
 class ApplicationSecutityConfiguration {
-//    Implementaciones en orden de flujo de trabajo. EN LA WIKI esta el flujo de trabajo.
 
-//    FILTER CHAIN
     @Bean
     fun securityFilterChain(httpSecurity: HttpSecurity): SecurityFilterChain {
         return httpSecurity
@@ -45,21 +43,17 @@ class ApplicationSecutityConfiguration {
             .build()
     }
 
-//    Authentication manager -> Authentication provider
     @Bean
     @Throws(Exception::class)
     fun authenticationManager(authConfig: AuthenticationConfiguration): AuthenticationManager {
         return authConfig.authenticationManager
     }
 
-    // Authentication provider ->
-    //  -> PasswordEncoder
-    //  -> UserDetailsService a.k.a AuthService
     @Bean
     fun authenticationProvider(authRepo: AuthRepository): AuthenticationProvider {
-        val provider: DaoAuthenticationProvider = DaoAuthenticationProvider()
+        val provider = DaoAuthenticationProvider()
         provider.setPasswordEncoder(this.passwordEncoder())
-        provider.setUserDetailsService(this.userDetailService(authRepo))
+        provider.setUserDetailsService(this.userDetailService(authRepo, passwordEncoder()))
         return provider
     }
 
@@ -69,7 +63,7 @@ class ApplicationSecutityConfiguration {
     }
 
     @Bean
-    fun userDetailService(authRepo: AuthRepository): UserDetailsService {
-        return AuthService(authRepo)
+    fun userDetailService(authRepo: AuthRepository, passwordEncoder: PasswordEncoder): UserDetailsService {
+        return AuthService(authRepo, passwordEncoder)
     }
 }
