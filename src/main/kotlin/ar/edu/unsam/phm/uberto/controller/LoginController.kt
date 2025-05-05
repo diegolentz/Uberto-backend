@@ -40,8 +40,4 @@ class LoginController(
         }
     }
 
-    @GetMapping("/mock")
-    fun mock(): String{
-        return "dentro"
-    }
 }

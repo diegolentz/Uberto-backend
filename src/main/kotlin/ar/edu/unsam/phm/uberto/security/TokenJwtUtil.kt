@@ -48,7 +48,6 @@ class TokenJwtUtil {
             .withJWTId(UUID.randomUUID().toString())
             .withNotBefore(Date(System.currentTimeMillis()))
             .sign(algorithm)
-
     }
 
     fun getAllClaims(jwtToken: String): Claims {
@@ -84,6 +83,5 @@ class TokenJwtUtil {
     fun getSpecificClaim(decodedJWT: DecodedJWT, claimName: String): Claim {
         return decodedJWT.getClaim(claimName)
     }
-
 
 }

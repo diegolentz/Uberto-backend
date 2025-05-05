@@ -45,7 +45,17 @@ class ApplicationSecutityConfiguration(
                 authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/error").permitAll()
 
                 //Privados
-                authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/passenger/**").hasRole("PASSENGER")
+                //trips
+                authorizeHttpRequests.requestMatchers(HttpMethod.POST,"/trips/create").hasRole("PASSENGER")
+                authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/trip/passenger/**").hasRole("PASSENGER")
+                authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/trip/driver/**").hasRole("DRIVER")
+                authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/trip/pending").hasRole("DRIVER")
+                authorizeHttpRequests.requestMatchers(HttpMethod.POST,"/trips/profile/passenger/**").hasRole("PASSENGER")
+                authorizeHttpRequests.requestMatchers(HttpMethod.POST,"/trips/profile/driver/**").hasRole("DRIVER")
+
+                authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/driver/available").hasRole("PASSENGER")
+                authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/passenger/**").hasAnyRole("PASSENGER","DRIVER")
+                authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/diver/**").hasAnyRole("PASSENGER","DRIVER")
                 //Default
                 authorizeHttpRequests.anyRequest().denyAll()
             }
