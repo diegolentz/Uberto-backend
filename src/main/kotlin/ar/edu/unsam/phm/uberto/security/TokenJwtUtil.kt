@@ -1,6 +1,7 @@
 package ar.edu.unsam.phm.uberto.security
 
 import com.auth0.jwt.JWT
+import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.exceptions.JWTVerificationException
 import com.auth0.jwt.interfaces.Claim
 import com.auth0.jwt.interfaces.DecodedJWT
@@ -9,9 +10,12 @@ import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
+import java.time.LocalDate
 import java.util.Date
+import java.util.UUID
 
 @Component
 class TokenJwtUtil {
@@ -31,16 +35,20 @@ class TokenJwtUtil {
         const val ACCESS_TOKEN_EXPIRATION_TIME = 30
     }
 
-    fun generate(userDetails: UserDetails, expirationDuration: Int = ExpirationEnum.DEFAULT_EXPIRATION_TIME, additionalClaims: Map<String, Any> = emptyMap()): String {
-        return Jwts.builder()
-            .claims()
-            .subject(userDetails.username)
-            .issuedAt(Date(System.currentTimeMillis()))
-            .expiration(Date(Date().time + expirationDuration))
-            .add(additionalClaims) //Todavia no se para que sirve, pero lo agregan - yo tampoco
-            .and()
-            .signWith(Keys.hmacShaKeyFor(this.secretKey.toByteArray()))
-            .compact()
+    fun generate(authentication: Authentication, rol:String): String {
+        val algorithm = Algorithm.HMAC512(this.secretKey)
+        val username = authentication.principal.toString()
+
+        return JWT.create()
+            .withIssuer(this.userGeneration)
+            .withSubject(username)
+            .withIssuedAt(Date())
+            .withClaim("rol", listOf("ROLE_${rol}"))
+            .withExpiresAt(Date(System.currentTimeMillis() + 1800000))
+            .withJWTId(UUID.randomUUID().toString())
+            .withNotBefore(Date(System.currentTimeMillis()))
+            .sign(algorithm)
+
     }
 
     fun getAllClaims(jwtToken: String): Claims {
@@ -61,7 +69,7 @@ class TokenJwtUtil {
 
     fun validateToken(token: String) : DecodedJWT {
         try{
-            val algorithm = com.auth0.jwt.algorithms.Algorithm.HMAC256(secretKey)
+            val algorithm = com.auth0.jwt.algorithms.Algorithm.HMAC512(secretKey)
             val verifier : JWTVerifier = JWT.require(algorithm).withIssuer(this.userGeneration).build()
             return verifier.verify(token)
         }catch (ex: JWTVerificationException){

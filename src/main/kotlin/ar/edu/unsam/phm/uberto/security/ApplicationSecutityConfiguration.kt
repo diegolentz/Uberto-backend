@@ -45,10 +45,9 @@ class ApplicationSecutityConfiguration(
                 authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/error").permitAll()
 
                 //Privados
-                authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/passenger/**").hasAnyRole("PASSENGER")
-
+                authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/passenger/**").hasRole("PASSENGER")
                 //Default
-                authorizeHttpRequests.anyRequest().authenticated()
+                authorizeHttpRequests.anyRequest().denyAll()
             }
             .addFilterBefore(JwtTokenValidator(jwtUtil), BasicAuthenticationFilter::class.java)
             .build()

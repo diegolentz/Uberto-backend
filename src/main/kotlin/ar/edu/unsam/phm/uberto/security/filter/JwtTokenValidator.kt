@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.OncePerRequestFilter
@@ -29,7 +30,10 @@ class JwtTokenValidator(
             val decodedJWT = jwtUtils.validateToken(jwtToken)
             val username = jwtUtils.extractUsername(decodedJWT)
             val context :  SecurityContext = SecurityContextHolder.getContext()
-            val authentication : Authentication = UsernamePasswordAuthenticationToken(username, null, null)
+            val roles = jwtUtils.getSpecificClaim(decodedJWT, "rol")
+                .asList(String::class.java)
+                .map { SimpleGrantedAuthority(it) }
+            val authentication : Authentication = UsernamePasswordAuthenticationToken(username, null, roles)
             context.authentication = authentication
             SecurityContextHolder.setContext(context)
         }

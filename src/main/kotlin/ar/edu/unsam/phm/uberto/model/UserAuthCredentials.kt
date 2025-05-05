@@ -54,8 +54,8 @@ class UserAuthCredentials(): UserDetails{
     override fun getUsername(): String = this.username
     fun setUsername(username:String){ this.username = username }
 
-    override fun getAuthorities(): Collection<GrantedAuthority?>? {
-        return listOf(SimpleGrantedAuthority(this.role.name))
+    override fun getAuthorities(): Collection<GrantedAuthority> {
+        return listOf(SimpleGrantedAuthority("ROLE_${this.role.name}"))
     }
 
     override fun isAccountNonExpired(): Boolean = this.accountNonExpired
@@ -68,13 +68,5 @@ class UserAuthCredentials(): UserDetails{
     fun expireCredentials() { credentialsNonExpired = false }
     fun disable() { enabled = false }
     fun enable() { enabled = true }
-
-    fun toUserDetails(): UserDetails{
-        return User.builder()
-            .username(this.getUsername())
-            .password(this.getPassword())
-            .authorities(SimpleGrantedAuthority(this.role.name))
-            .build()
-    }
 
 }
