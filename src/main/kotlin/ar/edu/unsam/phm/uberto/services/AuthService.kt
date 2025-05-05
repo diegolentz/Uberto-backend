@@ -19,32 +19,29 @@ class AuthService(
     val passwordEncoder: PasswordEncoder
 ): UserDetailsService {
 
-    fun validateLogin(loginRequest: LoginRequest): UserAuthCredentials {
-        val user: UserAuthCredentials = this.findUserByUsername(username=loginRequest.username)
-        validPassword(loginRequest.password)
-        return user
-    }
     override fun loadUserByUsername(username: String?): UserDetails? {
-        if(username == null) throw InvalidCredentialsException()
-        val user: UserAuthCredentials = this.findUserByUsername(username=username)
-        return user.mapToUserDetails()
+        if(username == null) throw InvalidCredentialsException("Usuario o Contraseña Incorrecta 0")
+        val user = this.findUserByUsername(username=username)
+            ?: throw InvalidCredentialsException("Usuario o Contraseña Incorrecta 1")
+    return  user
+    //return user.mapToUserDetails()
     }
 
-    private fun UserAuthCredentials.mapToUserDetails(): UserDetails {
-        return User.builder()
-            .username(this.username)
-            .password(this.password)
-            .roles(this.role.name)
-            .build()
+//    private fun UserAuthCredentials.mapToUserDetails(): UserDetails {
+//        return User.builder()
+//            .username(this.username)
+//            .password(this.password)
+//            .roles(this.role.name)
+//            .build()
+//    }
+
+    private fun findUserByUsername(username: String): UserAuthCredentials? {
+        return authRepository.findByUsername(username)
     }
 
-    private fun findUserByUsername(username: String): UserAuthCredentials {
-        return authRepository.findByUsername(username) ?: throw InvalidCredentialsException()
-    }
-
-    fun validPassword(password: String){
-        if(passwordEncoder.matches(password, password)){
-            throw InvalidCredentialsException()
+    fun validPassword(password: String, user: UserDetails){
+        if(!passwordEncoder.matches(password, user.password)){
+            throw InvalidCredentialsException("Usuario o contraseña incorrecta 2")
         }
     }
 }

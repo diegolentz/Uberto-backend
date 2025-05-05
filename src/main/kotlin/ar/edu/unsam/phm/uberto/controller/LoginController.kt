@@ -1,5 +1,6 @@
 package ar.edu.unsam.phm.uberto.controller
 
+import ar.edu.unsam.phm.uberto.InvalidCredentialsException
 import ar.edu.unsam.phm.uberto.dto.LoginDTO
 import ar.edu.unsam.phm.uberto.dto.LoginRequest
 
@@ -24,7 +25,8 @@ class LoginController(
 ) {
     @PostMapping()
     fun authLogin(@RequestBody loginRequestBody: LoginRequest): LoginDTO {
-        val user: UserAuthCredentials = authService.validateLogin(loginRequestBody)
+        val user = authService.loadUserByUsername(loginRequestBody.username) as UserAuthCredentials
+        authService.validPassword(loginRequestBody.password, user)
         if (user.role == Role.DRIVER) {
             val driver = driverRepository.findByCredentials_Id(user.id!!).get()
             return LoginDTO(id = driver.id!!, rol = user.role, token=tokenUtil.generate(user))
@@ -32,6 +34,5 @@ class LoginController(
             val passenger = passengerRepository.findByCredentials_Id(user.id!!).get()
             return LoginDTO(id = passenger.id!!, rol = user.role, token=tokenUtil.generate(user))
         }
-
     }
 }
