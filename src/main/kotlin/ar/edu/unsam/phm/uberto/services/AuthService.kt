@@ -1,18 +1,15 @@
 package ar.edu.unsam.phm.uberto.services
 
 import ar.edu.unsam.phm.uberto.InvalidCredentialsException
-import ar.edu.unsam.phm.uberto.repository.AuthRepository
 import ar.edu.unsam.phm.uberto.model.UserAuthCredentials
+import ar.edu.unsam.phm.uberto.repository.AuthRepository
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import java.util.stream.Collector
-import java.util.stream.Collectors
 
 @Service
 class AuthService(
@@ -38,7 +35,7 @@ class AuthService(
     }
 
     fun authenticate(user: UserAuthCredentials) : Authentication{
-        return UsernamePasswordAuthenticationToken(user.username, user.password)
+        return UsernamePasswordAuthenticationToken(user.username, user.password) //no se si aca necesito el rol
     }
 
     fun SetContext(authorizedUser: Authentication) {

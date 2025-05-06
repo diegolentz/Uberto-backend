@@ -11,26 +11,26 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
-enum class Role{
+enum class Role {
     DRIVER,
     PASSENGER
 }
 
 @Entity
-class UserAuthCredentials(): UserDetails{
+class UserAuthCredentials() : UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
     @Column(length = 255)
-    private lateinit var username:String
+    private lateinit var username: String
 
     @Column(length = 550)
-    private lateinit var password:String
+    private lateinit var password: String
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
-    lateinit var role:Role
+    lateinit var role: Role
 
     @Column(nullable = false)
     private var accountNonExpired: Boolean = true
@@ -51,7 +51,9 @@ class UserAuthCredentials(): UserDetails{
     }
 
     override fun getUsername(): String = this.username
-    fun setUsername(username:String){ this.username = username }
+    fun setUsername(username: String) {
+        this.username = username
+    }
 
     override fun getAuthorities(): Collection<GrantedAuthority> {
         return listOf(SimpleGrantedAuthority("ROLE_${this.role.name}"))
@@ -61,11 +63,28 @@ class UserAuthCredentials(): UserDetails{
     override fun isAccountNonLocked(): Boolean = this.accountNonLocked
     override fun isCredentialsNonExpired(): Boolean = this.credentialsNonExpired
     override fun isEnabled(): Boolean = this.enabled
-    fun lockAccount() { accountNonLocked = false }
-    fun unlockAccount() { accountNonLocked = true }
-    fun expireAccount() { accountNonExpired = false }
-    fun expireCredentials() { credentialsNonExpired = false }
-    fun disable() { enabled = false }
-    fun enable() { enabled = true }
+    fun lockAccount() {
+        accountNonLocked = false
+    }
+
+    fun unlockAccount() {
+        accountNonLocked = true
+    }
+
+    fun expireAccount() {
+        accountNonExpired = false
+    }
+
+    fun expireCredentials() {
+        credentialsNonExpired = false
+    }
+
+    fun disable() {
+        enabled = false
+    }
+
+    fun enable() {
+        enabled = true
+    }
 
 }

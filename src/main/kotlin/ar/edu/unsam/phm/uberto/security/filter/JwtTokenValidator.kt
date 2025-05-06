@@ -29,10 +29,10 @@ class JwtTokenValidator(
             val jwtToken = authHeader.substring(7)
             val decodedJWT = jwtUtils.validateToken(jwtToken)
             val username = jwtUtils.extractUsername(decodedJWT)
-            val context :  SecurityContext = SecurityContextHolder.getContext()
             val roles = jwtUtils.getSpecificClaim(decodedJWT, "rol")
                 .asList(String::class.java)
                 .map { SimpleGrantedAuthority(it) }
+            val context :  SecurityContext = SecurityContextHolder.getContext()
             val authentication : Authentication = UsernamePasswordAuthenticationToken(username, null, roles)
             context.authentication = authentication
             SecurityContextHolder.setContext(context)
