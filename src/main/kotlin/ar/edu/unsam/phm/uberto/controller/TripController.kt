@@ -4,11 +4,10 @@ import ar.edu.unsam.phm.uberto.dto.FormTripDTO
 import ar.edu.unsam.phm.uberto.dto.PendingAndFinishedTripsDTO
 import ar.edu.unsam.phm.uberto.dto.TripDTO
 import ar.edu.unsam.phm.uberto.dto.toDTO
-import ar.edu.unsam.phm.uberto.services.DriverService
-import ar.edu.unsam.phm.uberto.services.PassengerService
-import ar.edu.unsam.phm.uberto.services.TravelTimeMockService
-import ar.edu.unsam.phm.uberto.services.TripService
+import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
+import ar.edu.unsam.phm.uberto.services.*
 import exceptions.NotFoundException
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -16,7 +15,11 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/trip")
 
-class TripsController(private val tripService: TripService, private val passengerService: PassengerService, private val driverService: DriverService) {
+class TripsController(
+    private val tripService: TripService,
+    private val passengerService: PassengerService,
+    private val driverService: DriverService,
+    private val jwtUtil: TokenJwtUtil) {
 
     @PostMapping("/create")
     fun createTrip(@RequestBody trip: TripDTO): ResponseEntity<String> {
@@ -32,8 +35,9 @@ class TripsController(private val tripService: TripService, private val passenge
     }
 
     @GetMapping("/driver/{id}")
-    fun getAllByDriverId(@PathVariable id: Long): List<TripDTO> {
-        val driver = driverService.getByIdTrip(id)
+    fun getAllByDriverId(@PathVariable id: Long, request: HttpServletRequest): List<TripDTO> {
+        val idToken = jwtUtil.getIdFromTokenString(request)
+        val driver = driverService.getByIdTrip(idToken)
         return tripService.getAllByDriver(driver).map { it.toDTO() }
     }
 

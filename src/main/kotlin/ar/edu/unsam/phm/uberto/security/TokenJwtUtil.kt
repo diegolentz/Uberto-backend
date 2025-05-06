@@ -10,7 +10,10 @@ import com.auth0.jwt.interfaces.JWTVerifier
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.validation.constraints.NotNull
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpHeaders
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
 import java.util.*
@@ -67,8 +70,11 @@ class TokenJwtUtil {
         return decodedJWT.getClaim(claimName)
     }
 
-    fun getIdFromToken(decodedJWT: DecodedJWT): String {
-        return decodedJWT.getClaim("userID").toString()
+    fun getIdFromTokenString(@NotNull request: HttpServletRequest): Long {
+        val authHeader = request.getHeader(HttpHeaders.AUTHORIZATION)
+        val jwtToken = authHeader.substring(7)
+        val decodedJWT = validateToken(jwtToken)
+        return decodedJWT.getClaim("userID").asLong()
     }
 
 }
