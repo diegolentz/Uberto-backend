@@ -38,7 +38,7 @@ class AuthService(
         return UsernamePasswordAuthenticationToken(user.username, user.password) //no se si aca necesito el rol
     }
 
-    fun SetContext(authorizedUser: Authentication) {
+    fun setContext(authorizedUser: Authentication) {
         SecurityContextHolder.getContext().authentication = authorizedUser
     }
 

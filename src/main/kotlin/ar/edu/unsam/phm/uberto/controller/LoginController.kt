@@ -29,14 +29,12 @@ class LoginController(
     fun authLogin(@RequestBody loginRequestBody: LoginRequest): LoginDTO {
         val user = authService.loadUserByUsername(loginRequestBody.username) as UserAuthCredentials
         authService.validPassword(loginRequestBody.password, user)
-        val authorizedUser = authService.authenticate(user)
-        authService.SetContext(authorizedUser)
         if (user.role == Role.DRIVER) {
             val driver = driverRepository.findByCredentials_Id(user.id!!).get()
-            return LoginDTO(id = driver.id!!, rol = user.role, token=tokenUtil.generate(authorizedUser, user.role.toString()))
+            return LoginDTO(id = driver.id!!, rol = user.role, token=tokenUtil.generate(user, driver.id!!))
         } else {
             val passenger = passengerRepository.findByCredentials_Id(user.id!!).get()
-            return LoginDTO(id = passenger.id!!, rol = user.role, token=tokenUtil.generate(authorizedUser, user.role.toString()))
+            return LoginDTO(id = passenger.id!!, rol = user.role, token=tokenUtil.generate(user, passenger.id!!))
         }
     }
 
