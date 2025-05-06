@@ -6,11 +6,10 @@ import ar.edu.unsam.phm.uberto.dto.LoginRequest
 import ar.edu.unsam.phm.uberto.factory.TestFactory
 import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.model.Passenger
+import ar.edu.unsam.phm.uberto.model.Role
+import ar.edu.unsam.phm.uberto.repository.AuthRepository
 import ar.edu.unsam.phm.uberto.repository.DriverRepository
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
-import ar.edu.unsam.phm.uberto.services.auth.AuthRepository
-import ar.edu.unsam.phm.uberto.services.auth.Role
-import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.kotest.core.spec.style.AnnotationSpec
@@ -141,7 +140,7 @@ class LoginControllerTest {
     @Test
     fun sucessfullLoginDriver(){
         val loginRequest: LoginRequest = LoginRequest(username="premium", password="premium")
-        val loginResponse: LoginDTO = LoginDTO(id=1, rol=Role.DRIVER)
+        val loginResponse: LoginDTO = LoginDTO(id=1, rol= Role.DRIVER)
         this.perform( mockMvcRequestBuilder =
             this.mockPost("/login")
                 .contentType("application/json")
