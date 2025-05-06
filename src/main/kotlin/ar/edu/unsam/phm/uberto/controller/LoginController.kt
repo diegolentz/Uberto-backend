@@ -1,5 +1,6 @@
 package ar.edu.unsam.phm.uberto.controller
 
+import ar.edu.unsam.phm.uberto.InvalidCredentialsException
 import ar.edu.unsam.phm.uberto.dto.LoginDTO
 import ar.edu.unsam.phm.uberto.dto.LoginRequest
 
@@ -9,6 +10,8 @@ import ar.edu.unsam.phm.uberto.model.Role
 import ar.edu.unsam.phm.uberto.model.UserAuthCredentials
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.*
 
@@ -24,14 +27,17 @@ class LoginController(
 ) {
     @PostMapping()
     fun authLogin(@RequestBody loginRequestBody: LoginRequest): LoginDTO {
-        val user: UserAuthCredentials = authService.validateLogin(loginRequestBody)
+        val user = authService.loadUserByUsername(loginRequestBody.username) as UserAuthCredentials
+        authService.validPassword(loginRequestBody.password, user)
+        val authorizedUser = authService.authenticate(user)
+        authService.SetContext(authorizedUser)
         if (user.role == Role.DRIVER) {
             val driver = driverRepository.findByCredentials_Id(user.id!!).get()
-            return LoginDTO(id = driver.id!!, rol = user.role, token=tokenUtil.generate(user))
+            return LoginDTO(id = driver.id!!, rol = user.role, token=tokenUtil.generate(authorizedUser, user.role.toString()))
         } else {
             val passenger = passengerRepository.findByCredentials_Id(user.id!!).get()
-            return LoginDTO(id = passenger.id!!, rol = user.role, token=tokenUtil.generate(user))
+            return LoginDTO(id = passenger.id!!, rol = user.role, token=tokenUtil.generate(authorizedUser, user.role.toString()))
         }
-
     }
+
 }

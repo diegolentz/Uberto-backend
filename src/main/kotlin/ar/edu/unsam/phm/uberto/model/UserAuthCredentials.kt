@@ -1,6 +1,5 @@
 package ar.edu.unsam.phm.uberto.model
 
-import ar.edu.unsam.phm.uberto.InvalidCredentialsException
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -10,10 +9,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.security.crypto.argon2.Argon2PasswordEncoder
-import org.springframework.security.crypto.password.PasswordEncoder
 
 enum class Role{
     DRIVER,
@@ -50,21 +46,15 @@ class UserAuthCredentials(): UserDetails{
 
 
     override fun getPassword(): String = this.password
-    fun setPassword(password:String){
-        val encodedPassword = this.passwordEncoder().encode(password)
+    fun setPassword(encodedPassword: String) {
         this.password = encodedPassword
-    }
-    fun validPassword(password: String){
-        if(!this.passwordEncoder().matches(password, this.password)){
-            throw InvalidCredentialsException()
-        }
     }
 
     override fun getUsername(): String = this.username
     fun setUsername(username:String){ this.username = username }
 
-    override fun getAuthorities(): Collection<GrantedAuthority?>? {
-        return listOf(SimpleGrantedAuthority(this.role.name))
+    override fun getAuthorities(): Collection<GrantedAuthority> {
+        return listOf(SimpleGrantedAuthority("ROLE_${this.role.name}"))
     }
 
     override fun isAccountNonExpired(): Boolean = this.accountNonExpired
@@ -78,15 +68,4 @@ class UserAuthCredentials(): UserDetails{
     fun disable() { enabled = false }
     fun enable() { enabled = true }
 
-    fun toUserDetails(): UserDetails{
-        return User.builder()
-            .username(this.getUsername())
-            .password(this.getPassword())
-            .authorities(SimpleGrantedAuthority(this.role.name))
-            .build()
-    }
-
-    private fun passwordEncoder(): PasswordEncoder {
-        return Argon2PasswordEncoder(128, 255, 1, 1024, 1)
-    }
 }

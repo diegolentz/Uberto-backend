@@ -27,7 +27,8 @@ class Bootstrap(
     @Autowired val tripRepo: TripsRepository,
     @Autowired val tripService: TripService,
     @Autowired val authRepo: AuthRepository,
-    @Autowired val tripScoreRepo: TripScoreRepository
+    @Autowired val tripScoreRepo: TripScoreRepository,
+    @Autowired val passwordEncoder: PasswordEncoder
 ) : CommandLineRunner {
 
     val factory = TestFactory()
@@ -42,14 +43,14 @@ class Bootstrap(
     private fun createAccounts() {
         val authFactory: AuthFactory = AuthFactory()
 
-        val account01 = authFactory.createAccount(username = "adrian", password = "adrian", role = Role.PASSENGER)
-        val account02 = authFactory.createAccount(username = "diego", password = "diegoo", role = Role.PASSENGER)
-        val account03 = authFactory.createAccount(username = "matias", password = "matias", role = Role.PASSENGER)
-        val account04 = authFactory.createAccount(username = "pedro", password = "pedroo", role = Role.PASSENGER)
-        val account05 = authFactory.createAccount(username = "valen", password = "valenn", role = Role.PASSENGER)
-        val account06 = authFactory.createAccount(username = "premium", password = "premium", role = Role.DRIVER)
-        val account07 = authFactory.createAccount(username = "simple", password = "simple", role = Role.DRIVER)
-        val account08 = authFactory.createAccount(username = "biker", password = "biker", role = Role.DRIVER)
+        val account01 = authFactory.createAccount(username = "adrian", password = passwordEncoder.encode("adrian"), role = Role.PASSENGER)
+        val account02 = authFactory.createAccount(username = "diego", password = passwordEncoder.encode("diegoo"), role = Role.PASSENGER)
+        val account03 = authFactory.createAccount(username = "matias", password = passwordEncoder.encode("matias"), role = Role.PASSENGER)
+        val account04 = authFactory.createAccount(username = "pedro", password = passwordEncoder.encode("pedroo"), role = Role.PASSENGER)
+        val account05 = authFactory.createAccount(username = "valen", password = passwordEncoder.encode("valenn"), role = Role.PASSENGER)
+        val account06 = authFactory.createAccount(username = "premium", password = passwordEncoder.encode("premium"), role = Role.DRIVER)
+        val account07 = authFactory.createAccount(username = "simple", password = passwordEncoder.encode("simple"), role = Role.DRIVER)
+        val account08 = authFactory.createAccount(username = "biker", password = passwordEncoder.encode("biker"), role = Role.DRIVER)
 
         val accounts = listOf(account01, account02, account03, account04, account05, account06, account07, account08)
 
