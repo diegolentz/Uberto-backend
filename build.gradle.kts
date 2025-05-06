@@ -53,6 +53,8 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testImplementation("com.h2database:h2")
 	testImplementation("org.mockito:mockito-inline:5.2.0")
+	testImplementation("org.springframework.security:spring-security-test")
+
 }
 
 kotlin {

@@ -11,6 +11,10 @@ import ar.edu.unsam.phm.uberto.services.TripService
 import ar.edu.unsam.phm.uberto.repository.AuthRepository
 import ar.edu.unsam.phm.uberto.model.Role
 import ar.edu.unsam.phm.uberto.model.UserAuthCredentials
+import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
+import ar.edu.unsam.phm.uberto.services.AuthService
+import ar.edu.unsam.phm.uberto.services.DriverService
+import ar.edu.unsam.phm.uberto.services.PassengerService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder
@@ -28,10 +32,14 @@ class Bootstrap(
     @Autowired val tripService: TripService,
     @Autowired val authRepo: AuthRepository,
     @Autowired val tripScoreRepo: TripScoreRepository,
-    @Autowired val passwordEncoder: PasswordEncoder
+    @Autowired val passwordEncoder: PasswordEncoder,
+    @Autowired val authService: AuthService,
+    @Autowired val jwtUtil: TokenJwtUtil,
+    @Autowired val driverService: DriverService,
+    @Autowired val passengerService: PassengerService
 ) : CommandLineRunner {
 
-    val factory = TestFactory()
+    val factory = TestFactory(authService, passengerService, driverService ,jwtUtil)
     override fun run(vararg args: String?) {
         createAccounts()
         createPassengers()

@@ -1,8 +1,7 @@
 package ar.edu.unsam.phm.uberto.repository
 
-import ar.edu.unsam.phm.uberto.services.auth.AuthRepository
-import ar.edu.unsam.phm.uberto.services.auth.Role
-import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
+import ar.edu.unsam.phm.uberto.model.Role
+import ar.edu.unsam.phm.uberto.model.UserAuthCredentials
 import ar.edu.unsam.phm.uberto.utils.AuthRepositoryUtil
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

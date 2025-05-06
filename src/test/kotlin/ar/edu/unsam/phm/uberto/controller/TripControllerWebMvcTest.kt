@@ -9,6 +9,8 @@ import ar.edu.unsam.phm.uberto.model.Trip
 import ar.edu.unsam.phm.uberto.repository.DriverRepository
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
 import ar.edu.unsam.phm.uberto.repository.TripsRepository
+import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
+import ar.edu.unsam.phm.uberto.services.AuthService
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.PassengerService
 import ar.edu.unsam.phm.uberto.services.TripService
@@ -54,7 +56,13 @@ class TripControllerWebMvcTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    val testFactory = TestFactory()
+    @Autowired
+    lateinit var authService: AuthService
+
+    @Autowired
+    lateinit var jwtUtil: TokenJwtUtil
+
+    val testFactory = TestFactory(authService, passengerService, driverService ,jwtUtil)
 
     @Test
     fun `Pido los trip de un pasajero que no existe - no tiene pendientes`(){

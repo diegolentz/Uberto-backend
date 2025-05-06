@@ -1,10 +1,20 @@
 package ar.edu.unsam.phm.uberto.factory
 
 import ar.edu.unsam.phm.uberto.model.*
+import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
+import ar.edu.unsam.phm.uberto.services.AuthService
+import ar.edu.unsam.phm.uberto.services.DriverService
+import ar.edu.unsam.phm.uberto.services.PassengerService
+import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-class TestFactory {
+class TestFactory(
+    @Autowired val authService: AuthService,
+    @Autowired val passengerService: PassengerService,
+    @Autowired val driverService: DriverService,
+    @Autowired val jwtUtil: TokenJwtUtil
+) {
 
     fun createPassenger(amount : Int): List<Passenger>{
         val listPassenger: MutableList<Passenger> = mutableListOf()
@@ -90,5 +100,16 @@ class TestFactory {
         }
     }
 
+    fun generateTokenPassengerTest(username: String): String{
+        val userAuth = authService.loadUserByUsername(username) as UserAuthCredentials
+        val user = passengerService.getByCredentialsId(userAuth.id!!)
+        return jwtUtil.generate(userAuth, user.id!!)
+    }
+
+    fun generateTokenDriverTest(username: String): String{
+        val userAuth = authService.loadUserByUsername(username) as UserAuthCredentials
+        val user = driverService.getByCredentialsId(userAuth.id!!)
+        return jwtUtil.generate(userAuth, user.id!!)
+    }
 
 }

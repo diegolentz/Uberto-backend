@@ -54,5 +54,8 @@ class DriverService(
         }
     }
 
+    fun getByCredentialsId(id: Long): Driver =
+        driverRepo.findByCredentials_Id(id).orElseThrow{throw NotFoundException("Driver no encontrado")}
+
 
 }

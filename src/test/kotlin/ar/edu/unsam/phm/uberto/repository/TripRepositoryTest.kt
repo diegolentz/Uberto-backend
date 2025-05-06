@@ -4,6 +4,10 @@ import ar.edu.unsam.phm.uberto.factory.TestFactory
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.PremiumDriver
 import ar.edu.unsam.phm.uberto.model.Trip
+import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
+import ar.edu.unsam.phm.uberto.services.AuthService
+import ar.edu.unsam.phm.uberto.services.DriverService
+import ar.edu.unsam.phm.uberto.services.PassengerService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
@@ -19,7 +23,19 @@ class TripRepositoryTest {
     @Autowired
     lateinit var driverRepository: DriverRepository
 
-    val testFactory = TestFactory()
+    @Autowired
+    lateinit var authService: AuthService
+
+    @Autowired
+    lateinit var passengerService: PassengerService
+
+    @Autowired
+    lateinit var jwtUtil: TokenJwtUtil
+
+    @Autowired
+    lateinit var driverService: DriverService
+
+    val testFactory = TestFactory(authService, passengerService, driverService ,jwtUtil)
 
     @Test
     fun `buscar un trip asociado a un passenger`(){

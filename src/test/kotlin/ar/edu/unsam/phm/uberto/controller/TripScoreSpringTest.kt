@@ -5,7 +5,10 @@ import ar.edu.unsam.phm.uberto.factory.TestFactory
 import ar.edu.unsam.phm.uberto.repository.DriverRepository
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
 import ar.edu.unsam.phm.uberto.repository.TripsRepository
+import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
+import ar.edu.unsam.phm.uberto.services.AuthService
 import ar.edu.unsam.phm.uberto.services.DriverService
+import ar.edu.unsam.phm.uberto.services.PassengerService
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -37,7 +40,16 @@ class TripScoreSpringTest {
     @Autowired
     lateinit var tripRepository: TripsRepository
 
-    val testFactory = TestFactory()
+    @Autowired
+    lateinit var authService: AuthService
+
+    @Autowired
+    lateinit var passengerService: PassengerService
+
+    @Autowired
+    lateinit var jwtUtil: TokenJwtUtil
+
+    val testFactory = TestFactory(authService, passengerService, driverService ,jwtUtil)
 
     @Test
     fun `busco las calificaciones de un pasajero que no realizo ninguna calificacion`(){
