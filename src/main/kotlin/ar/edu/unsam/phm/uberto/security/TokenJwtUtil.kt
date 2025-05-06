@@ -1,5 +1,6 @@
 package ar.edu.unsam.phm.uberto.security
 
+import ar.edu.unsam.phm.uberto.model.UserAuthCredentials
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.exceptions.JWTVerificationException
@@ -9,7 +10,10 @@ import com.auth0.jwt.interfaces.JWTVerifier
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.validation.constraints.NotNull
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpHeaders
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
 import java.util.*
@@ -27,19 +31,15 @@ class TokenJwtUtil {
     @Value("\${jwt.user.generator}")
     var userGeneration: String = ""
 
-//    companion object ExpirationEnum {
-//        const val DEFAULT_EXPIRATION_TIME = 30
-//        const val ACCESS_TOKEN_EXPIRATION_TIME = 30
-//    }
-
-    fun generate(authentication: Authentication, rol: String): String {
+    fun generate(user: UserAuthCredentials, userId: Long): String {
         val algorithm = Algorithm.HMAC512(this.secretKey)
-        val username = authentication.principal.toString()
+        val username = user.username
         return JWT.create()
             .withIssuer(this.userGeneration)
             .withSubject(username)
             .withIssuedAt(Date())
-            .withClaim("rol", listOf("ROLE_${rol}"))
+            .withClaim("rol", listOf("ROLE_${user.role}"))
+            .withClaim("userID", userId)
             .withExpiresAt(Date(System.currentTimeMillis() + 1800000))
             .withJWTId(UUID.randomUUID().toString())
             .withNotBefore(Date(System.currentTimeMillis()))
@@ -51,16 +51,6 @@ class TokenJwtUtil {
         val parser = Jwts.parser().verifyWith(secretKey).build()
         return parser.parseSignedClaims(jwtToken).payload
     }
-
-//    fun extractLoginIdentification(jwtToken: String): String? {
-//        return getAllClaims(jwtToken).subject
-//    }
-//
-//    fun isExpired(jwtToken: String): Boolean {
-//        return getAllClaims(jwtToken)
-//            .expiration
-//            .before(Date(System.currentTimeMillis()))
-//    }
 
     fun validateToken(token: String): DecodedJWT {
         try {
@@ -78,6 +68,13 @@ class TokenJwtUtil {
 
     fun getSpecificClaim(decodedJWT: DecodedJWT, claimName: String): Claim {
         return decodedJWT.getClaim(claimName)
+    }
+
+    fun getIdFromTokenString(@NotNull request: HttpServletRequest): Long {
+        val authHeader = request.getHeader(HttpHeaders.AUTHORIZATION)
+        val jwtToken = authHeader.substring(7)
+        val decodedJWT = validateToken(jwtToken)
+        return decodedJWT.getClaim("userID").asLong()
     }
 
 }

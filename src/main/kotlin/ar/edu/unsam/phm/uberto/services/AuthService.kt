@@ -3,6 +3,10 @@ package ar.edu.unsam.phm.uberto.services
 import ar.edu.unsam.phm.uberto.InvalidCredentialsException
 import ar.edu.unsam.phm.uberto.model.UserAuthCredentials
 import ar.edu.unsam.phm.uberto.repository.AuthRepository
+import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.validation.constraints.NotNull
+import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
@@ -38,8 +42,9 @@ class AuthService(
         return UsernamePasswordAuthenticationToken(user.username, user.password) //no se si aca necesito el rol
     }
 
-    fun SetContext(authorizedUser: Authentication) {
+    fun setContext(authorizedUser: Authentication) {
         SecurityContextHolder.getContext().authentication = authorizedUser
     }
+
 
 }
