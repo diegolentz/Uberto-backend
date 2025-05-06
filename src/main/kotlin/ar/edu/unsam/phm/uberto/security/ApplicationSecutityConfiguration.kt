@@ -47,12 +47,12 @@ class ApplicationSecutityConfiguration(
 
                 //Privados
                 //trips controller
-                authorizeHttpRequests.requestMatchers(HttpMethod.POST,"/trips/create").hasRole("PASSENGER")
+                authorizeHttpRequests.requestMatchers(HttpMethod.POST,"/trip/create").hasRole("PASSENGER")
                 authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/trip/passenger/*").hasRole("PASSENGER")
                 authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/trip/driver/*").hasRole("DRIVER")
                 authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/trip/pending").hasRole("DRIVER")
-                authorizeHttpRequests.requestMatchers(HttpMethod.POST,"/trips/profile/passenger/*").hasRole("PASSENGER")
-                authorizeHttpRequests.requestMatchers(HttpMethod.POST,"/trips/profile/driver/*").hasRole("DRIVER")
+                authorizeHttpRequests.requestMatchers(HttpMethod.POST,"/trip/profile/passenger/*").hasRole("PASSENGER")
+                authorizeHttpRequests.requestMatchers(HttpMethod.POST,"/trip/profile/driver/*").hasRole("DRIVER")
 
                 //Passenger controller
                 authorizeHttpRequests.requestMatchers(HttpMethod.PUT,"/passenger/addBalance").hasRole("PASSENGER")

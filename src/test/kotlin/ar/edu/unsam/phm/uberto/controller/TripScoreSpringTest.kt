@@ -24,45 +24,35 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @DisplayName("Dado un controller de TripsScore")
-class TripScoreSpringTest {
-    @Autowired
-    private lateinit var passengerRepository: PassengerRepository
-
-    @Autowired
-    lateinit var mockMvc: MockMvc
-
-    @Autowired
-    lateinit var driverService: DriverService
-
-    @Autowired
-    lateinit var driverRepository: DriverRepository
-
-    @Autowired
-    lateinit var tripRepository: TripsRepository
-
-    @Autowired
-    lateinit var authService: AuthService
-
-    @Autowired
-    lateinit var passengerService: PassengerService
-
-    @Autowired
-    lateinit var jwtUtil: TokenJwtUtil
+class TripScoreSpringTest(
+    @Autowired var passengerRepository: PassengerRepository,
+    @Autowired var mockMvc: MockMvc,
+    @Autowired var driverService: DriverService,
+    @Autowired var driverRepository: DriverRepository,
+    @Autowired var tripRepository: TripsRepository,
+    @Autowired var authService: AuthService,
+    @Autowired var passengerService: PassengerService,
+    @Autowired var jwtUtil: TokenJwtUtil
+) {
 
     val testFactory = TestFactory(authService, passengerService, driverService ,jwtUtil)
+    val tokenDriver = testFactory.generateTokenDriverTest("simple")
+    val tokenPassenger = testFactory.generateTokenPassengerTest("adrian")
 
     @Test
     fun `busco las calificaciones de un pasajero que no realizo ninguna calificacion`(){
-        mockMvc.perform(MockMvcRequestBuilders.get("/tripScore/passenger/1"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/tripScore/passenger/1")
+            .header("Authorization", "Bearer $tokenPassenger"))
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(0))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(1))
     }
 
     @Test
     fun `busco las calificaciones de un conductor que no tiene calificaciones`(){
-        mockMvc.perform(MockMvcRequestBuilders.get("/tripScore/driver/1"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/tripScore/driver/1")
+            .header("Authorization", "Bearer $tokenDriver"))
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(0))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(1))
     }
 
     @Test
@@ -103,12 +93,13 @@ class TripScoreSpringTest {
         val objectMapper = ObjectMapper()
         val createInfoJson = objectMapper.writeValueAsString(tripScore)
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/tripScore")
+        mockMvc.perform(MockMvcRequestBuilders.post("/tripScore").header("Authorization", "Bearer $tokenPassenger")
             .contentType("application/json")
             .content(createInfoJson))
             .andExpect(MockMvcResultMatchers.status().isOk)
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/tripScore/passenger/${passenger.id}"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/tripScore/passenger/${passenger.id}")
+            .header("Authorization", "Bearer $tokenPassenger"))
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(1))
             .andExpect(MockMvcResultMatchers.jsonPath("$[0].tripId").value(trip.id!!))

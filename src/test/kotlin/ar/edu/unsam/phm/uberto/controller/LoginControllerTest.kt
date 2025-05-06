@@ -40,25 +40,20 @@ import kotlin.test.assertSame
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @DisplayName("Dado un controller de Trips")
-class LoginControllerTest {
-    @Autowired
-    lateinit var authRepo: AuthRepository
-    @Autowired
-    lateinit var authService: AuthService
-    @Autowired
-    lateinit var passengerService: PassengerService
-    @Autowired
-    lateinit var jwtUtil: TokenJwtUtil
-    @Autowired
-    lateinit var driverRepo: DriverRepository
-    @Autowired
-    lateinit var passengerRepo: PassengerRepository
-    @Autowired
-    lateinit var mockMvc: MockMvc
-    @Autowired
-    lateinit var driverService: DriverService
+class LoginControllerTest(
+    @Autowired var authRepo: AuthRepository,
+    @Autowired var authService: AuthService,
+    @Autowired var passengerService: PassengerService,
+    @Autowired var jwtUtil: TokenJwtUtil,
+    @Autowired var driverRepo: DriverRepository,
+    @Autowired var passengerRepo: PassengerRepository,
+    @Autowired var mockMvc: MockMvc,
+    @Autowired var driverService: DriverService,
+) {
 
     val testFactory = TestFactory(authService, passengerService, driverService ,jwtUtil)
+    val tokenDriver = testFactory.generateTokenDriverTest("simple")
+    val tokenPassenger = testFactory.generateTokenPassengerTest("adrian")
 
     private fun perform(mockMvcRequestBuilder: MockHttpServletRequestBuilder): ResultActions{
         return mockMvc.perform(mockMvcRequestBuilder)
