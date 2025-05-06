@@ -41,6 +41,7 @@ class ApplicationSecutityConfiguration(
             }
             .authorizeHttpRequests{authorizeHttpRequests ->
                 //Publicos
+                authorizeHttpRequests.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 authorizeHttpRequests.requestMatchers(HttpMethod.POST, "/login").permitAll()
                 authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/error").permitAll()
 
