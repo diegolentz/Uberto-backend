@@ -1,5 +1,6 @@
 package ar.edu.unsam.phm.uberto.dto
 
+import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.Trip
 import java.time.LocalDateTime
 
@@ -52,7 +53,7 @@ fun Trip.toDTO() : TripDTO{
 )
 }
 
-fun Trip.scoreToDTO(userId: Long) = TripScoreDTO(
+fun Trip.scoreToDTO(user: Passenger?) = TripScoreDTO(
     tripId = id!!,
     message = score!!.message,
     scorePoints = score!!.scorePoints,
@@ -61,7 +62,7 @@ fun Trip.scoreToDTO(userId: Long) = TripScoreDTO(
     driverName = driver.firstName + "" + driver.lastName,
     avatarUrlPassenger = client.img,
     avatarUrlDriver = driver.img,
-    delete = canDeleteScore(userId)
+    delete = canDeleteScore(user)
 )
 
 data class FormTripDTO(

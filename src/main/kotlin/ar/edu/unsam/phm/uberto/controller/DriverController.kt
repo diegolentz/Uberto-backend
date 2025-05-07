@@ -2,9 +2,11 @@ package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.dto.*
 import ar.edu.unsam.phm.uberto.model.Driver
+import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.TravelTimeMockService
 import exceptions.BusinessException
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
@@ -12,13 +14,23 @@ import java.time.LocalDateTime
 @CrossOrigin(origins = ["http://localhost:8080", "http://localhost:5173"])
 @RestController
 @RequestMapping("/driver")
-class DriverController(private val driverService: DriverService, val timeTripsService: TravelTimeMockService) {
+class DriverController(
+    private val driverService: DriverService,
+    val timeTripsService: TravelTimeMockService,
+    private val jwtUtil: TokenJwtUtil
+) {
 
-    @GetMapping("/{id}")
-    fun getByID(@PathVariable id:Long): DriverDTO = driverService.getDriverData(id).toDTO()
+    @GetMapping()
+    fun getByID(request: HttpServletRequest): DriverDTO {
+        val idToken = jwtUtil.getIdFromTokenString(request)
+        return driverService.getDriverData(idToken).toDTO()
+    }
 
     @GetMapping("/img")
-    fun getImg(@RequestParam driverid: Long): DriverImg = driverService.getDriverData(driverid).toImgDTO()
+    fun getImg(request: HttpServletRequest): DriverImg {
+        val idToken = jwtUtil.getIdFromTokenString(request)
+        return driverService.getDriverData(idToken).toImgDTO()
+    }
 
     @GetMapping("/available")
     fun getDriversAvailable(@RequestParam date: LocalDateTime,
@@ -35,6 +47,9 @@ class DriverController(private val driverService: DriverService, val timeTripsSe
     }
 
     @PostMapping()
-    fun changeProfile(@RequestBody driverDTO: DriverDTO): ResponseEntity<String> =  driverService.updateProfile(driverDTO)
+    fun changeProfile(@RequestBody driverDTO: DriverDTO, request: HttpServletRequest): ResponseEntity<String> {
+        val idToken = jwtUtil.getIdFromTokenString(request)
+        return driverService.updateProfile(driverDTO, idToken)
+    }
 
 }
