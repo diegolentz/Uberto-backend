@@ -3,6 +3,7 @@ package ar.edu.unsam.phm.uberto.controller
 import ar.edu.unsam.phm.uberto.dto.TripScoreDTO
 import ar.edu.unsam.phm.uberto.dto.scoreToDTO
 import ar.edu.unsam.phm.uberto.model.Driver
+import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.TripScore
 import ar.edu.unsam.phm.uberto.repository.TripScoreRepository
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
@@ -34,19 +35,23 @@ class TripScoreController(
         val passenger = passengerService.getByIdTrip(idToken)
         val trips = tripService.getAllByPassenger(passenger)
         val tripScore = tripScoreService.getFromPassenger(trips)
-        return tripScore.map { it!!.scoreToDTO(idToken) }
+        return tripScore.map { it!!.scoreToDTO(passenger) }
     }
 
     @GetMapping("/driver")
     fun getScoreDriver(request: HttpServletRequest, @RequestParam driverId: Long?): List<TripScoreDTO>{
-        var idToken = jwtUtil.getIdFromTokenString(request)
-        if(driverId != null){
-            idToken = driverId
+        val idToken = driverId ?: jwtUtil.getIdFromTokenString(request)
+        val passenger: Passenger? = if (driverId != null) {
+            passengerService.getById(idToken)
+        } else {
+            null
         }
+
         val driver = driverService.getByIdTrip(idToken)
         val trips = tripService.getAllByDriver(driver)
         val tripScore = tripScoreService.getFromDriver(trips)
-        return tripScore.map { it!!.scoreToDTO(idToken) }
+
+        return tripScore.map { it!!.scoreToDTO(passenger) }
     }
 
     @PostMapping()
