@@ -53,7 +53,7 @@ fun Trip.toDTO() : TripDTO{
 )
 }
 
-fun Trip.scoreToDTO(user: Passenger?) = TripScoreDTO(
+fun Trip.scoreToDTO(userId: Long?) = TripScoreDTO(
     tripId = id!!,
     message = score!!.message,
     scorePoints = score!!.scorePoints,
@@ -62,7 +62,7 @@ fun Trip.scoreToDTO(user: Passenger?) = TripScoreDTO(
     driverName = driver.firstName + "" + driver.lastName,
     avatarUrlPassenger = client.img,
     avatarUrlDriver = driver.img,
-    delete = canDeleteScore(user)
+    delete = if (userId != null) canDeleteScore(userId) else false
 )
 
 data class FormTripDTO(
