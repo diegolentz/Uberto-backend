@@ -2,6 +2,7 @@ package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.dto.TripScoreDTO
 import ar.edu.unsam.phm.uberto.dto.scoreToDTO
+import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.model.TripScore
 import ar.edu.unsam.phm.uberto.repository.TripScoreRepository
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
@@ -37,8 +38,11 @@ class TripScoreController(
     }
 
     @GetMapping("/driver")
-    fun getScoreDriver(request: HttpServletRequest): List<TripScoreDTO>{
-        val idToken = jwtUtil.getIdFromTokenString(request)
+    fun getScoreDriver(request: HttpServletRequest, @RequestParam driverId: Long?): List<TripScoreDTO>{
+        var idToken = jwtUtil.getIdFromTokenString(request)
+        if(driverId != null){
+            idToken = driverId
+        }
         val driver = driverService.getByIdTrip(idToken)
         val trips = tripService.getAllByDriver(driver)
         val tripScore = tripScoreService.getFromDriver(trips)
