@@ -31,9 +31,9 @@ class DriverService(
             .orElseThrow { NotFoundException("Driver with id $id not found") }
 
     @Transactional
-    fun updateProfile(dto : DriverDTO) : ResponseEntity<String> {
+    fun updateProfile(dto : DriverDTO, id: Long) : ResponseEntity<String> {
         try {
-            val driver = getDriverData(dto.id)
+            val driver = getDriverData(id)
             val update = driver.update(dto)
             driverRepo.save(update)
             return ResponseEntity
