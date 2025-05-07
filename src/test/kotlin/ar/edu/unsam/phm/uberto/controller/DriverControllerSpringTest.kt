@@ -13,67 +13,75 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import ar.edu.unsam.phm.uberto.factory.TestFactory
 import ar.edu.unsam.phm.uberto.model.TripScore
+import ar.edu.unsam.phm.uberto.model.UserAuthCredentials
 import ar.edu.unsam.phm.uberto.repository.DriverRepository
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
 import ar.edu.unsam.phm.uberto.repository.TripScoreRepository
 import ar.edu.unsam.phm.uberto.repository.TripsRepository
+import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
+import ar.edu.unsam.phm.uberto.services.AuthService
+import ar.edu.unsam.phm.uberto.services.PassengerService
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDateTime
+
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@DisplayName("Dado un controller de Trips")
-class DriverControllerSpringTest {
+@DisplayName("Dado un controller de Driver")
+class DriverControllerSpringTest(
+    @Autowired private var tripScoreRepository: TripScoreRepository,
+    @Autowired private var passengerRepository: PassengerRepository,
+    @Autowired var mockMvc: MockMvc,
+    @Autowired var driverService: DriverService,
+    @Autowired var authService: AuthService,
+    @Autowired var driverRepository: DriverRepository,
+    @Autowired var tripRepository: TripsRepository,
+    @Autowired var passengerService: PassengerService,
+    @Autowired var jwtUtil: TokenJwtUtil,
+) {
 
-    @Autowired
-    private lateinit var tripScoreRepository: TripScoreRepository
 
-    @Autowired
-    private lateinit var passengerRepository: PassengerRepository
-
-    @Autowired
-    lateinit var mockMvc: MockMvc
-
-
-    @Autowired
-    lateinit var driverService: DriverService
-
-    @Autowired
-    lateinit var driverRepository: DriverRepository
-
-    @Autowired
-    lateinit var tripRepository: TripsRepository
-
-    val testFactory = TestFactory()
+    val testFactory = TestFactory(authService, passengerService, driverService ,jwtUtil)
+    val token = testFactory.generateTokenDriverTest("simple")
+    val tokenPassanger = testFactory.generateTokenPassengerTest("adrian")
 
 
     @Test
-    fun `busco un driver cuyo id no existe`(){
+    fun `busco un driver cuyo id no existe`() {
         mockMvc.perform(MockMvcRequestBuilders.get("/driver/2313213"))
             .andExpect(MockMvcResultMatchers.status().is4xxClientError)
     }
 
     @Test
-    fun `busco un driver cuyo id si existe`(){
-        mockMvc.perform(MockMvcRequestBuilders.get("/driver/1"))
-            .andExpect(MockMvcResultMatchers.status().isOk)
+    fun `busco un driver cuyo id si existe`() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/driver/1")
+                .header("Authorization", "Bearer $token")
+        )
+            .andExpect(status().isOk)
     }
 
     @Test
-    fun `obtengo la img de un driver existente`(){
-        mockMvc.perform(MockMvcRequestBuilders.get("/driver/img?driverid=1"))
+    fun `obtengo la img de un driver existente`() {
+        mockMvc.perform(MockMvcRequestBuilders.get("/driver/img?driverid=1")
+            .header("Authorization", "Bearer $token"))
             .andExpect(MockMvcResultMatchers.status().isOk)
     }
 
     @Test
     fun `obtengo choferes disponibles`() {
 //        tiro una fecha posterior, pueden todos los choferes
-        mockMvc.perform(MockMvcRequestBuilders.get("/driver/available")
-            .param("date", "2025-06-10T10:00:00")
-            .param("origin", "Av Santa Fe 1000")
-            .param("destination", "Av Calle Corrientes 1000")
-            .param("numberpassengers", "2"))
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/driver/available").header("Authorization", "Bearer $tokenPassanger")
+                .param("date", "2025-06-10T10:00:00")
+                .param("origin", "Av Santa Fe 1000")
+                .param("destination", "Av Calle Corrientes 1000")
+                .param("numberpassengers", "2")
+                .header("Authorization", "Bearer $token")
+        )
             .andExpect(MockMvcResultMatchers.status().isOk)
     }
 
@@ -99,11 +107,14 @@ class DriverControllerSpringTest {
 
 
         // Verifico que el chofer no esté disponible en esa fecha
-        mockMvc.perform(MockMvcRequestBuilders.get("/driver/available")
-            .param("date", trip.date.toString())
-            .param("origin", trip.origin)
-            .param("destination", trip.destination)
-            .param("numberpassengers", trip.numberPassengers.toString()))
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/driver/available").header("Authorization", "Bearer $tokenPassanger")
+                .param("date", trip.date.toString())
+                .param("origin", trip.origin)
+                .param("destination", trip.destination)
+                .param("numberpassengers", trip.numberPassengers.toString())
+
+        )
             .andExpect(MockMvcResultMatchers.status().isOk)
 
 
@@ -126,21 +137,22 @@ class DriverControllerSpringTest {
         val objectMapper = ObjectMapper()
         val updateInfoJson = objectMapper.writeValueAsString(updateInfo)
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/driver")
-            .contentType("application/json")
-            .content(updateInfoJson))  // Usamos el JSON generado
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/driver").header("Authorization", "Bearer $token")
+                .contentType("application/json")
+                .content(updateInfoJson)
+        )
             .andExpect(MockMvcResultMatchers.status().isOk)
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/driver/1"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/driver/1").header("Authorization", "Bearer $token"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.serial").value(updateInfo.serial))
             .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value(updateInfo.firstName))
             .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value(updateInfo.lastName))
             .andExpect(MockMvcResultMatchers.jsonPath("$.brand").value(updateInfo.brand))
             .andExpect(MockMvcResultMatchers.jsonPath("$.model").value(updateInfo.model))
             .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(updateInfo.price))
+
     }
-
-
 
 
 }

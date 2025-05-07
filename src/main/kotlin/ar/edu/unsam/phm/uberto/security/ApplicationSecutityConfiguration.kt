@@ -47,12 +47,12 @@ class ApplicationSecutityConfiguration(
 
                 //Privados
                 //trips controller
-                authorizeHttpRequests.requestMatchers(HttpMethod.POST,"/trips/create").hasRole("PASSENGER")
+                authorizeHttpRequests.requestMatchers(HttpMethod.POST,"/trip/create").hasRole("PASSENGER")
                 authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/trip/passenger/*").hasRole("PASSENGER")
                 authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/trip/driver/*").hasRole("DRIVER")
                 authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/trip/pending").hasRole("DRIVER")
-                authorizeHttpRequests.requestMatchers(HttpMethod.POST,"/trips/profile/passenger/*").hasRole("PASSENGER")
-                authorizeHttpRequests.requestMatchers(HttpMethod.POST,"/trips/profile/driver/*").hasRole("DRIVER")
+                authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/trip/profile/passenger/*").hasRole("PASSENGER")
+                authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/trip/profile/driver/*").hasRole("DRIVER")
 
                 //Passenger controller
                 authorizeHttpRequests.requestMatchers(HttpMethod.PUT,"/passenger/addBalance").hasRole("PASSENGER")
@@ -68,11 +68,11 @@ class ApplicationSecutityConfiguration(
                 authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/driver/img").hasRole("DRIVER")
                 authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/driver/available").hasRole("PASSENGER")
                 authorizeHttpRequests.requestMatchers(HttpMethod.POST,"/driver").hasRole("DRIVER")
-                authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/diver/*").hasAnyRole("PASSENGER","DRIVER")
+                authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/driver/*").hasAnyRole("PASSENGER","DRIVER")
 
                 //TripScore controller
                 authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/tripScore/passenger/*").hasRole("PASSENGER")
-                authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/tripScore/driver/*").hasRole("DRIVER")
+                authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/tripScore/driver/*").hasAnyRole("DRIVER","PASSENGER")
                 authorizeHttpRequests.requestMatchers(HttpMethod.POST,"/tripScore").hasRole("PASSENGER")
                 authorizeHttpRequests.requestMatchers(HttpMethod.DELETE,"/tripScore").hasRole("PASSENGER")
 

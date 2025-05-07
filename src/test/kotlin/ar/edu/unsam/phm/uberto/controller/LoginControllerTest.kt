@@ -10,6 +10,10 @@ import ar.edu.unsam.phm.uberto.model.Role
 import ar.edu.unsam.phm.uberto.repository.AuthRepository
 import ar.edu.unsam.phm.uberto.repository.DriverRepository
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
+import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
+import ar.edu.unsam.phm.uberto.services.AuthService
+import ar.edu.unsam.phm.uberto.services.DriverService
+import ar.edu.unsam.phm.uberto.services.PassengerService
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.kotest.core.spec.style.AnnotationSpec
@@ -36,21 +40,20 @@ import kotlin.test.assertSame
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @DisplayName("Dado un controller de Trips")
-class LoginControllerTest {
+class LoginControllerTest(
+    @Autowired var authRepo: AuthRepository,
+    @Autowired var authService: AuthService,
+    @Autowired var passengerService: PassengerService,
+    @Autowired var jwtUtil: TokenJwtUtil,
+    @Autowired var driverRepo: DriverRepository,
+    @Autowired var passengerRepo: PassengerRepository,
+    @Autowired var mockMvc: MockMvc,
+    @Autowired var driverService: DriverService,
+) {
 
-    @Autowired
-    lateinit var authRepo: AuthRepository
-
-    @Autowired
-    lateinit var driverRepo: DriverRepository
-
-    @Autowired
-    lateinit var passengerRepo: PassengerRepository
-
-    @Autowired
-    lateinit var mockMvc: MockMvc
-
-    val testFactory = TestFactory()
+    val testFactory = TestFactory(authService, passengerService, driverService ,jwtUtil)
+    val tokenDriver = testFactory.generateTokenDriverTest("simple")
+    val tokenPassenger = testFactory.generateTokenPassengerTest("adrian")
 
     private fun perform(mockMvcRequestBuilder: MockHttpServletRequestBuilder): ResultActions{
         return mockMvc.perform(mockMvcRequestBuilder)
@@ -140,7 +143,7 @@ class LoginControllerTest {
     @Test
     fun sucessfullLoginDriver(){
         val loginRequest: LoginRequest = LoginRequest(username="premium", password="premium")
-        val loginResponse: LoginDTO = LoginDTO(id=1, rol= Role.DRIVER)
+        val loginResponse: LoginDTO = LoginDTO(id=1, rol= Role.DRIVER, token = "token")
         this.perform( mockMvcRequestBuilder =
             this.mockPost("/login")
                 .contentType("application/json")
@@ -158,7 +161,7 @@ class LoginControllerTest {
             username = this.validCredentials()["username"]!!,
             password = this.validCredentials()["password"]!!
         )
-        val loginResponse: LoginDTO = LoginDTO(id=1, rol=Role.PASSENGER)
+        val loginResponse: LoginDTO = LoginDTO(id=1, rol=Role.PASSENGER, token = "token")
         this.perform( mockMvcRequestBuilder =
             this.mockPost("/login")
                 .contentType("application/json")

@@ -2,6 +2,10 @@ package ar.edu.unsam.phm.uberto.repository
 
 import ar.edu.unsam.phm.uberto.builder.PassengerBuilder
 import ar.edu.unsam.phm.uberto.factory.TestFactory
+import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
+import ar.edu.unsam.phm.uberto.services.AuthService
+import ar.edu.unsam.phm.uberto.services.DriverService
+import ar.edu.unsam.phm.uberto.services.PassengerService
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.shouldBe
@@ -15,7 +19,19 @@ class PassengerRepositorySpec {
     @Autowired
     lateinit var passengerRepository: PassengerRepository
 
-    val factory = TestFactory()
+    @Autowired
+    lateinit var authService: AuthService
+
+    @Autowired
+    lateinit var passengerService: PassengerService
+
+    @Autowired
+    lateinit var jwtUtil: TokenJwtUtil
+
+    @Autowired
+    lateinit var driverService: DriverService
+
+    val factory = TestFactory(authService, passengerService, driverService ,jwtUtil)
     val passenger = PassengerBuilder().build()
     val notFriend = PassengerBuilder().lastName("JUAN").build()
 

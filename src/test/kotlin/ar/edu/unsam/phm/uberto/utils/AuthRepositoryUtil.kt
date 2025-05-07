@@ -1,10 +1,11 @@
 package ar.edu.unsam.phm.uberto.utils
 
-import ar.edu.unsam.phm.uberto.services.auth.Role
-import ar.edu.unsam.phm.uberto.services.auth.UserAuthCredentials
+import ar.edu.unsam.phm.uberto.model.Role
+import ar.edu.unsam.phm.uberto.model.UserAuthCredentials
+
 
 class AuthRepositoryUtil {
-    fun singleAccount():UserAuthCredentials {
+    fun singleAccount(): UserAuthCredentials {
         return UserAuthCredentials().apply {
             username = "adrian"
             password = "adrian"

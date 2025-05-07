@@ -4,6 +4,10 @@ import ar.edu.unsam.phm.uberto.factory.TestFactory
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.PremiumDriver
 import ar.edu.unsam.phm.uberto.model.Trip
+import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
+import ar.edu.unsam.phm.uberto.services.AuthService
+import ar.edu.unsam.phm.uberto.services.DriverService
+import ar.edu.unsam.phm.uberto.services.PassengerService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
@@ -11,15 +15,19 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 
 @DataJpaTest
-class TripRepositoryTest {
-    @Autowired
-    lateinit var tripRepository: TripsRepository
-    @Autowired
-    lateinit var passengerRepository: PassengerRepository
-    @Autowired
-    lateinit var driverRepository: DriverRepository
+class TripRepositoryTest(
+    @Autowired var tripRepository: TripsRepository,
+    @Autowired var passengerRepository: PassengerRepository,
+    @Autowired var driverRepository: DriverRepository,
+    @Autowired var authService: AuthService,
+    @Autowired var passengerService: PassengerService,
+    @Autowired var jwtUtil: TokenJwtUtil,
+    @Autowired var driverService: DriverService,
+) {
 
-    val testFactory = TestFactory()
+    val testFactory = TestFactory(authService, passengerService, driverService ,jwtUtil)
+    val tokenDriver = testFactory.generateTokenDriverTest("simple")
+    val tokenPassenger = testFactory.generateTokenPassengerTest("adrian")
 
     @Test
     fun `buscar un trip asociado a un passenger`(){

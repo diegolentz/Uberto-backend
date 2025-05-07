@@ -85,5 +85,6 @@ class PassengerService(val passengerRepository: PassengerRepository) {
     fun searchNonFriends(passengerId: Long, filter: String): List<Passenger> =
         passengerRepository.findPossibleFriends(passengerId, filter.lowercase())
 
-
+    fun getByCredentialsId(id: Long): Passenger =
+        passengerRepository.findByCredentials_Id(id).orElseThrow{throw NotFoundException("Pasajero no encontrado")}
 }

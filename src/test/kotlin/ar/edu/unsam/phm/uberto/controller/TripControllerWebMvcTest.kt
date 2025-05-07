@@ -9,6 +9,8 @@ import ar.edu.unsam.phm.uberto.model.Trip
 import ar.edu.unsam.phm.uberto.repository.DriverRepository
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
 import ar.edu.unsam.phm.uberto.repository.TripsRepository
+import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
+import ar.edu.unsam.phm.uberto.services.AuthService
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.PassengerService
 import ar.edu.unsam.phm.uberto.services.TripService
@@ -32,43 +34,37 @@ import java.time.LocalDateTime
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @DisplayName("Dado un controller de Trips")
-class TripControllerWebMvcTest {
-    @Autowired
-    lateinit var  tripService: TripService
+class TripControllerWebMvcTest(
+    @Autowired var tripService: TripService,
+    @Autowired var passengerService: PassengerService,
+    @Autowired var driverService: DriverService,
+    @Autowired var tripRepository: TripsRepository,
+    @Autowired var passengerRepository: PassengerRepository,
+    @Autowired var driverRepository: DriverRepository,
+    @Autowired var mockMvc: MockMvc,
+    @Autowired var authService: AuthService,
+    @Autowired var jwtUtil: TokenJwtUtil,
+) {
 
-    @Autowired
-    lateinit var passengerService: PassengerService
-
-    @Autowired
-    lateinit var driverService: DriverService
-
-    @Autowired
-    lateinit var tripRepository: TripsRepository
-
-    @Autowired
-    lateinit var passengerRepository: PassengerRepository
-
-    @Autowired
-    lateinit var driverRepository: DriverRepository
-
-    @Autowired
-    lateinit var mockMvc: MockMvc
-
-    val testFactory = TestFactory()
+    val testFactory = TestFactory(authService, passengerService, driverService, jwtUtil)
+    val tokenDriver = testFactory.generateTokenDriverTest("simple")
+    val tokenPassenger = testFactory.generateTokenPassengerTest("adrian")
 
     @Test
-    fun `Pido los trip de un pasajero que no existe - no tiene pendientes`(){
-        mockMvc.perform(MockMvcRequestBuilders.get("/trip/passenger/2313213"))
+    fun `Pido los trip de un pasajero que no existe - no tiene pendientes`() {
+        mockMvc.perform(MockMvcRequestBuilders.get("/trip/passenger/2313213")
+            .header("Authorization", "Bearer $tokenPassenger"))
             .andExpect(MockMvcResultMatchers.status().isNotFound)
     }
 
     @Test
-    fun `Pido los trip de un pasajero que si tiene viajes`(){
+    fun `Pido los trip de un pasajero que si tiene viajes`() {
         val trip = testFactory.createTripFinished(1).get(0)
 
         val passenger = trip.client.apply {
             firstName = "Mandarina"
-            lastName = "Solution"}
+            lastName = "Solution"
+        }
         passengerRepository.save(passenger)
 
         val driver = trip.driver
@@ -89,7 +85,8 @@ class TripControllerWebMvcTest {
 
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.get("/trip/passenger/${passenger.id}"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/trip/passenger/${passenger.id}")
+            .header("Authorization", "Bearer $tokenPassenger"))
             .andExpect(MockMvcResultMatchers.jsonPath("$[0].origin").value("origen"))
             .andExpect(MockMvcResultMatchers.jsonPath("$[0].destination").value("destino"))
             .andExpect(MockMvcResultMatchers.jsonPath("$[0].numberPassengers").value(2))
@@ -98,7 +95,7 @@ class TripControllerWebMvcTest {
     }
 
     @Test
-    fun `Se crea un trip`(){
+    fun `Se crea un trip`() {
         val driver = testFactory.createDriverPremium(1).get(0)
         val passenger = testFactory.createPassenger(1).get(0).apply { balance = 100000000.0 }
         passengerRepository.save(passenger)
@@ -127,14 +124,14 @@ class TripControllerWebMvcTest {
         mockMvc.perform(
             MockMvcRequestBuilders.post("/trip/create")
                 .contentType("application/json")
-                .content(jsonBody)
+                .content(jsonBody).header("Authorization", "Bearer $tokenPassenger")
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.content().string("Se reserva de viaje exitosamente"))
     }
 
     @Test
-    fun `Se falla creacion de trip, pasajero sin saldo`(){
+    fun `Se falla creacion de trip, pasajero sin saldo`() {
         val driver = testFactory.createDriverPremium(1).get(0)
         val passenger = testFactory.createPassenger(1).get(0).apply { balance = 1.0 }
         passengerRepository.save(passenger)
@@ -171,7 +168,7 @@ class TripControllerWebMvcTest {
 
 
     @Test
-    fun `Todos los viajes de un diver`(){
+    fun `Todos los viajes de un diver`() {
 
         val tripPending = testFactory.createTripPending(1).get(1)
         val tripFinished = testFactory.createTripFinished(1).get(1)
@@ -185,9 +182,9 @@ class TripControllerWebMvcTest {
         tripRepository.saveAll(listOf(tripPending, tripFinished))
 
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/trip/driver/${tripPending.driver.id}")
+            MockMvcRequestBuilders.get("/trip/driver/${tripPending.driver.id}").header("Authorization", "Bearer $tokenDriver")
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2)) 
+            .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(8))
     }
 }
