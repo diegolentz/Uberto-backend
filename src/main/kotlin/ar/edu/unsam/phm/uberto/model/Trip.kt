@@ -58,17 +58,13 @@ class Trip(
     }
 
     private fun validateDeleteScore(passenger: Passenger) {
-        if (!canDeleteScore(passenger)) { throw BusinessException("User has no ratings to delete") }
+        if (!canDeleteScore(passenger.id!!)) { throw BusinessException("User has no ratings to delete") }
         if (!scored()){ throw BusinessException("The trip has no score") }
     }
 
     fun scored():Boolean = (this.score != null)
-    fun canDeleteScore(user: Passenger?): Boolean {
-        if(user != null){
-            return user.id == client.id
-        }else{
-            return false
-        }
+    fun canDeleteScore(userId: Long): Boolean {
+        return userId == client.id
     }
 
     fun price(): Double = this.driver.fee(duration, numberPassengers)
