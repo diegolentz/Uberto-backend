@@ -51,7 +51,7 @@ class PassengerController(
     }
 
     @PostMapping("/friends")
-    fun addFriend(request: HttpServletRequest, friendId: Long): ResponseEntity<String> {
+    fun addFriend(request: HttpServletRequest, @RequestParam friendId: Long): ResponseEntity<String> {
         val idToken = jwtUtil.getIdFromTokenString(request)
         return passengerService.addFriend(idToken, friendId)
     }

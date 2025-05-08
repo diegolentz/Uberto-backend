@@ -112,4 +112,10 @@ class TestFactory(
         return jwtUtil.generate(userAuth, user.id!!)
     }
 
+    fun generateInvalidToken(username:String): String{
+        val userAuth = authService.loadUserByUsername(username) as UserAuthCredentials
+        val user = driverService.getByCredentialsId(userAuth.id!!)
+        return jwtUtil.generate(userAuth, 28)
+    }
+
 }

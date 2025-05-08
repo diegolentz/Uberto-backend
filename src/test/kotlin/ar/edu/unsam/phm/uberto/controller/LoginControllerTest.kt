@@ -14,8 +14,10 @@ import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import ar.edu.unsam.phm.uberto.services.AuthService
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.PassengerService
+import com.auth0.jwt.interfaces.Claim
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import io.jsonwebtoken.Claims
 import io.kotest.core.spec.style.AnnotationSpec
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -33,13 +35,15 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertSame
 
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@DisplayName("Dado un controller de Trips")
+@DisplayName("Dado un controller de Login")
 class LoginControllerTest(
     @Autowired var authRepo: AuthRepository,
     @Autowired var authService: AuthService,
@@ -80,23 +84,6 @@ class LoginControllerTest(
         return mapper.readValue(json, LoginDTO::class.java)
     }
 
-//    Me da duplicado cuando creo. Ya toma los datos del bootstrap
-//    @BeforeEach
-//    fun createAccount(){
-//        authRepo.save(UserAuthCredentials().apply {
-//            username = "adrian"
-//            password = "adrian"
-//            role = Role.PASSENGER
-//        })
-//    }
-
-    //Si los elimino, hay problema de referencia con FK. Deberia aplicarse en el CASCADE en la Class
-//    @AfterEach
-//    fun clearAll(){
-//        authRepo.deleteAll()
-//        driverRepo.deleteAll()
-//        passengerRepo.deleteAll()
-//    }
 
     @Test
     fun loginWithoutRequestBody(){
@@ -143,14 +130,17 @@ class LoginControllerTest(
     @Test
     fun sucessfullLoginDriver(){
         val loginRequest: LoginRequest = LoginRequest(username="premium", password="premium")
-        val loginResponse: LoginDTO = LoginDTO(id=1, rol= Role.DRIVER, token = "token")
         this.perform( mockMvcRequestBuilder =
             this.mockPost("/login")
                 .contentType("application/json")
                 .content(this.toJson(objectToParse = loginRequest))
         ).andExpect {
+            val parsedLoginResponse: LoginDTO = this.parseToLoginResponse(it.response.contentAsString)
+            assertNotNull(actual = parsedLoginResponse.token)
+            val claims: Claims = jwtUtil.getAllClaims(jwtToken = parsedLoginResponse.token!!)
             assertEquals(expected = HttpStatus.OK.value(), actual = it.response.status)
-            assertEquals(expected = this.toJson(objectToParse = loginResponse), actual = it.response.contentAsString)
+            assertEquals(expected = 1, actual = claims["userID"])
+            assertEquals(expected = listOf("ROLE_DRIVER"), actual = claims["rol"])
 
         }
     }
@@ -161,14 +151,17 @@ class LoginControllerTest(
             username = this.validCredentials()["username"]!!,
             password = this.validCredentials()["password"]!!
         )
-        val loginResponse: LoginDTO = LoginDTO(id=1, rol=Role.PASSENGER, token = "token")
         this.perform( mockMvcRequestBuilder =
             this.mockPost("/login")
                 .contentType("application/json")
                 .content(this.toJson(objectToParse = loginRequest))
         ).andExpect {
+            val parsedLoginResponse: LoginDTO = this.parseToLoginResponse(it.response.contentAsString)
+            assertNotNull(actual = parsedLoginResponse.token)
+            val claims: Claims = jwtUtil.getAllClaims(jwtToken = parsedLoginResponse.token!!)
             assertEquals(expected = HttpStatus.OK.value(), actual = it.response.status)
-            assertEquals(expected = this.toJson(objectToParse = loginResponse), actual = it.response.contentAsString)
+            assertEquals(expected = 1, actual = claims["userID"])
+            assertEquals(expected = listOf("ROLE_PASSENGER"), actual = claims["rol"])
         }
     }
 
