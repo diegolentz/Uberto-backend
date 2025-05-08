@@ -4,6 +4,7 @@ package ar.edu.unsam.phm.uberto.security
 import ar.edu.unsam.phm.uberto.repository.AuthRepository
 import ar.edu.unsam.phm.uberto.security.filter.JwtTokenValidator
 import ar.edu.unsam.phm.uberto.services.AuthService
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -75,6 +76,7 @@ class ApplicationSecutityConfiguration(
                 authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/tripScore/driver").hasAnyRole("DRIVER","PASSENGER")
                 authorizeHttpRequests.requestMatchers(HttpMethod.POST,"/tripScore").hasRole("PASSENGER")
                 authorizeHttpRequests.requestMatchers(HttpMethod.DELETE,"/tripScore").hasRole("PASSENGER")
+                authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/tripScore/confirmation").hasRole("PASSENGER")
 
                 //SWAGER
                 authorizeHttpRequests.requestMatchers(
