@@ -121,9 +121,9 @@ class ApplicationSecutityConfiguration(
         return AuthService(authRepo, passwordEncoder)
     }
     @Bean
-    fun corsConfigurationSource(): UrlBasedCorsConfigurationSource {
+        fun corsConfigurationSource(): UrlBasedCorsConfigurationSource {
         val configuration = CorsConfiguration()
-        configuration.allowedOrigins = listOf("http://localhost:5173")
+        configuration.allowedOrigins = listOf("http://localhost:5173","http://localhost:5174")
         configuration.allowedMethods = listOf("*")
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", configuration)
