@@ -1,6 +1,10 @@
 package ar.edu.unsam.phm.uberto.repository
 
+import ar.edu.unsam.phm.uberto.builder.DriverBuilder
+import ar.edu.unsam.phm.uberto.builder.PassengerBuilder
+import ar.edu.unsam.phm.uberto.builder.TripBuilder
 import ar.edu.unsam.phm.uberto.factory.TestFactory
+import ar.edu.unsam.phm.uberto.model.SimpleDriver
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import ar.edu.unsam.phm.uberto.services.AuthService
 import ar.edu.unsam.phm.uberto.services.DriverService
@@ -8,6 +12,7 @@ import ar.edu.unsam.phm.uberto.services.PassengerService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 
 @DataJpaTest
 class DriverJPATest {
@@ -15,29 +20,28 @@ class DriverJPATest {
     @Autowired
     lateinit var driverRepository: DriverRepository
 
-    @Autowired
+    @MockitoBean
     lateinit var authService: AuthService
 
-    @Autowired
+    @MockitoBean
     lateinit var passengerService: PassengerService
 
-    @Autowired
+    @MockitoBean
     lateinit var jwtUtil: TokenJwtUtil
 
-    @Autowired
+    @MockitoBean
     lateinit var driverService: DriverService
 
-    val factory = TestFactory(authService, passengerService, driverService ,jwtUtil)
 
     @Test
     fun `dado un id, obtengo el driver con sus trips`() {
         // Arrange
-        val driver = factory.createDriverPremium(1).get(0)
-        val trip = factory.createTripFinished(1).get(0)
+        val driver = DriverBuilder(newDriver = SimpleDriver()).build()
+        val trip = TripBuilder().driver(driver).build()
 
         // Act
-        trip.driver = driver
         driver.trips.add(trip)
+        driver.addTrip(trip)
         driverRepository.save(driver)
 
         val driverQuery = driverRepository.getByIdTrip(driver.id!!)

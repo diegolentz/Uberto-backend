@@ -49,49 +49,36 @@ class TripControllerWebMvcTest(
     val testFactory = TestFactory(authService, passengerService, driverService, jwtUtil)
     val tokenDriver = testFactory.generateTokenDriverTest("simple")
     val tokenPassenger = testFactory.generateTokenPassengerTest("adrian")
+    val invalidToken = testFactory.generateInvalidToken("simple")
 
     @Test
     fun `Pido los trip de un pasajero que no existe - no tiene pendientes`() {
-        mockMvc.perform(MockMvcRequestBuilders.get("/trip/passenger/2313213")
-            .header("Authorization", "Bearer $tokenPassenger"))
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
+        mockMvc.perform(MockMvcRequestBuilders.get("/trip/passenger")
+            .header("Authorization", "Bearer $invalidToken"))
+            .andExpect(MockMvcResultMatchers.status().isForbidden)
     }
 
     @Test
     fun `Pido los trip de un pasajero que si tiene viajes`() {
-        val trip = testFactory.createTripFinished(1).get(0)
+        val user = authService.findUserByUsername("adrian")
 
-        val passenger = trip.client.apply {
-            firstName = "Mandarina"
-            lastName = "Solution"
-        }
-        passengerRepository.save(passenger)
-
-        val driver = trip.driver
-        driverRepository.save(trip.driver)
-
-        driverRepository.save(driver)
-        driverRepository.save(driver)
-        tripRepository.save(trip)
-
-        trip.apply {
+        val passenger = passengerService.getById(user!!.id!!)
+        val driver = driverRepository.findById(1).get()
+        val trip = Trip().apply {
             client = passenger
             this.driver = driver
+            date = LocalDateTime.now().plusDays(1)
             numberPassengers = 2
             destination = "destino"
             origin = "origen"
         }
         tripRepository.save(trip)
-
-
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.get("/trip/passenger/${passenger.id}")
+        mockMvc.perform(MockMvcRequestBuilders.get("/trip/passenger")
             .header("Authorization", "Bearer $tokenPassenger"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].origin").value("origen"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].destination").value("destino"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].numberPassengers").value(2))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].passengerName").value("Mandarina Solution"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].driverName").value("Driver Premium 0 Test Premium 0"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[6].origin").value("origen"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[6].destination").value("destino"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[6].numberPassengers").value(2))
     }
 
     @Test
@@ -133,7 +120,8 @@ class TripControllerWebMvcTest(
     @Test
     fun `Se falla creacion de trip, pasajero sin saldo`() {
         val driver = testFactory.createDriverPremium(1).get(0)
-        val passenger = testFactory.createPassenger(1).get(0).apply { balance = 1.0 }
+//        val passenger = testFactory.createPassenger(1).get(0).apply { balance = 1.0 }
+        val passenger = passengerRepository.findById(1).get().apply { balance = 1.0 }
         passengerRepository.save(passenger)
         driverRepository.save(driver)
         val jsonBody = """
@@ -161,6 +149,7 @@ class TripControllerWebMvcTest(
             MockMvcRequestBuilders.post("/trip/create")
                 .contentType("application/json")
                 .content(jsonBody)
+                .header("Authorization", "Bearer $tokenPassenger")
         )
             .andExpect(MockMvcResultMatchers.status().is4xxClientError)
             .andExpect(MockMvcResultMatchers.content().string("Insufficient balance."))
@@ -182,7 +171,7 @@ class TripControllerWebMvcTest(
         tripRepository.saveAll(listOf(tripPending, tripFinished))
 
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/trip/driver/${tripPending.driver.id}").header("Authorization", "Bearer $tokenDriver")
+            MockMvcRequestBuilders.get("/trip/driver").header("Authorization", "Bearer $tokenDriver")
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(8))

@@ -28,7 +28,7 @@ class AuthService(
     return  user
     }
 
-    private fun findUserByUsername(username: String): UserAuthCredentials? {
+    fun findUserByUsername(username: String): UserAuthCredentials? {
         return authRepository.findByUsername(username)
     }
 

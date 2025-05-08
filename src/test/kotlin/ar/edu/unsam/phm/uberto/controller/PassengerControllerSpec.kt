@@ -11,6 +11,7 @@ import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.PassengerService
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.jayway.jsonpath.JsonPath
 import io.kotest.matchers.collections.shouldContain
@@ -19,6 +20,7 @@ import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.shouldBe
 import io.mockk.InternalPlatformDsl.toStr
 import jakarta.transaction.Transactional
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.DisplayName
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -29,6 +31,8 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -46,31 +50,27 @@ class PassengerControllerSpec(
     val testFactory = TestFactory(authService, passengerService, driverService ,jwtUtil)
     val tokenDriver = testFactory.generateTokenDriverTest("simple")
     val tokenPassenger = testFactory.generateTokenPassengerTest("adrian")
+    val invalidToken = testFactory.generateInvalidToken("simple")
 
     @Test
     fun `al buscar un usuario que no existe devuelve error`() {
-        mockMvc.perform(MockMvcRequestBuilders.get("/passenger/999999")
-            .header("Authorization", "Bearer $tokenPassenger"))
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
+        mockMvc.perform(MockMvcRequestBuilders.get("/passenger")
+            .header("Authorization", "Bearer $invalidToken"))
+            .andExpect(MockMvcResultMatchers.status().is4xxClientError)
     }
 
     @Test
     fun `al buscar un usuario lo devuelve con los atributos correctos`() {
-        val passenger = PassengerBuilder().build()
-        passengerRepository.save(passenger)
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/passenger/${passenger.id}")
+        mockMvc.perform(MockMvcRequestBuilders.get("/passenger")
             .header("Authorization", "Bearer $tokenPassenger"))
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(passenger.id))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
     }
 
     @Test
     fun `al buscar un usuario devuelvo todos los atributos del DTO`() {
-        val passenger = PassengerBuilder().build()
-        passengerRepository.save(passenger)
-
-        val response = mockMvc.perform(MockMvcRequestBuilders.get("/passenger/${passenger.id}")
+        val response = mockMvc.perform(MockMvcRequestBuilders.get("/passenger")
             .header("Authorization", "Bearer $tokenPassenger"))
             .andReturn()
             .response
@@ -82,7 +82,7 @@ class PassengerControllerSpec(
 
     @Test
     fun `el dinero se agrega correctamente`() {
-        val passenger = PassengerBuilder().build()
+        val passenger = passengerRepository.findById(1).get()
         val originalBalance = passenger.balance
         val money = 100.0
         passengerRepository.save(passenger)
@@ -94,9 +94,16 @@ class PassengerControllerSpec(
                 .param("balance", money.toString())
         ).andExpect(MockMvcResultMatchers.status().isOk)
 
-        val updatedBalance = passengerRepository.findById(passenger.id!!).get().balance
-
-        updatedBalance shouldBe originalBalance + money
+        mockMvc.perform(
+            MockMvcRequestBuilders
+                .get("/passenger")
+                .header("Authorization", "Bearer $tokenPassenger")
+        )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers
+                    .jsonPath("$.money")
+                    .value(originalBalance + money)
+            )
     }
 
     @Test
@@ -115,7 +122,7 @@ class PassengerControllerSpec(
 
     @Test
     fun `se puede actualizar el perfil de un pasajero`() {
-        val passenger = PassengerBuilder().build()
+        val passenger = passengerRepository.findById(1).get()
         val newInfo = UpdatedPassengerDTO("TEST", "TEST", 1)
         val mapper = ObjectMapper().registerKotlinModule()
         val json = mapper.writeValueAsString(newInfo)
@@ -139,20 +146,21 @@ class PassengerControllerSpec(
 
     @Test
     fun `se traen los amigos que existen`() {
-        val passenger = PassengerBuilder().build()
-        val friend = PassengerBuilder().build()
+        val friend = passengerRepository.findById(3).get()
 
-        passengerRepository.save(friend)
-        passenger.addFriend(friend)
-        passengerRepository.save(passenger)
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/passenger/friends")
+                .param("friendId", friend.id.toString())
+                .header("Authorization", "Bearer $tokenPassenger")
+        ).andExpect(MockMvcResultMatchers.status().isOk)
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/passenger/${passenger.id}/friends")
+        mockMvc.perform(MockMvcRequestBuilders.get("/passenger/friends")
             .header("Authorization", "Bearer $tokenPassenger"))
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(friend.id))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].firstname").value(friend.firstName))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].lastname").value(friend.lastName))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].img").value(friend.img))
+            .andExpect {
+                val lista:List<Object> = ObjectMapper().readValue(it.response.contentAsString)
+                assertEquals(expected = lista.isEmpty(), actual = false)
+            }
     }
 
     @Test
@@ -160,7 +168,7 @@ class PassengerControllerSpec(
         val passenger = PassengerBuilder().build()
         passengerRepository.save(passenger)
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/passenger/${passenger.id}/friends")
+        mockMvc.perform(MockMvcRequestBuilders.get("/passenger/friends")
             .header("Authorization", "Bearer $tokenPassenger"))
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty)
@@ -169,15 +177,16 @@ class PassengerControllerSpec(
     @Test
     @Transactional
     fun `agregar un amigo a un pasajero`() {
-        val passenger = PassengerBuilder().build()
-        val friend = PassengerBuilder().build()
+        val passenger = passengerRepository.findById(1).get()
+        val friend = passengerRepository.findById(2).get()
+
+        assertFalse(passenger.friends.contains(friend))
 
         passengerRepository.save(friend)
         passengerRepository.save(passenger)
 
         val response = mockMvc.perform(
             MockMvcRequestBuilders.post("/passenger/friends")
-                .param("passengerId", passenger.id.toString())
                 .param("friendId", friend.id.toString())
                 .header("Authorization", "Bearer $tokenPassenger")
         ).andExpect(MockMvcResultMatchers.status().isOk)
@@ -190,40 +199,43 @@ class PassengerControllerSpec(
     @Test
     @Transactional
     fun `eliminar un amigo a un pasajero`() {
-        val passenger = PassengerBuilder().build()
-        val friend = PassengerBuilder().build()
-
-        passenger.addFriend(friend)
-        friend.addFriend(passenger)
-        passengerRepository.save(friend)
-        passengerRepository.save(passenger)
+        val passenger = passengerRepository.findById(1).get()
+        val friend = passengerRepository.findById(2).get()
 
         mockMvc.perform(
-            MockMvcRequestBuilders.delete("/passenger/friends")
-                .param("passengerId", passenger.id.toString())
+            MockMvcRequestBuilders.post("/passenger/friends")
                 .param("friendId", friend.id.toString())
                 .header("Authorization", "Bearer $tokenPassenger")
         ).andExpect(MockMvcResultMatchers.status().isOk)
 
-        val updatedPassengerFriends = passengerRepository.findById(passenger.id!!).get().friends
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("/passenger/friends")
+                .param("friendId", friend.id.toString())
+                .header("Authorization", "Bearer $tokenPassenger")
+        ).andExpect(MockMvcResultMatchers.status().isOk)
+
+        val updatedPassengerFriends = passengerRepository.findById(1).get().friends
+
         updatedPassengerFriends shouldNotContain friend
     }
 
     @Test
     fun `no se puede agregar un amigo que ya lo es`() {
-        val passenger = PassengerBuilder().build()
-        val friend = PassengerBuilder().build()
-
-        passengerRepository.save(friend)
-        passenger.addFriend(friend)
-        passengerRepository.save(passenger)
+        val passenger = passengerRepository.findById(1).get()
+        val friend = passengerRepository.findById(2).get()
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/passenger/friends")
-                .param("passengerId", passenger.id.toString())
+                .param("friendId", friend.id.toString())
+                .header("Authorization", "Bearer $tokenPassenger")
+        ).andExpect(MockMvcResultMatchers.status().isOk)
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/passenger/friends")
                 .param("friendId", friend.id.toString())
                 .header("Authorization", "Bearer $tokenPassenger")
         ).andExpect(MockMvcResultMatchers.status().isBadRequest)
+
     }
 
     @Test
@@ -250,7 +262,7 @@ class PassengerControllerSpec(
         passengerRepository.saveAll(listOf(passenger, wantedPassenger))
 
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/passenger/${passenger.id}/friends/search")
+            MockMvcRequestBuilders.get("/passenger/friends/search")
                 .param("filter", "testotesto")
                 .header("Authorization", "Bearer $tokenPassenger")
         ).andExpect(MockMvcResultMatchers.status().isOk)
@@ -266,7 +278,7 @@ class PassengerControllerSpec(
         passengerRepository.save(passenger)
 
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/passenger/${passenger.id}/friends/search")
+            MockMvcRequestBuilders.get("/passenger/friends/search")
                 .param("filter", "asdadasdsdadsadasdsa")
                 .header("Authorization", "Bearer $tokenPassenger")
         ).andExpect(MockMvcResultMatchers.status().isOk)

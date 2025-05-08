@@ -35,6 +35,9 @@ class TestFactory(
                 firstName = "Driver Premium ${i}"
                 lastName = "Test Premium ${i}"
                 img = ""
+                serial = "TEST TEST"
+                model = 1998
+                brand = "TEST"
             }
             listDriver.add(driver)
         }
@@ -110,6 +113,12 @@ class TestFactory(
         val userAuth = authService.loadUserByUsername(username) as UserAuthCredentials
         val user = driverService.getByCredentialsId(userAuth.id!!)
         return jwtUtil.generate(userAuth, user.id!!)
+    }
+
+    fun generateInvalidToken(username:String): String{
+        val userAuth = authService.loadUserByUsername(username) as UserAuthCredentials
+        val user = driverService.getByCredentialsId(userAuth.id!!)
+        return jwtUtil.generate(userAuth, 28)
     }
 
 }
