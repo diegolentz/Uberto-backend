@@ -35,23 +35,24 @@ class TripScoreController(
         val passenger = passengerService.getByIdTrip(idToken)
         val trips = tripService.getAllByPassenger(passenger)
         val tripScore = tripScoreService.getFromPassenger(trips)
-        return tripScore.map { it!!.scoreToDTO(passenger) }
+        return tripScore.map { it!!.scoreToDTO(idToken) }
     }
 
     @GetMapping("/driver")
-    fun getScoreDriver(request: HttpServletRequest, @RequestParam driverId: Long?): List<TripScoreDTO>{
-        val idToken = driverId ?: jwtUtil.getIdFromTokenString(request)
-        val passenger: Passenger? = if (driverId != null) {
-            passengerService.getById(idToken)
-        } else {
-            null
-        }
-
+    fun getScoreDriver(request: HttpServletRequest): List<TripScoreDTO>{
+        val idToken = jwtUtil.getIdFromTokenString(request)
         val driver = driverService.getByIdTrip(idToken)
         val trips = tripService.getAllByDriver(driver)
         val tripScore = tripScoreService.getFromDriver(trips)
+        return tripScore.map { it!!.scoreToDTO(null) }
+    }
 
-        return tripScore.map { it!!.scoreToDTO(passenger) }
+    @GetMapping("/confirmation")
+    fun getScoreConfirmation( @RequestParam driverId: Long): List<TripScoreDTO>{
+        val driver = driverService.getByIdTrip(driverId)
+        val trips = tripService.getAllByDriver(driver)
+        val tripScore = tripScoreService.getFromDriver(trips)
+        return tripScore.map { it!!.scoreToDTO(null) }
     }
 
     @PostMapping()
