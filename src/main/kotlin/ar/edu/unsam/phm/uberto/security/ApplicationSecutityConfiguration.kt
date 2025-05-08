@@ -22,6 +22,8 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 
 @Configuration
@@ -117,5 +119,14 @@ class ApplicationSecutityConfiguration(
     @Bean
     fun userDetailService(authRepo: AuthRepository, passwordEncoder: PasswordEncoder): UserDetailsService {
         return AuthService(authRepo, passwordEncoder)
+    }
+    @Bean
+        fun corsConfigurationSource(): UrlBasedCorsConfigurationSource {
+        val configuration = CorsConfiguration()
+        configuration.allowedOrigins = listOf("http://localhost:5173","http://localhost:5174")
+        configuration.allowedMethods = listOf("*")
+        val source = UrlBasedCorsConfigurationSource()
+        source.registerCorsConfiguration("/**", configuration)
+        return source
     }
 }
