@@ -35,6 +35,9 @@ class TestFactory(
                 firstName = "Driver Premium ${i}"
                 lastName = "Test Premium ${i}"
                 img = ""
+                serial = "TEST TEST"
+                model = 1998
+                brand = "TEST"
             }
             listDriver.add(driver)
         }

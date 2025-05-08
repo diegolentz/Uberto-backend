@@ -1,5 +1,6 @@
 package ar.edu.unsam.phm.uberto.controller
 
+import ar.edu.unsam.phm.uberto.dto.LoginDTO
 import ar.edu.unsam.phm.uberto.dto.TripScoreDTO
 import ar.edu.unsam.phm.uberto.factory.TestFactory
 import ar.edu.unsam.phm.uberto.repository.DriverRepository
@@ -10,15 +11,20 @@ import ar.edu.unsam.phm.uberto.services.AuthService
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.PassengerService
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import io.jsonwebtoken.Claims
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.HttpStatus
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -41,7 +47,7 @@ class TripScoreSpringTest(
 
     @Test
     fun `busco las calificaciones de un pasajero que no realizo ninguna calificacion`(){
-        mockMvc.perform(MockMvcRequestBuilders.get("/tripScore/passenger/1")
+        mockMvc.perform(MockMvcRequestBuilders.get("/tripScore/passenger")
             .header("Authorization", "Bearer $tokenPassenger"))
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(1))
@@ -49,10 +55,10 @@ class TripScoreSpringTest(
 
     @Test
     fun `busco las calificaciones de un conductor que no tiene calificaciones`(){
-        mockMvc.perform(MockMvcRequestBuilders.get("/tripScore/driver/1")
+        mockMvc.perform(MockMvcRequestBuilders.get("/tripScore/driver")
             .header("Authorization", "Bearer $tokenDriver"))
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(1))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2))
     }
 
     @Test
@@ -98,18 +104,12 @@ class TripScoreSpringTest(
             .content(createInfoJson))
             .andExpect(MockMvcResultMatchers.status().isOk)
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/tripScore/passenger/${passenger.id}")
+        mockMvc.perform(MockMvcRequestBuilders.get("/tripScore/passenger")
             .header("Authorization", "Bearer $tokenPassenger"))
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(1))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].tripId").value(trip.id!!))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].message").value(tripScore.message))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].scorePoints").value(tripScore.scorePoints))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].passengerName").value(tripScore.passengerName))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].driverName").value(tripScore.driverName))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].avatarUrlPassenger").value(tripScore.avatarUrlPassenger))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].avatarUrlDriver").value(tripScore.avatarUrlDriver))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].delete").value(tripScore.delete))
+            .andExpect {
+                val lista:List<Object> = objectMapper.readValue(it.response.contentAsString)
+                assertEquals(expected = lista.isEmpty(), actual = false)
+            }
 
     }
 

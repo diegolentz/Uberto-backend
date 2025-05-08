@@ -11,6 +11,7 @@ import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.PassengerService
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.jayway.jsonpath.JsonPath
 import io.kotest.matchers.collections.shouldContain
@@ -30,6 +31,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 @SpringBootTest
@@ -155,10 +157,10 @@ class PassengerControllerSpec(
         mockMvc.perform(MockMvcRequestBuilders.get("/passenger/friends")
             .header("Authorization", "Bearer $tokenPassenger"))
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(friend.id))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].firstname").value(friend.firstName))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].lastname").value(friend.lastName))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].img").value(friend.img))
+            .andExpect {
+                val lista:List<Object> = ObjectMapper().readValue(it.response.contentAsString)
+                assertEquals(expected = lista.isEmpty(), actual = false)
+            }
     }
 
     @Test

@@ -72,8 +72,8 @@ class ApplicationSecutityConfiguration(
                 authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/driver").hasAnyRole("PASSENGER","DRIVER")
 
                 //TripScore controller
-                authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/tripScore/passenger/*").hasRole("PASSENGER")
-                authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/tripScore/driver/*").hasAnyRole("DRIVER","PASSENGER")
+                authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/tripScore/passenger").hasRole("PASSENGER")
+                authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/tripScore/driver").hasAnyRole("DRIVER","PASSENGER")
                 authorizeHttpRequests.requestMatchers(HttpMethod.POST,"/tripScore").hasRole("PASSENGER")
                 authorizeHttpRequests.requestMatchers(HttpMethod.DELETE,"/tripScore").hasRole("PASSENGER")
                 authorizeHttpRequests.requestMatchers(HttpMethod.GET,"/tripScore/confirmation").hasRole("PASSENGER")
