@@ -33,10 +33,10 @@ class LoginController(
         authService.validPassword(loginRequestBody.password, user)
         if (user.role == Role.DRIVER) {
             val driver = driverService.getByCredentialsId(user.id!!)
-            return LoginDTO(id = driver.id!!, rol = user.role, token=tokenUtil.generate(user, driver.id!!))
+            return LoginDTO( rol = user.role, token=tokenUtil.generate(user, driver.id!!))
         } else {
             val passenger = passengerService.getByCredentialsId(user.id!!)
-            return LoginDTO(id = passenger.id!!, rol = user.role, token=tokenUtil.generate(user, passenger.id!!))
+            return LoginDTO( rol = user.role, token=tokenUtil.generate(user, passenger.id!!))
         }
     }
 
