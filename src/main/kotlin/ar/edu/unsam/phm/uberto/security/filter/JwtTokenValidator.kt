@@ -1,5 +1,7 @@
 package ar.edu.unsam.phm.uberto.security.filter
 
+import ar.edu.unsam.phm.uberto.model.Role
+import ar.edu.unsam.phm.uberto.model.UserAuthCredentials
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -28,10 +30,30 @@ class JwtTokenValidator(
         if(authHeader != null && authHeader.startsWith("Bearer ")){
             val jwtToken = authHeader.substring(7)
             val decodedJWT = jwtUtils.validateToken(jwtToken)
+            val userId = jwtUtils.getSpecificClaim(decodedJWT, "userID").asLong()
             val username = jwtUtils.extractUsername(decodedJWT)
+            val userRole = jwtUtils.getSpecificClaim(decodedJWT, "rol")
+                .asList(String::class.java)
+                .first()
+                .removePrefix("ROLE_")
+
             val roles = jwtUtils.getSpecificClaim(decodedJWT, "rol")
                 .asList(String::class.java)
                 .map { SimpleGrantedAuthority(it) }
+
+            val userCredentials = UserAuthCredentials().apply {
+                this.username=username
+                this.role= Role.valueOf(userRole)
+            }
+
+            val newToken = jwtUtils.generate(userCredentials, userId)
+            response.setHeader("refresh-token", newToken)
+
+//            if (jwtUtils.shouldTokenRefresh(jwtToken)) {
+//                // Crear las credenciales necesarias para generar el nuevo token
+//
+//            }
+
             val context :  SecurityContext = SecurityContextHolder.getContext()
             val authentication : Authentication = UsernamePasswordAuthenticationToken(username, null, roles)
             context.authentication = authentication

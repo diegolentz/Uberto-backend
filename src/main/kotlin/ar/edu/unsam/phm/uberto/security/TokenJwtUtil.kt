@@ -40,7 +40,7 @@ class TokenJwtUtil {
             .withIssuedAt(Date())
             .withClaim("rol", listOf("ROLE_${user.role}"))
             .withClaim("userID", userId)
-            .withExpiresAt(Date(System.currentTimeMillis() + 1800000))
+            .withExpiresAt(Date(System.currentTimeMillis() + accessTokenMinutes))
             .withJWTId(UUID.randomUUID().toString())
             .withNotBefore(Date(System.currentTimeMillis()))
             .sign(algorithm)
@@ -76,5 +76,15 @@ class TokenJwtUtil {
         val decodedJWT = validateToken(jwtToken)
         return decodedJWT.getClaim("userID").asLong()
     }
+
+    fun shouldTokenRefresh(token: String): Boolean {
+        val claims = getAllClaims(token)
+        val expiration = claims.expiration
+        val timeLeft = expiration.time - System.currentTimeMillis()
+        val refreshThresholdMs = 5 * 60 * 1000L // 5 minutos
+        return timeLeft < refreshThresholdMs && timeLeft > 0
+    }
+
+
 
 }
