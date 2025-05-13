@@ -36,16 +36,19 @@ class Bootstrap(
     @Autowired val authService: AuthService,
     @Autowired val jwtUtil: TokenJwtUtil,
     @Autowired val driverService: DriverService,
-    @Autowired val passengerService: PassengerService
+    @Autowired val passengerService: PassengerService,
+    @Autowired val mongoRepoDriver: MongoDriverRepository
 ) : CommandLineRunner {
 
     val factory = TestFactory(authService, passengerService, driverService ,jwtUtil)
     override fun run(vararg args: String?) {
+
         createAccounts()
         createPassengers()
         createDrivers()
         createTrips()
         createTripScore()
+        createMongoDrivers()
     }
 
     private fun createAccounts() {
@@ -134,6 +137,41 @@ class Bootstrap(
             driverList.add(driver)
         }
         driverRepo.saveAll(driverList)
+    }
+
+    private fun createMongoDrivers() {
+        val driverList = mutableListOf<MongoDriver>()
+        val users = authRepo.findByRole(Role.DRIVER)
+        val names = listOf<String>("Dominic", "Franco", "Nicky")
+        val lastNames = listOf<String>("Toretto", "Colapinto", "Lauda")
+        val balances = listOf<Double>(200.0, 5000.0, 10000.0)
+        val driverType = listOf(PremiumDriverMongo(), SimpleDriverMongo(), BikeDriverMongo())
+        val brand = listOf("Fiat Uno", "Fiat Uno", "Gilera")
+        val serial = listOf("FTG 879", "DEV 666", "AAA 123")
+        val model = listOf(2013, 1999, 2003)
+        val img = listOf("https://res.cloudinary.com/dumcjdzxo/image/upload/toreto_wx2me4.jpg",
+            "https://res.cloudinary.com/dumcjdzxo/image/upload/colapinto_bihvlt.jpg",
+            "https://res.cloudinary.com/dumcjdzxo/image/upload/laudo_hmkucz.jpg")
+        val baseP = listOf(900.0, 700.0, 800.0)
+
+        users.forEachIndexed { index: Int, user: UserAuthCredentials ->
+            val driver = SimpleDriverMongo().apply {
+                credentials = user
+                credentialsId = user.id
+                tripsId = mutableSetOf(1)
+                this.firstName = names[index]
+                this.lastName = lastNames[index]
+                this.balance = balances[index]
+                this.serial = serial[index]
+                this.model = model[index]
+                this.img = img[index]
+                this.brand = brand[index]
+                basePrice = baseP[index]
+
+            }
+            driverList.add(driver)
+        }
+        mongoRepoDriver.saveAll(driverList)
     }
     private fun createTrips() {
         var passengers: List<Passenger> = passengerRepo.findAll().toList()

@@ -2,51 +2,43 @@ package ar.edu.unsam.phm.uberto.model
 
 import ar.edu.unsam.phm.uberto.DriverNotAvaliableException
 import ar.edu.unsam.phm.uberto.dto.DriverDTO
-import ar.edu.unsam.phm.uberto.model.UserAuthCredentials
 import exceptions.BusinessException
-import jakarta.persistence.*
+import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
+import kotlin.jvm.Transient
 
 
-@Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-abstract class Driver():User {
+@Document(collection = "mongodriver")
+abstract class MongoDriver():User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null
+    var id: String? = null
 
-    @OneToOne
-    @JoinColumn(name="user_id", referencedColumnName = "id")
+    @Transient
     var credentials: UserAuthCredentials? = null
 
-    @Column(length = 50)
+    var credentialsId: Long? = null
+
     override lateinit var firstName: String
 
-    @Column(length = 50)
     override lateinit var lastName: String
 
-    @Column
     override var balance: Double = 0.0
 
-    @OneToMany(mappedBy = "driver", fetch = FetchType.LAZY)
     override var trips: MutableList<Trip> = mutableListOf()
 
-    @Column(length = 255)
+    var tripsId: MutableSet<Long> = mutableSetOf()
+
     override lateinit var img: String
 
-    @Column
     var model:Int = 0
 
-    @Column(length = 255)
     lateinit var brand:String
 
-    @Column(length = 255)
     lateinit var serial:String
 
-    @Column
     var basePrice:Double = 0.0
 
     override fun getScores(): List<TripScore> {
@@ -104,7 +96,7 @@ abstract class Driver():User {
         addTrip(newTrip)
     }
 
-    fun update(dto: DriverDTO): Driver {
+    fun update(dto: DriverDTO): MongoDriver {
         this.firstName = dto.firstName
         this.lastName = dto.lastName
         this.serial = dto.serial
@@ -113,5 +105,35 @@ abstract class Driver():User {
         this.basePrice = dto.price
         return this
     }
+
+}
+
+@Document
+class BikeDriverMongo(): MongoDriver() {
+    private val reference:Double = 500.0
+    override fun plusBasePrice(time: Int, numberPassengers: Int): Double {
+        return if(time < 30) reference else reference + 100.0
+    }
+    override fun toString() = "Motorbiker"
+}
+
+@Document
+class SimpleDriverMongo(): MongoDriver() {
+    override fun plusBasePrice(time: Int, numberPassengers: Int): Double {
+        return 1000.0
+    }
+
+    override fun toString() = "Simple Driver"
+}
+
+@Document
+class PremiumDriverMongo(): MongoDriver() {
+    private val reference:Double = 1500.0
+
+    override fun plusBasePrice(time: Int, numberPassengers: Int): Double {
+        return if(numberPassengers > 1) reference else reference + 500.0
+    }
+
+    override fun toString() = "Premium Driver"
 
 }

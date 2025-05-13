@@ -1,3 +1,4 @@
+
 services:
   db:
     image: postgres:17-alpine
@@ -6,7 +7,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=uberto_sql  # Add this line to specify the default DB
+      - POSTGRES_DB=uberto_sql
     ports:
       - '5432:5432'
     volumes:
@@ -25,6 +26,22 @@ services:
     volumes:
       - pgadmin-data:/var/lib/pgadmin
 
+  mongodb:
+    image: mongo:6.0
+    container_name: uberto_mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    volumes:
+      - mongo-data:/data/db
+      - ./scripts/init/mongo-init.js:/docker-entrypoint-initdb.d/init.js:ro
+
+
+
 volumes:
   db:
   pgadmin-data:
+  mongo-data:
