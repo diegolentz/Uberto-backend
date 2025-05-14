@@ -140,6 +140,9 @@ class Bootstrap(
     }
 
     private fun createMongoDrivers() {
+        if(mongoRepoDriver.count() != 0.toLong()){
+            mongoRepoDriver.deleteAll()
+        }
         val driverList = mutableListOf<MongoDriver>()
         val users = authRepo.findByRole(Role.DRIVER)
         val names = listOf<String>("Dominic", "Franco", "Nicky")

@@ -4,10 +4,10 @@ import ar.edu.unsam.phm.uberto.DriverNotAvaliableException
 import ar.edu.unsam.phm.uberto.dto.DriverDTO
 import exceptions.BusinessException
 import org.springframework.data.annotation.Id
+import org.springframework.data.annotation.Transient
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import kotlin.jvm.Transient
 
 
 @Document(collection = "mongodriver")
@@ -27,6 +27,7 @@ abstract class MongoDriver():User {
 
     override var balance: Double = 0.0
 
+    @Transient
     override var trips: MutableList<Trip> = mutableListOf()
 
     var tripsId: MutableSet<Long> = mutableSetOf()

@@ -77,6 +77,13 @@ class TokenJwtUtil {
         return decodedJWT.getClaim("userID").asLong()
     }
 
+    fun getIdDriverFromTokenString(@NotNull request: HttpServletRequest): String {
+        val authHeader = request.getHeader(HttpHeaders.AUTHORIZATION)
+        val jwtToken = authHeader.substring(7)
+        val decodedJWT = validateToken(jwtToken)
+        return decodedJWT.getClaim("userID").toString()
+    }
+
     fun shouldTokenRefresh(token: String): Boolean {
         val claims = getAllClaims(token)
         val expiration = claims.expiration

@@ -7,6 +7,7 @@ import jakarta.persistence.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import kotlin.jvm.Transient
 
 @Entity
 class Trip(
@@ -35,9 +36,11 @@ class Trip(
     @JoinColumn(name = "passenger_id", referencedColumnName = "id")
     var client: Passenger = Passenger()
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "driver_id", referencedColumnName = "id")
-    var driver: Driver = SimpleDriver()
+    @Transient
+    var driverMongo: MongoDriver = SimpleDriverMongo()
+
+    @Column(name = "driverMongoId")
+    lateinit var driverMongoId: String
 
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL],  orphanRemoval = true)
     @JoinColumn(name = "tripscore_id", referencedColumnName = "id")
@@ -67,7 +70,7 @@ class Trip(
         return userId == client.id
     }
 
-    fun price(): Double = this.driver.fee(duration, numberPassengers)
+    fun price(): Double = this.driverMongo.fee(duration, numberPassengers)
 
     fun pendingTrip()  : Boolean = date > LocalDateTime.now()
 

@@ -32,19 +32,19 @@ class DriverController(
         return driverService.getDriverData(idToken).toImgDTO()
     }
 
-    @GetMapping("/available")
-    fun getDriversAvailable(@RequestParam date: LocalDateTime,
-                            @RequestParam origin: String,
-                            @RequestParam destination: String,
-                            @RequestParam numberpassengers: Int): DriverCardAndTimeDTO {
-        val timeMap = timeTripsService.getTime()
-        val time = timeMap["time"] ?: throw BusinessException("Failure in the time calculation system")
-        val avaliableDrivers = driverService.getDriversAvailable(date, time)
-        val avaliableDriverDTO = avaliableDrivers.map{
-            it.driver.toAvailableDTO(time, numberpassengers, it.averageScore)
-        }
-        return DriverCardAndTimeDTO(time = time, cardDrivers = avaliableDriverDTO)
-    }
+//    @GetMapping("/available")
+//    fun getDriversAvailable(@RequestParam date: LocalDateTime,
+//                            @RequestParam origin: String,
+//                            @RequestParam destination: String,
+//                            @RequestParam numberpassengers: Int): DriverCardAndTimeDTO {
+//        val timeMap = timeTripsService.getTime()
+//        val time = timeMap["time"] ?: throw BusinessException("Failure in the time calculation system")
+//        val avaliableDrivers = driverService.getDriversAvailable(date, time)
+//        val avaliableDriverDTO = avaliableDrivers.map{
+//            it.driver.toAvailableDTO(time, numberpassengers, it.averageScore)
+//        }
+//        return DriverCardAndTimeDTO(time = time, cardDrivers = avaliableDriverDTO)
+//    }
 
     @PostMapping()
     fun changeProfile(@RequestBody driverDTO: DriverDTO, request: HttpServletRequest): ResponseEntity<String> {

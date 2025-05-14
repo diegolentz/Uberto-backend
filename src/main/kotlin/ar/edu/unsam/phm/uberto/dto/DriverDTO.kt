@@ -1,6 +1,8 @@
 package ar.edu.unsam.phm.uberto.dto
 
 import ar.edu.unsam.phm.uberto.model.Driver
+import ar.edu.unsam.phm.uberto.model.MongoDriver
+
 //import ar.edu.unsam.phm.uberto.repository.DriverAvgDTO
 
 data class DriverDTO(
@@ -14,7 +16,7 @@ data class DriverDTO(
 
     )
 
-fun Driver.toDTO(): DriverDTO {
+fun MongoDriver.toDTO(): DriverDTO {
     val credId = requireNotNull(credentials?.id) { "UserAuthCredentials ID is null" }
 
     return DriverDTO(

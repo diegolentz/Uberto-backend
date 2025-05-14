@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 class TripDTO(
     val id: Long,
     var userId: Long,
-    var driverId: Long,
+    var driverId: String,
     var duration: Int,
     val numberPassengers: Int,
     val date: LocalDateTime,
@@ -32,23 +32,23 @@ class TripDTO(
 
 fun Trip.toDTO() : TripDTO{
     val clientId = requireNotNull(client.id) { "Client ID is null" }
-    val driverId = requireNotNull(driver.id) { "Driver ID is null" }
+    val driverId = requireNotNull(driverMongo.id) { "Driver ID is null" }
     val id = requireNotNull(id) { "ID is null" }
 
     return TripDTO(
     userId = clientId,
     driverId = driverId,
-    driverName = driver.firstName + " " + driver.lastName,
+    driverName = driverMongo.firstName + " " + driverMongo.lastName,
     passengerName = client.firstName + " " + client.lastName,
     duration = duration,
     numberPassengers = numberPassengers,
     date = date,
     origin = origin,
     destination = destination,
-    price = driver.fee(duration, numberPassengers),
+    price = driverMongo.fee(duration, numberPassengers),
     id = id,
     imgPassenger = client.img,
-    imgDriver = driver.img,
+    imgDriver = driverMongo.img,
     scored = this.scored()
 )
 }
@@ -59,9 +59,9 @@ fun Trip.scoreToDTO(userId: Long?) = TripScoreDTO(
     scorePoints = score!!.scorePoints,
     date = date.toString(),
     passengerName= client.firstName + "" + client.lastName,
-    driverName = driver.firstName + "" + driver.lastName,
+    driverName = driverMongo.firstName + "" + driverMongo.lastName,
     avatarUrlPassenger = client.img,
-    avatarUrlDriver = driver.img,
+    avatarUrlDriver = driverMongo.img,
     delete = if (userId != null) canDeleteScore(userId) else false
 )
 
