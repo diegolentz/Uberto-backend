@@ -43,7 +43,6 @@ class Bootstrap(
         createDrivers()
         createTrips()
         createTripScore()
-        //createMongoDrivers()
     }
 
     private fun createAccounts() {
@@ -102,6 +101,9 @@ class Bootstrap(
         passengerRepo.saveAll(passengerList)
     }
     private fun createDrivers() {
+        if(mongoRepoDriver.count() != 0.toLong()){
+            mongoRepoDriver.deleteAll()
+        }
         val driverList = mutableListOf<MongoDriver>()
         val users = authRepo.findByRole(Role.DRIVER)
         val names = listOf<String>("Dominic", "Franco", "Nicky")
@@ -297,15 +299,16 @@ class Bootstrap(
             .setDate(pastDates[1].toString())
             .duration(durations[1]).origin(destination[1]).destination(origin[1])
             .passengerAmmount(passengersAmmounts[1]).build()
-
         val tripMatias01 = TripBuilder().passenger(matias).driver(lauda)
             .setDate(pastDates[2].toString())
             .duration(durations[5]).origin(destination[5]).destination(origin[5])
             .passengerAmmount(passengersAmmounts[5]).build()
+
         val tripMatias02 = TripBuilder().passenger(matias).driver(colapinto)
             .setDate(pastDates[3].toString())
             .duration(durations[6]).origin(destination[6]).destination(origin[6])
             .passengerAmmount(passengersAmmounts[6]).build()
+
 
         val tripDiego01 = TripBuilder().passenger(diego).driver(colapinto)
             .setDate(pastDates[4].toString())
@@ -405,14 +408,20 @@ class Bootstrap(
             .duration(durations[24]).origin(destination[24]).destination(origin[24])
             .passengerAmmount(passengersAmmounts[24]).build()
 
-        val allTrips: List<Trip> = listOf(
+        val allTrips: List<Trip> = tripRepo.saveAll(listOf(
             tripAdrian01, tripAdrian02, tripAdrian03, tripAdrian04, tripAdrian05,
             tripMatias01, tripMatias02, tripMatias03, tripMatias04, tripMatias05,
             tripDiego01, tripDiego02, tripDiego03, tripDiego04, tripDiego05,
             tripPedro01, tripPedro02, tripPedro03, tripPedro04, tripPedro05,
             tripValentin01, tripValentin02, tripValentin03, tripValentin04, tripValentin05
-        )
-        tripRepo.saveAll(allTrips)
+        )).toList()
+
+        colapinto.tripsId.addAll(allTrips.filter { it.driverMongoId == colapinto.id }.map { it.id!! })
+        lauda.tripsId.addAll(allTrips.filter { it.driverMongoId == lauda.id }.map { it.id!! })
+        toretto.tripsId.addAll(allTrips.filter { it.driverMongoId == toretto.id }.map { it.id!! })
+
+        mongoRepoDriver.saveAll(drivers)
+
     }
 
     private fun createTripScore(){
@@ -429,4 +438,5 @@ class Bootstrap(
         }
         tripRepo.saveAll(tripPassenger)
     }
+
 }
