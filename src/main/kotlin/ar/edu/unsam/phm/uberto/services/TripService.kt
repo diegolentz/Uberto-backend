@@ -1,10 +1,7 @@
 package ar.edu.unsam.phm.uberto.services
 
 import ar.edu.unsam.phm.uberto.FailSaveEntity
-import ar.edu.unsam.phm.uberto.InsufficientBalanceException
-import ar.edu.unsam.phm.uberto.NotFoundEntityException
 import ar.edu.unsam.phm.uberto.dto.TripDTO
-import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.model.MongoDriver
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.Trip

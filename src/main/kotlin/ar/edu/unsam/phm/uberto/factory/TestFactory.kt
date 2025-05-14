@@ -28,10 +28,10 @@ class TestFactory(
         return  listPassenger
     }
 
-    fun createDriverPremium(amount : Int): List<Driver>{
-        val listDriver: MutableList<Driver> = mutableListOf()
+    fun createDriverPremium(amount : Int): List<MongoDriver>{
+        val listDriver: MutableList<MongoDriver> = mutableListOf()
         for(i in 0..amount){
-            val driver = PremiumDriver().apply {
+            val driver = PremiumDriverMongo().apply {
                 firstName = "Driver Premium ${i}"
                 lastName = "Test Premium ${i}"
                 img = ""
@@ -52,7 +52,7 @@ class TestFactory(
         for(i in 0..amount){
             val trip = Trip().apply {
                 client = listPassenger.get(i)
-                driver = listDriver.get(i)
+                driverMongo = listDriver.get(i)
                 date = LocalDateTime.now()
             }
             listTrip.add(trip)
@@ -68,7 +68,7 @@ class TestFactory(
         for(i in 0..amount){
             val trip = Trip().apply {
                 client = listPassenger.get(i)
-                driver = listDriver.get(i)
+                driverMongo = listDriver.get(i)
                 date = LocalDateTime.now().plusDays(1)
             }
             listTrip.add(trip)
@@ -77,10 +77,10 @@ class TestFactory(
     }
 
 
-    fun createTrip(passenger: Passenger, driver: Driver): Trip{
+    fun createTrip(passenger: Passenger, driver: MongoDriver): Trip{
         return Trip().apply {
             client = passenger
-            this.driver = driver
+            this.driverMongo = driver
             date = LocalDateTime.now()
         }
     }
@@ -106,19 +106,19 @@ class TestFactory(
     fun generateTokenPassengerTest(username: String): String{
         val userAuth = authService.loadUserByUsername(username) as UserAuthCredentials
         val user = passengerService.getByCredentialsId(userAuth.id!!)
-        return jwtUtil.generate(userAuth, user.id!!)
+        return jwtUtil.generate(userAuth, user.id!!.toString())
     }
 
     fun generateTokenDriverTest(username: String): String{
         val userAuth = authService.loadUserByUsername(username) as UserAuthCredentials
-        val user = driverService.getByCredentialsId(userAuth.id!!)
+        val user = driverService.getByCredentialsId(userAuth.id!!.toString())
         return jwtUtil.generate(userAuth, user.id!!)
     }
 
     fun generateInvalidToken(username:String): String{
         val userAuth = authService.loadUserByUsername(username) as UserAuthCredentials
-        val user = driverService.getByCredentialsId(userAuth.id!!)
-        return jwtUtil.generate(userAuth, 28)
+        val user = driverService.getByCredentialsId(userAuth.id!!.toString())
+        return jwtUtil.generate(userAuth, "28")
     }
 
 }

@@ -1,6 +1,5 @@
 package ar.edu.unsam.phm.uberto.dto
 
-import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.model.MongoDriver
 
 //import ar.edu.unsam.phm.uberto.repository.DriverAvgDTO
@@ -32,7 +31,7 @@ fun MongoDriver.toDTO(): DriverDTO {
 
 
 data class DriverCardDTO(
-    val id: Long,
+    val id: String,
     val serial: String,
     val name: String,
     val brand: String,
@@ -44,7 +43,7 @@ data class DriverCardDTO(
 )
 
 
-fun Driver.toCardDTO(time: Int, numberPassenger: Int): DriverCardDTO {
+fun MongoDriver.toCardDTO(time: Int, numberPassenger: Int): DriverCardDTO {
     val driverId = requireNotNull(id) { "Driver entity ID is null" }
 
     return DriverCardDTO(
@@ -60,27 +59,27 @@ fun Driver.toCardDTO(time: Int, numberPassenger: Int): DriverCardDTO {
     )
 }
 
-fun Driver.toAvailableDTO(time: Int, numberPassenger: Int, scores: Double): DriverCardDTO {
-    val driverId = requireNotNull(id) { "Driver entity ID is null" }
+//fun MongoDriver.toAvailableDTO(time: Int, numberPassenger: Int, scores: Double): DriverCardDTO {
+//    val driverId = requireNotNull(id) { "Driver entity ID is null" }
+//
+//    return DriverCardDTO(
+//        id = driverId,
+//        serial = serial,
+//        brand = brand,
+//        name = "$firstName $lastName",
+//        model = model,
+//        price = fee(time, numberPassenger),
+//        img = img,
+//        rating = scores,
+//        type = toString()
+//    )
+//}
 
-    return DriverCardDTO(
-        id = driverId,
-        serial = serial,
-        brand = brand,
-        name = "$firstName $lastName",
-        model = model,
-        price = fee(time, numberPassenger),
-        img = img,
-        rating = scores,
-        type = toString()
-    )
-}
 
-
-data class DriverAvailableDto(
-    val driver: Driver,
-    val averageScore: Double
-)
+//data class DriverAvailableDto(
+//    val driver: Driver,
+//    val averageScore: Double
+//)
 
 
 data class DriverCardAndTimeDTO(
@@ -89,7 +88,7 @@ data class DriverCardAndTimeDTO(
 )
 
 data class DriverImg(var img: String)
-fun Driver.toImgDTO() = DriverImg(
+fun MongoDriver.toImgDTO() = DriverImg(
     img = img
 )
 

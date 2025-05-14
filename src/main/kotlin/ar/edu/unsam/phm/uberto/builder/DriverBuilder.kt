@@ -1,9 +1,9 @@
 package ar.edu.unsam.phm.uberto.builder
 
-import ar.edu.unsam.phm.uberto.model.Driver
+import ar.edu.unsam.phm.uberto.model.MongoDriver
 import ar.edu.unsam.phm.uberto.model.UserAuthCredentials
 
-class DriverBuilder(val newDriver: Driver) {
+class DriverBuilder(val newDriver: MongoDriver) {
 
     fun userId(id: Long): DriverBuilder = apply {
         if (newDriver.credentials == null) newDriver.credentials = UserAuthCredentials()
@@ -43,6 +43,6 @@ class DriverBuilder(val newDriver: Driver) {
         newDriver.basePrice = price
     }
 
-    fun build(): Driver = newDriver
+    fun build(): MongoDriver = newDriver
 
 }

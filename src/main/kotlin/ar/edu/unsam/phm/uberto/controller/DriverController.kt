@@ -1,15 +1,15 @@
 package ar.edu.unsam.phm.uberto.controller
 
-import ar.edu.unsam.phm.uberto.dto.*
-import ar.edu.unsam.phm.uberto.model.Driver
+import ar.edu.unsam.phm.uberto.dto.DriverDTO
+import ar.edu.unsam.phm.uberto.dto.DriverImg
+import ar.edu.unsam.phm.uberto.dto.toDTO
+import ar.edu.unsam.phm.uberto.dto.toImgDTO
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.TravelTimeMockService
-import exceptions.BusinessException
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.time.LocalDateTime
 
 @CrossOrigin(origins = ["http://localhost:8080", "http://localhost:5173"])
 @RestController
@@ -23,13 +23,13 @@ class DriverController(
     @GetMapping()
     fun getByID(request: HttpServletRequest): DriverDTO {
         val idToken = jwtUtil.getIdFromTokenString(request)
-        return driverService.getDriverData(idToken).toDTO()
+        return driverService.getDriverData(idToken.toString()).toDTO()
     }
 
     @GetMapping("/img")
     fun getImg(request: HttpServletRequest): DriverImg {
         val idToken = jwtUtil.getIdFromTokenString(request)
-        return driverService.getDriverData(idToken).toImgDTO()
+        return driverService.getDriverData(idToken.toString()).toImgDTO()
     }
 
 //    @GetMapping("/available")
@@ -49,7 +49,7 @@ class DriverController(
     @PostMapping()
     fun changeProfile(@RequestBody driverDTO: DriverDTO, request: HttpServletRequest): ResponseEntity<String> {
         val idToken = jwtUtil.getIdFromTokenString(request)
-        return driverService.updateProfile(driverDTO, idToken)
+        return driverService.updateProfile(driverDTO, idToken.toString())
     }
 
 }

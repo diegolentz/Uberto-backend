@@ -7,17 +7,13 @@ import ar.edu.unsam.phm.uberto.factory.AuthFactory
 import ar.edu.unsam.phm.uberto.factory.TestFactory
 import ar.edu.unsam.phm.uberto.model.*
 import ar.edu.unsam.phm.uberto.repository.*
-import ar.edu.unsam.phm.uberto.services.TripService
-import ar.edu.unsam.phm.uberto.repository.AuthRepository
-import ar.edu.unsam.phm.uberto.model.Role
-import ar.edu.unsam.phm.uberto.model.UserAuthCredentials
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import ar.edu.unsam.phm.uberto.services.AuthService
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.PassengerService
+import ar.edu.unsam.phm.uberto.services.TripService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
-import org.springframework.security.crypto.argon2.Argon2PasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import java.time.LocalDate
@@ -27,7 +23,6 @@ import java.time.temporal.ChronoUnit
 @Component
 class Bootstrap(
     @Autowired val passengerRepo: PassengerRepository,
-    @Autowired val driverRepo: DriverRepository,
     @Autowired val tripRepo: TripsRepository,
     @Autowired val tripService: TripService,
     @Autowired val authRepo: AuthRepository,
@@ -48,7 +43,7 @@ class Bootstrap(
         createDrivers()
         createTrips()
         createTripScore()
-        createMongoDrivers()
+        //createMongoDrivers()
     }
 
     private fun createAccounts() {
@@ -107,12 +102,12 @@ class Bootstrap(
         passengerRepo.saveAll(passengerList)
     }
     private fun createDrivers() {
-        val driverList = mutableListOf<Driver>()
+        val driverList = mutableListOf<MongoDriver>()
         val users = authRepo.findByRole(Role.DRIVER)
         val names = listOf<String>("Dominic", "Franco", "Nicky")
         val lastNames = listOf<String>("Toretto", "Colapinto", "Lauda")
         val balances = listOf<Double>(200.0, 5000.0, 10000.0)
-        val driverType = listOf(PremiumDriver(), SimpleDriver(), BikeDriver())
+        val driverType = listOf(PremiumDriverMongo(), SimpleDriverMongo(), BikeDriverMongo())
         val brand = listOf("Fiat Uno", "Fiat Uno", "Gilera")
         val serial = listOf("FTG 879", "DEV 666", "AAA 123")
         val model = listOf(2013, 1999, 2003)
@@ -136,46 +131,46 @@ class Bootstrap(
                 .build()
             driverList.add(driver)
         }
-        driverRepo.saveAll(driverList)
-    }
-
-    private fun createMongoDrivers() {
-        if(mongoRepoDriver.count() != 0.toLong()){
-            mongoRepoDriver.deleteAll()
-        }
-        val driverList = mutableListOf<MongoDriver>()
-        val users = authRepo.findByRole(Role.DRIVER)
-        val names = listOf<String>("Dominic", "Franco", "Nicky")
-        val lastNames = listOf<String>("Toretto", "Colapinto", "Lauda")
-        val balances = listOf<Double>(200.0, 5000.0, 10000.0)
-        val driverType = listOf(PremiumDriverMongo(), SimpleDriverMongo(), BikeDriverMongo())
-        val brand = listOf("Fiat Uno", "Fiat Uno", "Gilera")
-        val serial = listOf("FTG 879", "DEV 666", "AAA 123")
-        val model = listOf(2013, 1999, 2003)
-        val img = listOf("https://res.cloudinary.com/dumcjdzxo/image/upload/toreto_wx2me4.jpg",
-            "https://res.cloudinary.com/dumcjdzxo/image/upload/colapinto_bihvlt.jpg",
-            "https://res.cloudinary.com/dumcjdzxo/image/upload/laudo_hmkucz.jpg")
-        val baseP = listOf(900.0, 700.0, 800.0)
-
-        users.forEachIndexed { index: Int, user: UserAuthCredentials ->
-            val driver = SimpleDriverMongo().apply {
-                credentials = user
-                credentialsId = user.id
-                tripsId = mutableSetOf(1)
-                this.firstName = names[index]
-                this.lastName = lastNames[index]
-                this.balance = balances[index]
-                this.serial = serial[index]
-                this.model = model[index]
-                this.img = img[index]
-                this.brand = brand[index]
-                basePrice = baseP[index]
-
-            }
-            driverList.add(driver)
-        }
         mongoRepoDriver.saveAll(driverList)
     }
+
+//    private fun createMongoDrivers() {
+//        if(mongoRepoDriver.count() != 0.toLong()){
+//            mongoRepoDriver.deleteAll()
+//        }
+//        val driverList = mutableListOf<MongoDriver>()
+//        val users = authRepo.findByRole(Role.DRIVER)
+//        val names = listOf<String>("Dominic", "Franco", "Nicky")
+//        val lastNames = listOf<String>("Toretto", "Colapinto", "Lauda")
+//        val balances = listOf<Double>(200.0, 5000.0, 10000.0)
+//        val driverType = listOf(PremiumDriverMongo(), SimpleDriverMongo(), BikeDriverMongo())
+//        val brand = listOf("Fiat Uno", "Fiat Uno", "Gilera")
+//        val serial = listOf("FTG 879", "DEV 666", "AAA 123")
+//        val model = listOf(2013, 1999, 2003)
+//        val img = listOf("https://res.cloudinary.com/dumcjdzxo/image/upload/toreto_wx2me4.jpg",
+//            "https://res.cloudinary.com/dumcjdzxo/image/upload/colapinto_bihvlt.jpg",
+//            "https://res.cloudinary.com/dumcjdzxo/image/upload/laudo_hmkucz.jpg")
+//        val baseP = listOf(900.0, 700.0, 800.0)
+//
+//        users.forEachIndexed { index: Int, user: UserAuthCredentials ->
+//            val driver = SimpleDriverMongo().apply {
+//                credentials = user
+//                credentialsId = user.id
+//                tripsId = mutableSetOf(1)
+//                this.firstName = names[index]
+//                this.lastName = lastNames[index]
+//                this.balance = balances[index]
+//                this.serial = serial[index]
+//                this.model = model[index]
+//                this.img = img[index]
+//                this.brand = brand[index]
+//                basePrice = baseP[index]
+//
+//            }
+//            driverList.add(driver)
+//        }
+//        mongoRepoDriver.saveAll(driverList)
+//    }
     private fun createTrips() {
         var passengers: List<Passenger> = passengerRepo.findAll().toList()
         val passengersAmmounts: List<Int> = listOf(
@@ -247,7 +242,7 @@ class Bootstrap(
         )
 
 
-        val drivers: List<Driver> = driverRepo.findAll().toList()
+        val drivers: List<MongoDriver> = mongoRepoDriver.findAll().toList()
 
         //8 viajes de cada tipo. Premium, simple, biker. 24 viajes
         //Cada usuario tiene que tener minimo 2 viajes.

@@ -31,7 +31,7 @@ class TokenJwtUtil {
     @Value("\${jwt.user.generator}")
     var userGeneration: String = ""
 
-    fun generate(user: UserAuthCredentials, userId: Long): String {
+    fun generate(user: UserAuthCredentials, userId: String): String {
         val algorithm = Algorithm.HMAC512(this.secretKey)
         val username = user.username
         return JWT.create()
