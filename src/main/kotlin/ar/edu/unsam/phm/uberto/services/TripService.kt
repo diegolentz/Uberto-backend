@@ -77,7 +77,7 @@ class TripService(val tripRepo: TripsRepository) {
         destination: String,
         numberPassenger: Int,
         name: String,
-        driverId: Long): List<Trip> {
+        driverId: String): List<Trip> {
         return tripRepo.searchByForm(origin, destination, numberPassenger, name, driverId)
     }
 }

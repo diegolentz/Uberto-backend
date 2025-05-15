@@ -16,7 +16,7 @@ interface TripsRepository : CrudRepository<Trip, Long> {
     @EntityGraph(attributePaths = ["client", "score"])
     fun findByClient(client: Passenger): List<Trip>
 
-    @EntityGraph(attributePaths = ["client", "score"]) 
+    @EntityGraph(attributePaths = ["client", "score"])
     fun findByDriverMongoId(driverId: String): List<Trip>
 
     @Query(
@@ -38,7 +38,7 @@ interface TripsRepository : CrudRepository<Trip, Long> {
         destination: String,
         numberPassengers: Int,
         name: String,
-        driverId: Long
+        driverId: String
     ): List<Trip>
 
 //    @Query("""
