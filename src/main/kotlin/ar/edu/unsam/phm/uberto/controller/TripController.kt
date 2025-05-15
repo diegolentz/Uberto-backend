@@ -46,7 +46,7 @@ class TripsController(
 
     }
 
-    @GetMapping("/pending")
+    @GetMapping("/pending") //TODO OK
     fun getTripsPendingFromDriver(
         @RequestParam origin: String,
         @RequestParam destination: String,
