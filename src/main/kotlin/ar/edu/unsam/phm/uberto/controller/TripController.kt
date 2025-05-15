@@ -18,7 +18,7 @@ class TripsController(
     private val driverService: DriverService,
     private val jwtUtil: TokenJwtUtil) {
 
-    @PostMapping("/create")
+    @PostMapping("/create") //TODO OK
     fun createTrip(@RequestBody trip: TripDTO, request: HttpServletRequest): ResponseEntity<String> {
         val idToken = jwtUtil.getIdFromTokenString(request)
         val client = passengerService.getByIdTrip(idToken)
