@@ -74,7 +74,7 @@ class TokenJwtUtil {
         val authHeader = request.getHeader(HttpHeaders.AUTHORIZATION)
         val jwtToken = authHeader.substring(7)
         val decodedJWT = validateToken(jwtToken)
-        return decodedJWT.getClaim("userID").asLong()
+        return decodedJWT.getClaim("userID").asString().toLong()
     }
 
     fun getIdDriverFromTokenString(@NotNull request: HttpServletRequest): String {

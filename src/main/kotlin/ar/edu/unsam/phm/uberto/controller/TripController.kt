@@ -1,9 +1,6 @@
 package ar.edu.unsam.phm.uberto.controller
 
-import ar.edu.unsam.phm.uberto.dto.FormTripDTO
-import ar.edu.unsam.phm.uberto.dto.PendingAndFinishedTripsDTO
-import ar.edu.unsam.phm.uberto.dto.TripDTO
-import ar.edu.unsam.phm.uberto.dto.toDTO
+import ar.edu.unsam.phm.uberto.dto.*
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import ar.edu.unsam.phm.uberto.services.*
 import exceptions.NotFoundException
@@ -33,7 +30,10 @@ class TripsController(
     fun getAllByPassengerId(request: HttpServletRequest): List<TripDTO> {
         val idToken = jwtUtil.getIdFromTokenString(request)
         val passenger = passengerService.getByIdTrip(idToken)
-        return tripService.getAllByPassenger(passenger).map { it.toDTO() }
+        val trips = tripService.getAllByPassenger(passenger)
+        val driversMongo = driverService.findAllByIds(trips.map { it.driverMongoId })
+        matchDriverFromTrip(driversMongo, trips)
+        return trips.map { it.toDTO() }
     }
 
     @GetMapping("/driver")

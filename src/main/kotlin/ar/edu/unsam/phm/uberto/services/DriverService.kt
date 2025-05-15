@@ -53,7 +53,11 @@ class DriverService(
 //    }
 
     fun getByCredentialsId(id: String): MongoDriver =
-        driverRepo.findByCredentialsId(id).orElseThrow{throw NotFoundException("Driver no encontrado")}
+        driverRepo.findByCredentialsId(id.toLong())//.orElseThrow{throw NotFoundException("Driver no encontrado")}
+
+    fun findAllByIds(ids: List<String>): List<MongoDriver> {
+        return driverRepo.findAllById(ids)
+    }
 
 
 }
