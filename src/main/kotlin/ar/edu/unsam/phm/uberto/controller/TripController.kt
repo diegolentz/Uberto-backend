@@ -26,7 +26,7 @@ class TripsController(
         return tripService.createTrip(trip, client, driver)
     }
 
-    @GetMapping("/passenger")
+    @GetMapping("/passenger") //TODO OK
     fun getAllByPassengerId(request: HttpServletRequest): List<TripDTO> {
         val idToken = jwtUtil.getIdFromTokenString(request)
         val passenger = passengerService.getByIdTrip(idToken)
@@ -40,7 +40,10 @@ class TripsController(
     fun getAllByDriverId(request: HttpServletRequest): List<TripDTO> {
         val idToken = jwtUtil.getIdDriverFromTokenString(request)
         val driver = driverService.getByIdTrip(idToken)
-        return tripService.getAllByDriver(driver).map { it.toDTO() }
+        val trips = tripService.getAllByDriver(driver)
+        matchDriverFromTrip(listOf(driver), trips)
+        return trips.map { it.toDTO() }
+
     }
 
     @GetMapping("/pending")

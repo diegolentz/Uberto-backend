@@ -81,7 +81,7 @@ class TokenJwtUtil {
         val authHeader = request.getHeader(HttpHeaders.AUTHORIZATION)
         val jwtToken = authHeader.substring(7)
         val decodedJWT = validateToken(jwtToken)
-        return decodedJWT.getClaim("userID").toString()
+        return decodedJWT.getClaim("userID").asString()
     }
 
     fun shouldTokenRefresh(token: String): Boolean {
