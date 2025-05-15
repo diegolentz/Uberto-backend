@@ -47,7 +47,7 @@ class JwtTokenValidator(
                 this.role= Role.valueOf(userRole)
             }
 
-            val newToken = jwtUtils.generate(userCredentials, userId.toString())
+            val newToken = jwtUtils.generate(userCredentials, userId.asString())
             response.setHeader("refresh-token", newToken)
             response.setHeader("Access-Control-Expose-Headers", "refresh-token")
 
