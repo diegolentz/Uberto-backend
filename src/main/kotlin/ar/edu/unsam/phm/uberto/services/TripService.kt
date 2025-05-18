@@ -1,6 +1,6 @@
 package ar.edu.unsam.phm.uberto.services
 
-import ar.edu.unsam.phm.uberto.FailSaveEntity
+import ar.edu.unsam.phm.uberto.FailSaveException
 import ar.edu.unsam.phm.uberto.dto.TripDTO
 import ar.edu.unsam.phm.uberto.model.MongoDriver
 import ar.edu.unsam.phm.uberto.model.Passenger
@@ -43,7 +43,7 @@ class TripService(val tripRepo: TripsRepository) {
         try{
             tripRepo.save(newTrip)
         }catch (e: DataAccessException){
-            throw FailSaveEntity("Error en la creación del viaje")
+            throw FailSaveException("Error en la creación del viaje")
         }
 
         return ResponseEntity
