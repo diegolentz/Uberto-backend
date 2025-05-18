@@ -39,7 +39,7 @@ class DriverService(
                 .body("Updated profile")
 
         } catch (e: NotFoundException) {
-            throw BusinessException("Driver not found")
+            throw NotFoundException("Driver not found")
         }
     }
 
