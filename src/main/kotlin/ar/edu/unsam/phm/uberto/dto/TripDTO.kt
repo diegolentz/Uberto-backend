@@ -1,5 +1,6 @@
 package ar.edu.unsam.phm.uberto.dto
 
+import ar.edu.unsam.phm.uberto.model.MongoDriver
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.Trip
 import java.time.LocalDateTime
@@ -27,12 +28,13 @@ class TripDTO(
         origin = tripDTO.origin
         destination = tripDTO.destination
     }
+
 }
 
 
 fun Trip.toDTO() : TripDTO{
     val clientId = requireNotNull(client.id) { "Client ID is null" }
-    val driverId = requireNotNull(driverMongo.id) { "Driver ID is null" }
+    val driverId = requireNotNull(driverMongoId) { "Driver ID is null" }
     val id = requireNotNull(id) { "ID is null" }
 
     return TripDTO(
@@ -72,3 +74,10 @@ data class FormTripDTO(
     val name: String,
     val userId: Long
 ){}
+
+fun matchDriverFromTrip(drivers: List<MongoDriver>, trips: List<Trip>): List<Trip>{
+    trips.forEach{ trip ->
+        trip.driverMongo  = drivers.find { driver -> driver.id == trip.driverMongoId }!!
+    }
+    return trips
+}

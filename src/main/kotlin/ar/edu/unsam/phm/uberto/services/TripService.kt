@@ -5,6 +5,7 @@ import ar.edu.unsam.phm.uberto.dto.TripDTO
 import ar.edu.unsam.phm.uberto.model.MongoDriver
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.Trip
+import ar.edu.unsam.phm.uberto.repository.MongoDriverRepository
 import ar.edu.unsam.phm.uberto.repository.TripsRepository
 import org.springframework.dao.DataAccessException
 import org.springframework.http.HttpStatus
@@ -13,7 +14,10 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class TripService(val tripRepo: TripsRepository) {
+class TripService(
+    val tripRepo: TripsRepository,
+    val driverRepo: MongoDriverRepository
+) {
 
     fun getById(id: Long): Trip {
         return tripRepo.findById(id).get()
@@ -42,6 +46,8 @@ class TripService(val tripRepo: TripsRepository) {
 
         try{
             tripRepo.save(newTrip)
+            driver.tripsId.add(newTrip.id!!)
+            driverRepo.save(driver)
         }catch (e: DataAccessException){
             throw FailSaveEntity("Error en la creación del viaje")
         }
@@ -77,7 +83,7 @@ class TripService(val tripRepo: TripsRepository) {
         destination: String,
         numberPassenger: Int,
         name: String,
-        driverId: Long): List<Trip> {
+        driverId: String): List<Trip> {
         return tripRepo.searchByForm(origin, destination, numberPassenger, name, driverId)
     }
 }
