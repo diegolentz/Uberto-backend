@@ -104,12 +104,12 @@ class Bootstrap(
         if(mongoRepoDriver.count() != 0.toLong()){
             mongoRepoDriver.deleteAll()
         }
-        val driverList = mutableListOf<MongoDriver>()
+        val driverList = mutableListOf<Driver>()
         val users = authRepo.findByRole(Role.DRIVER)
         val names = listOf<String>("Dominic", "Franco", "Nicky")
         val lastNames = listOf<String>("Toretto", "Colapinto", "Lauda")
         val balances = listOf<Double>(200.0, 5000.0, 10000.0)
-        val driverType = listOf(PremiumDriverMongo(), SimpleDriverMongo(), BikeDriverMongo())
+        val driverType = listOf(PremiumDriver(), SimpleDriver(), BikeDriver())
         val brand = listOf("Fiat Uno", "Fiat Uno", "Gilera")
         val serial = listOf("FTG 879", "DEV 666", "AAA 123")
         val model = listOf(2013, 1999, 2003)
@@ -207,7 +207,7 @@ class Bootstrap(
         )
 
 
-        val drivers: List<MongoDriver> = mongoRepoDriver.findAll().toList()
+        val drivers: List<Driver> = mongoRepoDriver.findAll().toList()
 
         //8 viajes de cada tipo. Premium, simple, biker. 24 viajes
         //Cada usuario tiene que tener minimo 2 viajes.
@@ -379,9 +379,9 @@ class Bootstrap(
             tripValentin01, tripValentin02, tripValentin03, tripValentin04, tripValentin05
         )).toList()
 
-        colapinto.tripsId.addAll(allTrips.filter { it.driverMongoId == colapinto.id }.map { it.id!! })
-        lauda.tripsId.addAll(allTrips.filter { it.driverMongoId == lauda.id }.map { it.id!! })
-        toretto.tripsId.addAll(allTrips.filter { it.driverMongoId == toretto.id }.map { it.id!! })
+        colapinto.tripsId.addAll(allTrips.filter { it.driverId == colapinto.id }.map { it.id!! })
+        lauda.tripsId.addAll(allTrips.filter { it.driverId == lauda.id }.map { it.id!! })
+        toretto.tripsId.addAll(allTrips.filter { it.driverId == toretto.id }.map { it.id!! })
 
         mongoRepoDriver.saveAll(drivers)
 

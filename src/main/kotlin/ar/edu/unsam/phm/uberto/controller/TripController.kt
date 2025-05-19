@@ -3,7 +3,6 @@ package ar.edu.unsam.phm.uberto.controller
 import ar.edu.unsam.phm.uberto.dto.*
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import ar.edu.unsam.phm.uberto.services.*
-import exceptions.NotFoundException
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -31,7 +30,7 @@ class TripsController(
         val idToken = jwtUtil.getIdFromTokenString(request)
         val passenger = passengerService.getByIdTrip(idToken)
         val trips = tripService.getAllByPassenger(passenger)
-        val driversMongo = driverService.findAllByIds(trips.map { it.driverMongoId })
+        val driversMongo = driverService.findAllByIds(trips.map { it.driverId })
         matchDriverFromTrip(driversMongo, trips)
         return trips.map { it.toDTO() }
     }
@@ -62,7 +61,7 @@ class TripsController(
             name,
             idToken,
         )
-        val driversMongo = driverService.findAllByIds(trips.map { it.driverMongoId })
+        val driversMongo = driverService.findAllByIds(trips.map { it.driverId })
         matchDriverFromTrip(driversMongo, trips)
         return trips.map { it.toDTO() }
     }
@@ -72,10 +71,10 @@ class TripsController(
         val idToken = jwtUtil.getIdFromTokenString(request)
         val passenger = passengerService.getByIdTrip(idToken)
         val finishedTrips = tripService.getFinishedTripPassenger(passenger)
-        val driversMongoFinished = driverService.findAllByIds(finishedTrips.map { it.driverMongoId })
+        val driversMongoFinished = driverService.findAllByIds(finishedTrips.map { it.driverId })
         matchDriverFromTrip(driversMongoFinished, finishedTrips)
         val pendingTrips = tripService.getPendingTripPassenger(passenger)
-        val driverMongoPending = driverService.findAllByIds(pendingTrips.map { it.driverMongoId })
+        val driverMongoPending = driverService.findAllByIds(pendingTrips.map { it.driverId })
         matchDriverFromTrip(driverMongoPending, pendingTrips)
         return PendingAndFinishedTripsDTO(pendingTrips.map { it.toDTO() }, finishedTrips.map { it.toDTO() })
     }

@@ -1,7 +1,6 @@
 package ar.edu.unsam.phm.uberto.dto
 
-import ar.edu.unsam.phm.uberto.model.MongoDriver
-import ar.edu.unsam.phm.uberto.model.Passenger
+import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.model.Trip
 import java.time.LocalDateTime
 
@@ -34,23 +33,23 @@ class TripDTO(
 
 fun Trip.toDTO() : TripDTO{
     val clientId = requireNotNull(client.id) { "Client ID is null" }
-    val driverId = requireNotNull(driverMongoId) { "Driver ID is null" }
+    val driverId = requireNotNull(driverId) { "Driver ID is null" }
     val id = requireNotNull(id) { "ID is null" }
 
     return TripDTO(
     userId = clientId,
     driverId = driverId,
-    driverName = driverMongo.firstName + " " + driverMongo.lastName,
+    driverName = driver.firstName + " " + driver.lastName,
     passengerName = client.firstName + " " + client.lastName,
     duration = duration,
     numberPassengers = numberPassengers,
     date = date,
     origin = origin,
     destination = destination,
-    price = driverMongo.fee(duration, numberPassengers),
+    price = driver.fee(duration, numberPassengers),
     id = id,
     imgPassenger = client.img,
-    imgDriver = driverMongo.img,
+    imgDriver = driver.img,
     scored = this.scored()
 )
 }
@@ -61,9 +60,9 @@ fun Trip.scoreToDTO(userId: Long?) = TripScoreDTO(
     scorePoints = score!!.scorePoints,
     date = date.toString(),
     passengerName= client.firstName + "" + client.lastName,
-    driverName = driverMongo.firstName + "" + driverMongo.lastName,
+    driverName = driver.firstName + "" + driver.lastName,
     avatarUrlPassenger = client.img,
-    avatarUrlDriver = driverMongo.img,
+    avatarUrlDriver = driver.img,
     delete = if (userId != null) canDeleteScore(userId) else false
 )
 
@@ -75,9 +74,9 @@ data class FormTripDTO(
     val userId: Long
 ){}
 
-fun matchDriverFromTrip(drivers: List<MongoDriver>, trips: List<Trip>): List<Trip>{
+fun matchDriverFromTrip(drivers: List<Driver>, trips: List<Trip>): List<Trip>{
     trips.forEach{ trip ->
-        trip.driverMongo  = drivers.find { driver -> driver.id == trip.driverMongoId }!!
+        trip.driver  = drivers.find { driver -> driver.id == trip.driverId }!!
     }
     return trips
 }

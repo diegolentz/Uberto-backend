@@ -2,7 +2,7 @@ package ar.edu.unsam.phm.uberto.services
 
 import ar.edu.unsam.phm.uberto.FailSaveException
 import ar.edu.unsam.phm.uberto.dto.TripDTO
-import ar.edu.unsam.phm.uberto.model.MongoDriver
+import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.Trip
 import ar.edu.unsam.phm.uberto.repository.MongoDriverRepository
@@ -24,7 +24,7 @@ class TripService(
     }
 
     @Transactional
-    fun createTrip(trip: TripDTO, client: Passenger, driver: MongoDriver): ResponseEntity<String> {
+    fun createTrip(trip: TripDTO, client: Passenger, driver: Driver): ResponseEntity<String> {
 
         val newTrip = Trip().apply {
             duration = trip.duration
@@ -33,8 +33,8 @@ class TripService(
             origin = trip.origin
             destination = trip.destination
             this.client = client
-            this.driverMongo = driver
-            driverMongoId = driver.id!!
+            this.driver = driver
+            driverId = driver.id!!
         }
 
         try{
@@ -62,8 +62,8 @@ class TripService(
         return tripRepo.findByClient(passenger)
     }
 
-    fun getAllByDriver(driver: MongoDriver): List<Trip> {
-        return tripRepo.findByDriverMongoId(driver.id!!)
+    fun getAllByDriver(driver: Driver): List<Trip> {
+        return tripRepo.findByDriverId(driver.id!!)
     }
 
     fun getPendingTripPassenger(passenger: Passenger): List<Trip> {
@@ -74,7 +74,7 @@ class TripService(
         return getAllByPassenger(passenger).filter { it.finished() }
     }
 
-    fun getFinishedTripDriver(diver: MongoDriver): List<Trip> {
+    fun getFinishedTripDriver(diver: Driver): List<Trip> {
         return getAllByDriver(diver).filter { it.finished() }
     }
 
