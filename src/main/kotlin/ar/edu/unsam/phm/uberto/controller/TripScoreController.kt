@@ -2,20 +2,15 @@ package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.dto.TripScoreDTO
 import ar.edu.unsam.phm.uberto.dto.scoreToDTO
-import ar.edu.unsam.phm.uberto.model.Driver
-import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.TripScore
-import ar.edu.unsam.phm.uberto.repository.TripScoreRepository
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.PassengerService
 import ar.edu.unsam.phm.uberto.services.TripScoreService
 import ar.edu.unsam.phm.uberto.services.TripService
 import jakarta.servlet.http.HttpServletRequest
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Private
 
 
 @CrossOrigin(origins = ["http://localhost:8080", "http://localhost:5173"])
@@ -40,7 +35,7 @@ class TripScoreController(
 
     @GetMapping("/driver")
     fun getScoreDriver(request: HttpServletRequest): List<TripScoreDTO>{
-        val idToken = jwtUtil.getIdFromTokenString(request)
+        val idToken = jwtUtil.getIdDriverFromTokenString(request)
         val driver = driverService.getByIdTrip(idToken)
         val trips = tripService.getAllByDriver(driver)
         val tripScore = tripScoreService.getFromDriver(trips)
@@ -48,7 +43,7 @@ class TripScoreController(
     }
 
     @GetMapping("/confirmation")
-    fun getScoreConfirmation( @RequestParam driverId: Long): List<TripScoreDTO>{
+    fun getScoreConfirmation( @RequestParam driverId: String): List<TripScoreDTO>{
         val driver = driverService.getByIdTrip(driverId)
         val trips = tripService.getAllByDriver(driver)
         val tripScore = tripScoreService.getFromDriver(trips)

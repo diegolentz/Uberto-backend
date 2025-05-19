@@ -38,7 +38,7 @@ class TripsController(
 
     @GetMapping("/driver")
     fun getAllByDriverId(request: HttpServletRequest): List<TripDTO> {
-        val idToken = jwtUtil.getIdFromTokenString(request)
+        val idToken = jwtUtil.getIdDriverFromTokenString(request)
         val driver = driverService.getByIdTrip(idToken)
         return tripService.getAllByDriver(driver).map { it.toDTO() }
     }
@@ -72,7 +72,7 @@ class TripsController(
 
     @GetMapping("/profile/driver")
     fun getProfileDriver(request: HttpServletRequest): PendingAndFinishedTripsDTO {
-        val idToken = jwtUtil.getIdFromTokenString(request)
+        val idToken = jwtUtil.getIdDriverFromTokenString(request)
         val driver = driverService.getByIdTrip(idToken)
         val finishedTrips = tripService.getFinishedTripDriver(driver).map { it.toDTO() }
         val pendingTrips = listOf<TripDTO>()

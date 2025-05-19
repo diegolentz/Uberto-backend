@@ -7,17 +7,13 @@ import ar.edu.unsam.phm.uberto.factory.AuthFactory
 import ar.edu.unsam.phm.uberto.factory.TestFactory
 import ar.edu.unsam.phm.uberto.model.*
 import ar.edu.unsam.phm.uberto.repository.*
-import ar.edu.unsam.phm.uberto.services.TripService
-import ar.edu.unsam.phm.uberto.repository.AuthRepository
-import ar.edu.unsam.phm.uberto.model.Role
-import ar.edu.unsam.phm.uberto.model.UserAuthCredentials
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import ar.edu.unsam.phm.uberto.services.AuthService
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.PassengerService
+import ar.edu.unsam.phm.uberto.services.TripService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
-import org.springframework.security.crypto.argon2.Argon2PasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import java.time.LocalDate
@@ -27,7 +23,6 @@ import java.time.temporal.ChronoUnit
 @Component
 class Bootstrap(
     @Autowired val passengerRepo: PassengerRepository,
-    @Autowired val driverRepo: DriverRepository,
     @Autowired val tripRepo: TripsRepository,
     @Autowired val tripService: TripService,
     @Autowired val authRepo: AuthRepository,
@@ -36,11 +31,13 @@ class Bootstrap(
     @Autowired val authService: AuthService,
     @Autowired val jwtUtil: TokenJwtUtil,
     @Autowired val driverService: DriverService,
-    @Autowired val passengerService: PassengerService
+    @Autowired val passengerService: PassengerService,
+    @Autowired val mongoRepoDriver: MongoDriverRepository
 ) : CommandLineRunner {
 
     val factory = TestFactory(authService, passengerService, driverService ,jwtUtil)
     override fun run(vararg args: String?) {
+
         createAccounts()
         createPassengers()
         createDrivers()
@@ -104,12 +101,15 @@ class Bootstrap(
         passengerRepo.saveAll(passengerList)
     }
     private fun createDrivers() {
-        val driverList = mutableListOf<Driver>()
+        if(mongoRepoDriver.count() != 0.toLong()){
+            mongoRepoDriver.deleteAll()
+        }
+        val driverList = mutableListOf<MongoDriver>()
         val users = authRepo.findByRole(Role.DRIVER)
         val names = listOf<String>("Dominic", "Franco", "Nicky")
         val lastNames = listOf<String>("Toretto", "Colapinto", "Lauda")
         val balances = listOf<Double>(200.0, 5000.0, 10000.0)
-        val driverType = listOf(PremiumDriver(), SimpleDriver(), BikeDriver())
+        val driverType = listOf(PremiumDriverMongo(), SimpleDriverMongo(), BikeDriverMongo())
         val brand = listOf("Fiat Uno", "Fiat Uno", "Gilera")
         val serial = listOf("FTG 879", "DEV 666", "AAA 123")
         val model = listOf(2013, 1999, 2003)
@@ -133,8 +133,46 @@ class Bootstrap(
                 .build()
             driverList.add(driver)
         }
-        driverRepo.saveAll(driverList)
+        mongoRepoDriver.saveAll(driverList)
     }
+
+//    private fun createMongoDrivers() {
+//        if(mongoRepoDriver.count() != 0.toLong()){
+//            mongoRepoDriver.deleteAll()
+//        }
+//        val driverList = mutableListOf<MongoDriver>()
+//        val users = authRepo.findByRole(Role.DRIVER)
+//        val names = listOf<String>("Dominic", "Franco", "Nicky")
+//        val lastNames = listOf<String>("Toretto", "Colapinto", "Lauda")
+//        val balances = listOf<Double>(200.0, 5000.0, 10000.0)
+//        val driverType = listOf(PremiumDriverMongo(), SimpleDriverMongo(), BikeDriverMongo())
+//        val brand = listOf("Fiat Uno", "Fiat Uno", "Gilera")
+//        val serial = listOf("FTG 879", "DEV 666", "AAA 123")
+//        val model = listOf(2013, 1999, 2003)
+//        val img = listOf("https://res.cloudinary.com/dumcjdzxo/image/upload/toreto_wx2me4.jpg",
+//            "https://res.cloudinary.com/dumcjdzxo/image/upload/colapinto_bihvlt.jpg",
+//            "https://res.cloudinary.com/dumcjdzxo/image/upload/laudo_hmkucz.jpg")
+//        val baseP = listOf(900.0, 700.0, 800.0)
+//
+//        users.forEachIndexed { index: Int, user: UserAuthCredentials ->
+//            val driver = SimpleDriverMongo().apply {
+//                credentials = user
+//                credentialsId = user.id
+//                tripsId = mutableSetOf(1)
+//                this.firstName = names[index]
+//                this.lastName = lastNames[index]
+//                this.balance = balances[index]
+//                this.serial = serial[index]
+//                this.model = model[index]
+//                this.img = img[index]
+//                this.brand = brand[index]
+//                basePrice = baseP[index]
+//
+//            }
+//            driverList.add(driver)
+//        }
+//        mongoRepoDriver.saveAll(driverList)
+//    }
     private fun createTrips() {
         var passengers: List<Passenger> = passengerRepo.findAll().toList()
         val passengersAmmounts: List<Int> = listOf(
@@ -206,7 +244,7 @@ class Bootstrap(
         )
 
 
-        val drivers: List<Driver> = driverRepo.findAll().toList()
+        val drivers: List<MongoDriver> = mongoRepoDriver.findAll().toList()
 
         //8 viajes de cada tipo. Premium, simple, biker. 24 viajes
         //Cada usuario tiene que tener minimo 2 viajes.
@@ -261,15 +299,16 @@ class Bootstrap(
             .setDate(pastDates[1].toString())
             .duration(durations[1]).origin(destination[1]).destination(origin[1])
             .passengerAmmount(passengersAmmounts[1]).build()
-
         val tripMatias01 = TripBuilder().passenger(matias).driver(lauda)
             .setDate(pastDates[2].toString())
             .duration(durations[5]).origin(destination[5]).destination(origin[5])
             .passengerAmmount(passengersAmmounts[5]).build()
+
         val tripMatias02 = TripBuilder().passenger(matias).driver(colapinto)
             .setDate(pastDates[3].toString())
             .duration(durations[6]).origin(destination[6]).destination(origin[6])
             .passengerAmmount(passengersAmmounts[6]).build()
+
 
         val tripDiego01 = TripBuilder().passenger(diego).driver(colapinto)
             .setDate(pastDates[4].toString())
@@ -369,14 +408,20 @@ class Bootstrap(
             .duration(durations[24]).origin(destination[24]).destination(origin[24])
             .passengerAmmount(passengersAmmounts[24]).build()
 
-        val allTrips: List<Trip> = listOf(
+        val allTrips: List<Trip> = tripRepo.saveAll(listOf(
             tripAdrian01, tripAdrian02, tripAdrian03, tripAdrian04, tripAdrian05,
             tripMatias01, tripMatias02, tripMatias03, tripMatias04, tripMatias05,
             tripDiego01, tripDiego02, tripDiego03, tripDiego04, tripDiego05,
             tripPedro01, tripPedro02, tripPedro03, tripPedro04, tripPedro05,
             tripValentin01, tripValentin02, tripValentin03, tripValentin04, tripValentin05
-        )
-        tripRepo.saveAll(allTrips)
+        )).toList()
+
+        colapinto.tripsId.addAll(allTrips.filter { it.driverMongoId == colapinto.id }.map { it.id!! })
+        lauda.tripsId.addAll(allTrips.filter { it.driverMongoId == lauda.id }.map { it.id!! })
+        toretto.tripsId.addAll(allTrips.filter { it.driverMongoId == toretto.id }.map { it.id!! })
+
+        mongoRepoDriver.saveAll(drivers)
+
     }
 
     private fun createTripScore(){
@@ -393,4 +438,5 @@ class Bootstrap(
         }
         tripRepo.saveAll(tripPassenger)
     }
+
 }

@@ -1,16 +1,18 @@
 package ar.edu.unsam.phm.uberto.builder
 
+import ar.edu.unsam.phm.uberto.model.MongoDriver
 import ar.edu.unsam.phm.uberto.model.Passenger
-import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.model.Trip
 import java.time.LocalDateTime
 
 
 class TripBuilder(val newTrip: Trip = Trip()) {
 
-    fun driver(driver: Driver): TripBuilder = apply {
-        newTrip.driver = driver
+    fun driver(driver: MongoDriver): TripBuilder = apply {
+        newTrip.driverMongo = driver
+        newTrip.driverMongoId = driver.id!!
     }
+
 
     fun passenger(client: Passenger): TripBuilder = apply {
         newTrip.client = client

@@ -31,7 +31,7 @@ class TokenJwtUtil {
     @Value("\${jwt.user.generator}")
     var userGeneration: String = ""
 
-    fun generate(user: UserAuthCredentials, userId: Long): String {
+    fun generate(user: UserAuthCredentials, userId: String): String {
         val algorithm = Algorithm.HMAC512(this.secretKey)
         val username = user.username
         return JWT.create()
@@ -75,6 +75,13 @@ class TokenJwtUtil {
         val jwtToken = authHeader.substring(7)
         val decodedJWT = validateToken(jwtToken)
         return decodedJWT.getClaim("userID").asLong()
+    }
+
+    fun getIdDriverFromTokenString(@NotNull request: HttpServletRequest): String {
+        val authHeader = request.getHeader(HttpHeaders.AUTHORIZATION)
+        val jwtToken = authHeader.substring(7)
+        val decodedJWT = validateToken(jwtToken)
+        return decodedJWT.getClaim("userID").toString()
     }
 
     fun shouldTokenRefresh(token: String): Boolean {
