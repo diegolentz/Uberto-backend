@@ -1,15 +1,10 @@
 package ar.edu.unsam.phm.uberto.services
 
-import ar.edu.unsam.phm.uberto.BusinessException
-import ar.edu.unsam.phm.uberto.FailSaveEntity
-import ar.edu.unsam.phm.uberto.dto.TripScoreDTO
+import ar.edu.unsam.phm.uberto.FailSaveException
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.Trip
 import ar.edu.unsam.phm.uberto.model.TripScore
-import ar.edu.unsam.phm.uberto.model.User
-import ar.edu.unsam.phm.uberto.repository.DriverRepository
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
-import ar.edu.unsam.phm.uberto.repository.TripScoreRepository
 import ar.edu.unsam.phm.uberto.repository.TripsRepository
 import jakarta.transaction.Transactional
 import org.springframework.http.HttpStatus
@@ -39,7 +34,7 @@ class TripScoreService(
         try {
             tripRepo.save(trip)
         } catch (e: Exception) {
-            throw FailSaveEntity("Error en la calificacion de un viaje")
+            throw FailSaveException("Error en la calificacion de un viaje")
         }
 
         return ResponseEntity
@@ -53,7 +48,7 @@ class TripScoreService(
         try {
             tripRepo.save(trip)
         } catch (e: Exception) {
-            throw FailSaveEntity("Error en la eliminacion de una calificacion")
+            throw FailSaveException("Error en la eliminacion de una calificacion")
         }
         return ResponseEntity
             .status(HttpStatus.OK)
