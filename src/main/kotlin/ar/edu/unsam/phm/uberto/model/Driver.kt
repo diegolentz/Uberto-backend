@@ -2,7 +2,11 @@ package ar.edu.unsam.phm.uberto.model
 
 import ar.edu.unsam.phm.uberto.DriverNotAvaliableException
 import ar.edu.unsam.phm.uberto.dto.DriverDTO
+import ar.edu.unsam.phm.uberto.dto.TripDriverDTO
+import ar.edu.unsam.phm.uberto.dto.toTripDriverDTO
 import exceptions.BusinessException
+import jakarta.persistence.PrePersist
+import jakarta.persistence.PreUpdate
 import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.Transient
 import org.springframework.data.mongodb.core.mapping.Document
@@ -30,7 +34,7 @@ abstract class Driver():User {
     @Transient
     override var trips: MutableList<Trip> = mutableListOf()
 
-    var tripsId: MutableSet<Long> = mutableSetOf()
+    var tripsDTO: MutableSet<TripDriverDTO> = mutableSetOf()
 
     override lateinit var img: String
 
@@ -41,6 +45,12 @@ abstract class Driver():User {
     lateinit var serial:String
 
     var basePrice:Double = 0.0
+
+    @PrePersist
+    @PreUpdate
+    fun toTripDTO() {
+        tripsDTO = trips.map { it.toTripDriverDTO() }.toMutableSet()
+    }
 
     override fun getScores(): List<TripScore> {
         return this.getScoredTrips().map{ it.score!! }
@@ -80,7 +90,7 @@ abstract class Driver():User {
 
     fun addTrip(trip:Trip) {
         this.trips.add(trip)
-        acceditTrip(trip.price())
+        acceditTrip(trip.price)
     }
 
     fun acceditTrip(price: Double){

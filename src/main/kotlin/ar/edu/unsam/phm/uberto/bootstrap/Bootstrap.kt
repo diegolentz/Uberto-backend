@@ -3,6 +3,7 @@ package ar.edu.unsam.phm.uberto.bootstrap
 import ar.edu.unsam.phm.uberto.builder.DriverBuilder
 import ar.edu.unsam.phm.uberto.builder.PassengerBuilder
 import ar.edu.unsam.phm.uberto.builder.TripBuilder
+import ar.edu.unsam.phm.uberto.dto.toTripDriverDTO
 import ar.edu.unsam.phm.uberto.factory.AuthFactory
 import ar.edu.unsam.phm.uberto.factory.TestFactory
 import ar.edu.unsam.phm.uberto.model.*
@@ -379,9 +380,9 @@ class Bootstrap(
             tripValentin01, tripValentin02, tripValentin03, tripValentin04, tripValentin05
         )).toList()
 
-        colapinto.tripsId.addAll(allTrips.filter { it.driverId == colapinto.id }.map { it.id!! })
-        lauda.tripsId.addAll(allTrips.filter { it.driverId == lauda.id }.map { it.id!! })
-        toretto.tripsId.addAll(allTrips.filter { it.driverId == toretto.id }.map { it.id!! })
+        colapinto.tripsDTO.addAll(allTrips.filter { it.driverId == colapinto.id }.map { it.toTripDriverDTO() })
+        lauda.tripsDTO.addAll(allTrips.filter { it.driverId == lauda.id }.map { it.toTripDriverDTO() })
+        toretto.tripsDTO.addAll(allTrips.filter { it.driverId == toretto.id }.map { it.toTripDriverDTO() })
 
         mongoRepoDriver.saveAll(drivers)
 

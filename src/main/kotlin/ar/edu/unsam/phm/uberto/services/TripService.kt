@@ -2,6 +2,7 @@ package ar.edu.unsam.phm.uberto.services
 
 import ar.edu.unsam.phm.uberto.FailSaveException
 import ar.edu.unsam.phm.uberto.dto.TripDTO
+import ar.edu.unsam.phm.uberto.dto.toTripDriverDTO
 import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.Trip
@@ -46,7 +47,7 @@ class TripService(
 
         try{
             tripRepo.save(newTrip)
-            driver.tripsId.add(newTrip.id!!)
+            driver.tripsDTO.add(newTrip.toTripDriverDTO())
             driverRepo.save(driver)
         }catch (e: DataAccessException){
             throw FailSaveException("Error en la creación del viaje")

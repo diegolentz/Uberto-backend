@@ -88,11 +88,11 @@ class Passenger : User {
     }
 
     private fun validateTrip(trip: Trip): Boolean {
-        return this.balance < trip.price()
+        return this.balance < trip.price
     }
 
     private fun addTrip(trip: Trip) {
-        this.payTrip(trip.price())
+        this.payTrip(trip.price)
         this.trips.add(trip)
     }
 

@@ -27,9 +27,7 @@ class TripDTO(
         origin = tripDTO.origin
         destination = tripDTO.destination
     }
-
 }
-
 
 fun Trip.toDTO() : TripDTO{
     val clientId = requireNotNull(client.id) { "Client ID is null" }
@@ -80,3 +78,81 @@ fun matchDriverFromTrip(drivers: List<Driver>, trips: List<Trip>): List<Trip>{
     }
     return trips
 }
+
+data class TripGenericDTO(
+    val id: Long,
+    val entityId: String,
+    val name: String,
+    var duration: Int,
+    val numberPassengers: Int,
+    val date: LocalDateTime,
+    val origin: String,
+    val destination: String,
+    val imgAvatar: String,
+    val price: Double,
+    val scored: Boolean
+){
+    fun toTrip(tripDTO: TripDTO): Trip = Trip().apply {
+        duration = tripDTO.duration
+        numberPassengers = tripDTO.numberPassengers
+        date = tripDTO.date
+        origin = tripDTO.origin
+        destination = tripDTO.destination
+    }
+}
+
+fun Trip.toPassengerGenericDTO() : TripGenericDTO {
+    val clientId = requireNotNull(client.id) { "Client ID is null" }
+    val id = requireNotNull(id) { "ID is null" }
+
+    return TripGenericDTO(
+        id = id,
+        entityId = clientId.toString(),
+        name = client.firstName + " " + client.lastName,
+        destination = destination,
+        duration = duration,
+        numberPassengers = numberPassengers,
+        date = date,
+        origin = origin,
+        imgAvatar = client.img,
+        scored = this.scored(),
+        price = price
+    )
+}
+
+//fun Driver.toDriverGenericDTO() : TripGenericDTO {
+//    val driverId = requireNotNull(driverId) { "Driver ID is null" }
+//    val id = requireNotNull(id) { "ID is null" }
+//
+//    return TripGenericDTO(
+//        id = id,
+//        entityId = driverId,
+//        name = driver.firstName + " " + driver.lastName,
+//        destination = destination,
+//        duration = duration,
+//        numberPassengers = numberPassengers,
+//        date = date,
+//        origin = origin,
+//        imgAvatar = driver.img,
+//        scored = this.scored(),
+//        price = price
+//    )
+//}
+
+data class TripDriverDTO(
+    val id: Long,
+    val duration: Int,
+    val numberPassengers: Int,
+    val date: LocalDateTime,
+    val origin: String,
+    val destination: String
+)
+
+fun Trip.toTripDriverDTO() = TripDriverDTO(
+    id = id!!,
+    duration = duration,
+    origin = origin,
+    destination = destination,
+    date = date,
+    numberPassengers = numberPassengers
+)

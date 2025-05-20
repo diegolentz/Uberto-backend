@@ -49,6 +49,10 @@ class Trip(
     @Column(name= "end_date")
     var finishedDateTime: LocalDateTime = LocalDateTime.now()
 
+    @Column(name = "price")
+    var price: Double = 0.0
+
+
     fun addScore(newScore: TripScore){
         if(!this.finished()) throw TripNotFinishedException()
         if(this.scored()) throw ScoredTripException()
@@ -70,14 +74,17 @@ class Trip(
         return userId == client.id
     }
 
-    fun price(): Double = this.driver.fee(duration, numberPassengers)
+
+    //fun price(): Double = this.driver.fee(duration, numberPassengers)
+
 
     fun pendingTrip()  : Boolean = date > LocalDateTime.now()
 
     @PrePersist
     @PreUpdate
-    fun endDate() {
+    fun calculatePrePersit() {
         finishedDateTime = finalizationDate()
+        price = this.driver.fee(duration, numberPassengers)
     }
 
     fun finalizationDate() : LocalDateTime = date.plus(duration.toLong(), ChronoUnit.MINUTES)
