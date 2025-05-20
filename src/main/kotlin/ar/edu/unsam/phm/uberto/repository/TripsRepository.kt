@@ -41,6 +41,13 @@ interface TripsRepository : CrudRepository<Trip, Long> {
         driverId: String
     ): List<Trip>
 
+    @Query("""
+    SELECT t FROM Trip t 
+    WHERE t.driverId = :driverId 
+    AND t.finishedDateTime < CURRENT_TIMESTAMP
+""")
+    fun findByDriverIdFinishedTrips(@Param("driverId") driverId: String): List<Trip>
+
 //    @Query("""
 //SELECT
 //    new ar.edu.unsam.phm.uberto.dto.DriverAvailableDto(

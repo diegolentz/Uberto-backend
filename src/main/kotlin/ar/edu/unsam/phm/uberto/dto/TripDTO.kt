@@ -147,19 +147,8 @@ data class TripDriver(
     val destination: String,
     val price: Double,
     val finishedDateTime: LocalDateTime
-){
-    fun tripPassengerGenericDTO(driverId: String) = TripGenericDTO(
-        id = id,
-        duration = duration,
-        numberPassengers = numberPassengers,
-        date = date,
-        origin = origin,
-        entityId = driverId,
-        destination = destination,
-        price = price,
-        imgAvatar =
-    )
-}
+){}
+
 
 fun Trip.toTripDriverDTO() = TripDriver(
     id = id!!,
@@ -170,4 +159,13 @@ fun Trip.toTripDriverDTO() = TripDriver(
     numberPassengers = numberPassengers,
     price = price,
     finishedDateTime = finishedDateTime
+)
+
+data class TripCreateDTO(
+    val driverId: String,
+    val duration: Int,
+    val numberPassengers: Int,
+    val date: LocalDateTime,
+    val origin: String,
+    val destination: String
 )

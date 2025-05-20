@@ -1,7 +1,7 @@
 package ar.edu.unsam.phm.uberto.services
 
 import ar.edu.unsam.phm.uberto.FailSaveException
-import ar.edu.unsam.phm.uberto.dto.TripDTO
+import ar.edu.unsam.phm.uberto.dto.TripCreateDTO
 import ar.edu.unsam.phm.uberto.dto.toTripDriverDTO
 import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.model.Passenger
@@ -26,7 +26,7 @@ class TripService(
     }
 
     @Transactional
-    fun createTrip(trip: TripDTO, client: Passenger, driver: Driver): ResponseEntity<String> {
+    fun createTrip(trip: TripCreateDTO, client: Passenger, driver: Driver): ResponseEntity<String> {
 
         val newTrip = Trip().apply {
             duration = trip.duration
@@ -39,7 +39,7 @@ class TripService(
             driverId = driver.id!!
         }
 
-        try{
+        try{ //TODO mandar a un metodo privado
             client.requestTrip(newTrip)
             driver.responseTrip(newTrip, trip.duration)
         }catch (e: Exception){
@@ -50,7 +50,7 @@ class TripService(
             tripRepo.save(newTrip)
             driver.tripsDTO.add(newTrip.toTripDriverDTO())
             driverRepo.save(driver)
-        }catch (e: DataAccessException){
+        }catch (e: DataAccessException){ //TODO atrapar las 2 excepciones porque son de 2 db distintas
             throw FailSaveException("Error en la creación del viaje")
         }
 
@@ -64,8 +64,8 @@ class TripService(
         return tripRepo.findByClient(passenger)
     }
 
-    fun getAllByDriver(driver: Driver): List<Trip> {
-        return tripRepo.findByDriverId(driver.id!!)
+    fun getAllByDriver(driverId: String): List<Trip> {
+        return tripRepo.findByDriverId(driverId)
     }
 
     fun getPendingTripPassenger(passenger: Passenger): List<Trip> {
@@ -76,8 +76,9 @@ class TripService(
         return getAllByPassenger(passenger).filter { it.finished() }
     }
 
-    fun getFinishedTripDriver(driverId: String): Driver {
-        return driverRepo.findByFinishedTrips(driverId, LocalDateTime.now())
+    fun getFinishedTripDriver(driverId: String): List<Trip> {
+        return tripRepo.findByDriverIdFinishedTrips(driverId)
+    //return driverRepo.findByFinishedTrips(driverId, LocalDateTime.now())
     }
 
     fun getTripsPendingFromDriver(
