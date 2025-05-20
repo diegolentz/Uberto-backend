@@ -33,22 +33,22 @@ class TripScoreController(
         return tripScore.map { it!!.scoreToDTO(idToken) }
     }
 
-    @GetMapping("/driver")
-    fun getScoreDriver(request: HttpServletRequest): List<TripScoreDTO>{
-        val idToken = jwtUtil.getIdDriverFromTokenString(request)
-        val driver = driverService.getByIdTrip(idToken)
-        val trips = tripService.getAllByDriver(driver)
-        val tripScore = tripScoreService.getFromDriver(trips)
-        return tripScore.map { it!!.scoreToDTO(null) }
-    }
+//    @GetMapping("/driver")
+//    fun getScoreDriver(request: HttpServletRequest): List<TripScoreDTO>{
+//        val idToken = jwtUtil.getIdDriverFromTokenString(request)
+//        val driver = driverService.getByIdTrip(idToken)
+//        val trips = tripService.getAllByDriver(driver.id)
+//        val tripScore = tripScoreService.getFromDriver(trips)
+//        return tripScore.map { it!!.scoreToDTO(null) }
+//    }
 
-    @GetMapping("/confirmation")
-    fun getScoreConfirmation( @RequestParam driverId: String): List<TripScoreDTO>{
-        val driver = driverService.getByIdTrip(driverId)
-        val trips = tripService.getAllByDriver(driver)
-        val tripScore = tripScoreService.getFromDriver(trips)
-        return tripScore.map { it!!.scoreToDTO(null) }
-    }
+//    @GetMapping("/confirmation")
+//    fun getScoreConfirmation( @RequestParam driverId: String): List<TripScoreDTO>{
+//        val driver = driverService.getByIdTrip(driverId)
+//        val trips = tripService.getAllByDriver(driver)
+//        val tripScore = tripScoreService.getFromDriver(trips)
+//        return tripScore.map { it!!.scoreToDTO(null) }
+//    }
 
     @PostMapping()
     fun create(@RequestBody tripScoreDTO: TripScoreDTO): ResponseEntity<String> {
