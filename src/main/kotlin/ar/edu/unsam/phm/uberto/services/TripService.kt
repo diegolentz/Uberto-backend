@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Service
 class TripService(
@@ -75,8 +76,8 @@ class TripService(
         return getAllByPassenger(passenger).filter { it.finished() }
     }
 
-    fun getFinishedTripDriver(diver: Driver): List<Trip> {
-        return getAllByDriver(diver).filter { it.finished() }
+    fun getFinishedTripDriver(driverId: String): Driver {
+        return driverRepo.findByFinishedTrips(driverId, LocalDateTime.now())
     }
 
     fun getTripsPendingFromDriver(

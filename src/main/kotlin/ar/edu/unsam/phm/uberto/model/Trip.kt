@@ -70,6 +70,7 @@ class Trip(
     }
 
     fun scored():Boolean = (this.score != null)
+
     fun canDeleteScore(userId: Long): Boolean {
         return userId == client.id
     }

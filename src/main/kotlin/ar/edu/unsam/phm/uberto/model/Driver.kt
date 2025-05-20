@@ -2,7 +2,7 @@ package ar.edu.unsam.phm.uberto.model
 
 import ar.edu.unsam.phm.uberto.DriverNotAvaliableException
 import ar.edu.unsam.phm.uberto.dto.DriverDTO
-import ar.edu.unsam.phm.uberto.dto.TripDriverDTO
+import ar.edu.unsam.phm.uberto.dto.TripDriver
 import ar.edu.unsam.phm.uberto.dto.toTripDriverDTO
 import exceptions.BusinessException
 import jakarta.persistence.PrePersist
@@ -34,7 +34,7 @@ abstract class Driver():User {
     @Transient
     override var trips: MutableList<Trip> = mutableListOf()
 
-    var tripsDTO: MutableSet<TripDriverDTO> = mutableSetOf()
+    var tripsDTO: MutableSet<TripDriver> = mutableSetOf()
 
     override lateinit var img: String
 
