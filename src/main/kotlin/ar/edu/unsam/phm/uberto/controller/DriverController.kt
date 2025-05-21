@@ -1,6 +1,7 @@
 package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.dto.*
+import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.TravelTimeMockService
@@ -36,23 +37,20 @@ class DriverController(
         @RequestParam origin: String,
         @RequestParam destination: String,
         @RequestParam numberpassengers: Int
-    ): DriverCardAndTimeDTO {
-        val time = timeTripsService.getTime()["time"]
-            ?: throw BusinessException("Failure in the time calculation system")
+    ): List<Driver> {
+        val time = timeTripsService.getTime()["time"] ?: throw BusinessException("Failure in the time calculation system")
 
         val availableDrivers = driverService.getDriversAvailable(date, time)
-        val availableDriverDTO = availableDrivers.map { driver ->
-            driver.driver.toAvailableDTO(
-                time = time,
-                numberPassenger = numberpassengers.coerceAtLeast(1),
-                scores = driver.averageScore ?: 0.0
-            )
-        }
 
-        return DriverCardAndTimeDTO(
-            time = time,
-            cardDrivers = availableDriverDTO
-        )
+//        val availableDriverDTO = availableDrivers.map { driver ->
+//            driver.driver.toAvailableDTO(
+//                time = time,
+//                numberPassenger = numberpassengers.coerceAtLeast(1),
+//                scores = driver.averageScore ?: 0.0
+//            )
+//        }
+
+        return availableDrivers
     }
 
     @PostMapping()

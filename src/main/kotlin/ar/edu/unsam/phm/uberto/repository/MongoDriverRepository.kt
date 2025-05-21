@@ -17,5 +17,5 @@ interface MongoDriverRepository: MongoRepository<Driver,String> {
     @Query(
         value = "{ 'tripsDTO': { '\$not': { '\$elemMatch': { 'date': { '\$lt': ?1 }, 'finishedDateTime': { '\$gt': ?0 } } } } }"
     )
-    fun getAvailable(date: LocalDateTime, endTime: LocalDateTime): List<DriverAvailableDto>
+    fun getAvailable(date: LocalDateTime, endTime: LocalDateTime): List<Driver>
 }

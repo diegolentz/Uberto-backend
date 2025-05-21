@@ -45,7 +45,7 @@ class DriverService(
         }
     }
 
-    fun getDriversAvailable(date: LocalDateTime, time: Int): List<DriverAvailableDto> {
+    fun getDriversAvailable(date: LocalDateTime, time: Int): List<Driver> {
         try {
             val endTime = date.plus(time.toLong(), ChronoUnit.MINUTES)
             return mongoDriverRepo.getAvailable(date,endTime)
