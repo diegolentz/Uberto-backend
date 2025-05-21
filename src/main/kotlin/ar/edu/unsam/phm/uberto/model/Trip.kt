@@ -37,10 +37,10 @@ class Trip(
     var client: Passenger = Passenger()
 
     @Transient
-    var driverMongo: MongoDriver = SimpleDriverMongo()
+    var driver: Driver = SimpleDriver()
 
     @Column(name = "driverMongoId")
-    lateinit var driverMongoId: String
+    lateinit var driverId: String
 
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL],  orphanRemoval = true)
     @JoinColumn(name = "tripscore_id", referencedColumnName = "id")
@@ -48,6 +48,10 @@ class Trip(
 
     @Column(name= "end_date")
     var finishedDateTime: LocalDateTime = LocalDateTime.now()
+
+    @Column(name = "price")
+    var price: Double = 0.0
+
 
     fun addScore(newScore: TripScore){
         if(!this.finished()) throw TripNotFinishedException()
@@ -66,18 +70,22 @@ class Trip(
     }
 
     fun scored():Boolean = (this.score != null)
+
     fun canDeleteScore(userId: Long): Boolean {
         return userId == client.id
     }
 
-    fun price(): Double = this.driverMongo.fee(duration, numberPassengers)
+
+    //fun price(): Double = this.driver.fee(duration, numberPassengers)
+
 
     fun pendingTrip()  : Boolean = date > LocalDateTime.now()
 
     @PrePersist
     @PreUpdate
-    fun endDate() {
+    fun calculatePrePersit() {
         finishedDateTime = finalizationDate()
+        price = this.driver.fee(duration, numberPassengers)
     }
 
     fun finalizationDate() : LocalDateTime = date.plus(duration.toLong(), ChronoUnit.MINUTES)

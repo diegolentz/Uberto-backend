@@ -17,12 +17,12 @@ interface TripsRepository : CrudRepository<Trip, Long> {
     fun findByClient(client: Passenger): List<Trip>
 
     @EntityGraph(attributePaths = ["client", "score"])
-    fun findByDriverMongoId(driverId: String): List<Trip>
+    fun findByDriverId(driverId: String): List<Trip>
 
     @Query(
         """
         SELECT t FROM Trip t 
-        WHERE ( t.driverMongoId = :driverId)
+        WHERE ( t.driverId = :driverId)
         AND ( t.origin = :origin)
         AND ( t.destination = :destination)
         AND ( t.numberPassengers = :numberPassengers)
@@ -40,6 +40,16 @@ interface TripsRepository : CrudRepository<Trip, Long> {
         name: String,
         driverId: String
     ): List<Trip>
+
+    @Query("""
+    SELECT t FROM Trip t 
+    WHERE t.driverId = :driverId 
+    AND t.finishedDateTime < LOCAL DATETIME 
+""")
+    @EntityGraph(attributePaths = ["client"])
+    fun findByDriverIdFinishedTrips(@Param("driverId") driverId: String): List<Trip>
+
+
 
 //    @Query("""
 //SELECT

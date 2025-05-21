@@ -28,10 +28,10 @@ class TestFactory(
         return  listPassenger
     }
 
-    fun createDriverPremium(amount : Int): List<MongoDriver>{
-        val listDriver: MutableList<MongoDriver> = mutableListOf()
+    fun createDriverPremium(amount : Int): List<Driver>{
+        val listDriver: MutableList<Driver> = mutableListOf()
         for(i in 0..amount){
-            val driver = PremiumDriverMongo().apply {
+            val driver = PremiumDriver().apply {
                 firstName = "Driver Premium ${i}"
                 lastName = "Test Premium ${i}"
                 img = ""
@@ -52,7 +52,7 @@ class TestFactory(
         for(i in 0..amount){
             val trip = Trip().apply {
                 client = listPassenger.get(i)
-                driverMongo = listDriver.get(i)
+                driver = listDriver.get(i)
                 date = LocalDateTime.now()
             }
             listTrip.add(trip)
@@ -68,7 +68,7 @@ class TestFactory(
         for(i in 0..amount){
             val trip = Trip().apply {
                 client = listPassenger.get(i)
-                driverMongo = listDriver.get(i)
+                driver = listDriver.get(i)
                 date = LocalDateTime.now().plusDays(1)
             }
             listTrip.add(trip)
@@ -77,10 +77,10 @@ class TestFactory(
     }
 
 
-    fun createTrip(passenger: Passenger, driver: MongoDriver): Trip{
+    fun createTrip(passenger: Passenger, driver: Driver): Trip{
         return Trip().apply {
             client = passenger
-            this.driverMongo = driver
+            this.driver = driver
             date = LocalDateTime.now()
         }
     }

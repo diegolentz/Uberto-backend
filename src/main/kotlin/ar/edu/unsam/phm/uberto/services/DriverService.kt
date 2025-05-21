@@ -2,10 +2,9 @@ package ar.edu.unsam.phm.uberto.services
 
 //import ar.edu.unsam.phm.uberto.repository.DriverAvgDTO
 import ar.edu.unsam.phm.uberto.dto.DriverDTO
-import ar.edu.unsam.phm.uberto.model.MongoDriver
+import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.repository.MongoDriverRepository
 import ar.edu.unsam.phm.uberto.repository.TripsRepository
-import exceptions.BusinessException
 import exceptions.NotFoundException
 import jakarta.transaction.Transactional
 import org.springframework.http.HttpStatus
@@ -19,12 +18,12 @@ class DriverService(
     private val mongoDriverRepo: MongoDriverRepository
 ) {
 
-    fun getDriverData(userID: String):MongoDriver{
+    fun getDriverData(userID: String):Driver{
         val driver = driverRepo.findById(userID).orElseThrow { NotFoundException("Driver with id $userID not found") }
         return driver
     }
 
-    fun getByIdTrip(id: String): MongoDriver =
+    fun getByIdTrip(id: String): Driver =
         mongoDriverRepo.findById(id)
             .orElseThrow { NotFoundException("Driver with id $id not found") }
 
@@ -52,10 +51,10 @@ class DriverService(
 //        }
 //    }
 
-    fun getByCredentialsId(id: String): MongoDriver =
+    fun getByCredentialsId(id: String): Driver =
         driverRepo.findByCredentialsId(id.toLong())//.orElseThrow{throw NotFoundException("Driver no encontrado")}
 
-    fun findAllByIds(ids: List<String>): List<MongoDriver> {
+    fun findAllByIds(ids: List<String>): List<Driver> {
         return driverRepo.findAllById(ids)
     }
 
