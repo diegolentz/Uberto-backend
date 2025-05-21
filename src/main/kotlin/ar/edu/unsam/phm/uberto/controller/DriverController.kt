@@ -37,10 +37,12 @@ class DriverController(
         @RequestParam origin: String,
         @RequestParam destination: String,
         @RequestParam numberpassengers: Int
-    ): List<Driver> {
+    ): Double {
         val time = timeTripsService.getTime()["time"] ?: throw BusinessException("Failure in the time calculation system")
 
         val availableDrivers = driverService.getDriversAvailable(date, time)
+        val driver0 = availableDrivers.firstOrNull()?.scoreAVG()
+
 
 //        val availableDriverDTO = availableDrivers.map { driver ->
 //            driver.driver.toAvailableDTO(
@@ -50,7 +52,7 @@ class DriverController(
 //            )
 //        }
 
-        return availableDrivers
+        return driver0!!
     }
 
     @PostMapping()
