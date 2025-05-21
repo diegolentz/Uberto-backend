@@ -68,17 +68,20 @@ class TripService(
         return tripRepo.findByDriverId(driverId)
     }
 
-    fun getPendingTripPassenger(passenger: Passenger): List<Trip> {
-        return getAllByPassenger(passenger).filter { it.pendingTrip() }
-    }
-
     fun getFinishedTripPassenger(passenger: Passenger): List<Trip> {
         return getAllByPassenger(passenger).filter { it.finished() }
     }
 
     fun getFinishedTripDriver(driverId: String): List<Trip> {
         return tripRepo.findByDriverIdFinishedTrips(driverId)
-    //return driverRepo.findByFinishedTrips(driverId, LocalDateTime.now())
+    }
+
+    fun getDriverFinishedTripByPassenger(passengerId: Long): List<Driver> {
+        return driverRepo.findByPassengerIdFinishedTripsDTO(passengerId, LocalDateTime.now())
+    }
+
+    fun getDriverPendingTripByPassenger(passengerId: Long): List<Driver> {
+        return driverRepo.findByPassengerIdPassengerTripsDTO(passengerId, LocalDateTime.now())
     }
 
     fun getTripsPendingFromDriver(
