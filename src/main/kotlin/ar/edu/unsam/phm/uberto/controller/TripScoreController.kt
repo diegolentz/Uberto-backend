@@ -37,7 +37,8 @@ class TripScoreController(
 //    fun getScoreDriver(request: HttpServletRequest): List<TripScoreDTO>{
 //        val idToken = jwtUtil.getIdDriverFromTokenString(request)
 //        val driver = driverService.getByIdTrip(idToken)
-//        val trips = tripService.getAllByDriver(driver.id)
+
+//        val trips = tripService.getAllByDriver(driver)
 //        val tripScore = tripScoreService.getFromDriver(trips)
 //        return tripScore.map { it!!.scoreToDTO(null) }
 //    }

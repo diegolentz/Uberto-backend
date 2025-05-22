@@ -44,9 +44,12 @@ interface TripsRepository : CrudRepository<Trip, Long> {
     @Query("""
     SELECT t FROM Trip t 
     WHERE t.driverId = :driverId 
-    AND t.finishedDateTime < CURRENT_TIMESTAMP
+    AND t.finishedDateTime < LOCAL DATETIME 
 """)
+    @EntityGraph(attributePaths = ["client"])
     fun findByDriverIdFinishedTrips(@Param("driverId") driverId: String): List<Trip>
+
+
 
 //    @Query("""
 //SELECT

@@ -4,54 +4,6 @@ import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.model.Trip
 import java.time.LocalDateTime
 
-//class TripDTO(
-//    val id: Long,
-//    var userId: Long,
-//    var driverId: String,
-//    var duration: Int,
-//    val numberPassengers: Int,
-//    val date: LocalDateTime,
-//    val origin: String,
-//    val destination: String,
-//    val price: Double,
-//    val driverName: String?,
-//    val passengerName: String?,
-//    val imgPassenger: String?,
-//    val imgDriver: String?,
-//    val scored: Boolean?
-//) {
-//    fun toTrip(tripDTO: TripDTO): Trip = Trip().apply {
-//        duration = tripDTO.duration
-//        numberPassengers = tripDTO.numberPassengers
-//        date = tripDTO.date
-//        origin = tripDTO.origin
-//        destination = tripDTO.destination
-//    }
-//}
-//
-//fun Trip.toDTO() : TripDTO{
-//    val clientId = requireNotNull(client.id) { "Client ID is null" }
-//    val driverId = requireNotNull(driverId) { "Driver ID is null" }
-//    val id = requireNotNull(id) { "ID is null" }
-//
-//    return TripDTO(
-//    userId = clientId,
-//    driverId = driverId,
-//    driverName = driver.firstName + " " + driver.lastName,
-//    passengerName = client.firstName + " " + client.lastName,
-//    duration = duration,
-//    numberPassengers = numberPassengers,
-//    date = date,
-//    origin = origin,
-//    destination = destination,
-//    price = driver.fee(duration, numberPassengers),
-//    id = id,
-//    imgPassenger = client.img,
-//    imgDriver = driver.img,
-//    scored = this.scored()
-//)
-//}
-
 fun Trip.scoreToDTO(userId: Long?) = TripScoreDTO(
     tripId = id!!,
     message = score!!.message,
@@ -72,12 +24,6 @@ data class FormTripDTO(
     val userId: Long
 ){}
 
-fun matchDriverFromTrip(drivers: List<Driver>, trips: List<Trip>): List<Trip>{
-    trips.forEach{ trip ->
-        trip.driver  = drivers.find { driver -> driver.id == trip.driverId }!!
-    }
-    return trips
-}
 
 data class TripGenericDTO(
     val id: Long,
@@ -149,6 +95,7 @@ data class TripDriver(
     val finishedDateTime: LocalDateTime,
     val rating: Int = 0,
     val passengerId : Long = 0,
+
 ){}
 
 
@@ -163,6 +110,7 @@ fun Trip.toTripDriverDTO() = TripDriver(
     finishedDateTime = finishedDateTime,
     rating = this.score?.scorePoints ?: 0,
     passengerId = client.id!!,
+
 )
 
 data class TripCreateDTO(

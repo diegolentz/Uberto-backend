@@ -7,12 +7,12 @@ import org.springframework.data.mongodb.repository.Query
 import java.time.LocalDateTime
 
 interface MongoDriverRepository: MongoRepository<Driver,String> {
+
+
     fun findByCredentialsId(id: Long) : Driver
 
-    @Query(value = "{ '_id': ?0, 'tripsDTO': { '\$elemMatch': { 'finishedDateTime': { '\$lt': ?1 } } } }",
-        fields = "{ 'firstName': 1, 'lastName': 1, 'image': 1 }")
-    fun findByFinishedTrips(driverId: String, finisherdDate: LocalDateTime): Driver
-
+    @Query("{ 'tripsDTO': { \$elemMatch: { 'numberPassengers': 4, 'finishedDateTime': { \$lt: ?1 } } } }")
+    fun findByPassengerIdFinishedTripsDTO(passengerId: Long, finisherdDate: LocalDateTime): List<Driver>
 
     @Query(
         value = "{ 'tripsDTO': { '\$not': { '\$elemMatch': { 'date': { '\$lt': ?1 }, 'finishedDateTime': { '\$gt': ?0 } } } } }"
