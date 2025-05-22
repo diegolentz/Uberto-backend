@@ -37,22 +37,16 @@ class DriverController(
         @RequestParam origin: String,
         @RequestParam destination: String,
         @RequestParam numberpassengers: Int
-    ): Double {
-        val time = timeTripsService.getTime()["time"] ?: throw BusinessException("Failure in the time calculation system")
-
-        val availableDrivers = driverService.getDriversAvailable(date, time)
-        val driver0 = availableDrivers.firstOrNull()?.scoreAVG()
-
-
-//        val availableDriverDTO = availableDrivers.map { driver ->
-//            driver.driver.toAvailableDTO(
-//                time = time,
-//                numberPassenger = numberpassengers.coerceAtLeast(1),
-//                scores = driver.averageScore ?: 0.0
-//            )
-//        }
-
-        return driver0!!
+    ): DriverCardAndTimeDTO {
+        validateParameters(date, origin, destination, numberpassengers)
+    
+        val time = timeTripsService.getTime()["time"] 
+            ?: throw BusinessException("Failure in the time calculation system")
+        val drivers = driverService.getAvailableDrivers(date, time)
+        val availableDriverDTO = drivers.map {
+                it.driver.toAvailableDTO(time, numberpassengers, it.averageScore)
+            }
+            return  DriverCardAndTimeDTO(time = time, cardDrivers = availableDriverDTO)
     }
 
     @PostMapping()
@@ -60,4 +54,11 @@ class DriverController(
         val idToken = jwtUtil.getIdDriverFromTokenString(request)
         return driverService.updateProfile(driverDTO, idToken)
     }
+}
+
+private fun validateParameters(date: LocalDateTime, origin: String, destination: String, numberpassengers: Int) {
+    require(numberpassengers > 0) { "Number of passengers must be positive" }
+    require(origin.isNotBlank()) { "Origin cannot be empty" }
+    require(destination.isNotBlank()) { "Destination cannot be empty" }
+    require(!date.isBefore(LocalDateTime.now())) { "Date cannot be in the past" }
 }

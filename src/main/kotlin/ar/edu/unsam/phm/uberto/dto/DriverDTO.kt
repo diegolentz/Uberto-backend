@@ -1,8 +1,9 @@
 package ar.edu.unsam.phm.uberto.dto
 
+import ar.edu.unsam.phm.uberto.model.BikeDriver
 import ar.edu.unsam.phm.uberto.model.Driver
-
-//import ar.edu.unsam.phm.uberto.repository.DriverAvgDTO
+import ar.edu.unsam.phm.uberto.model.PremiumDriver
+import ar.edu.unsam.phm.uberto.model.SimpleDriver
 
 data class DriverDTO(
     val id: String,
@@ -17,7 +18,6 @@ data class DriverDTO(
 
 fun Driver.toDTO(): DriverDTO {
 //    val credId = requireNotNull(credentials?.id) { "UserAuthCredentials ID is null" }
-
     return DriverDTO(
         id = this.id.toString(),
         serial = serial,
@@ -28,7 +28,6 @@ fun Driver.toDTO(): DriverDTO {
         price = basePrice
     )
 }
-
 
 data class DriverCardDTO(
     val id: String,
@@ -41,7 +40,6 @@ data class DriverCardDTO(
     val rating: Double,
     val type: String
 )
-
 
 fun Driver.toCardDTO(time: Int, numberPassenger: Int): DriverCardDTO {
     val driverId = requireNotNull(id) { "Driver entity ID is null" }
@@ -81,6 +79,49 @@ data class DriverAvailableDto(
     val driver: Driver,
     val averageScore: Double
 )
+data class Driverwithscorage(
+    val _id: String?,
+    val credentialsId: Long?,
+    val firstName: String,
+    val lastName: String,
+    val balance: Double,
+    val tripsDTO: List<TripDriver>,
+    val img: String,
+    val model: Int,
+    val brand: String,
+    val serial: String,
+    val basePrice: Double,
+    val averageScore: Double,
+    val _class: String
+)
+
+fun Driverwithscorage.toDriverEntity(): Driver {
+    val driver = when (_class) {
+        "ar.edu.unsam.phm.uberto.model.PremiumDriver" -> PremiumDriver()
+        "ar.edu.unsam.phm.uberto.model.SimpleDriver" -> SimpleDriver()
+        "ar.edu.unsam.phm.uberto.model.BikeDriver" -> BikeDriver()
+        else -> throw IllegalArgumentException("Tipo de driver no soportado: $_class")
+    }
+    driver.id = this._id
+    driver.credentialsId = this.credentialsId
+    driver.firstName = this.firstName
+    driver.lastName = this.lastName
+    driver.balance = this.balance
+    driver.tripsDTO = this.tripsDTO.toMutableList()
+    driver.img = this.img
+    driver.model = this.model
+    driver.brand = this.brand
+    driver.serial = this.serial
+    driver.basePrice = this.basePrice
+    return driver
+}
+
+fun Driverwithscorage.toAvailableDto() = DriverAvailableDto(
+    driver = this.toDriverEntity(),
+    averageScore = this.averageScore
+)
+
+
 
 
 data class DriverCardAndTimeDTO(
