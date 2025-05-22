@@ -22,25 +22,7 @@ interface MongoDriverRepository: MongoRepository<Driver,String> {
     fun findByPassengerIdFinishedTripsDTO(passengerId: Long, finisherdDate: LocalDateTime): List<Driver>
 
     @Aggregation(pipeline = [
-        "{ '\$match': { 'tripsDTO': { '\$not': { '\$elemMatch': { 'date': { '\$lt': ?1 }, 'finishedDateTime': { '\$gt': ?0 } } } } } }",
-        "{ '\$unwind': { 'path': '\$tripsDTO', 'preserveNullAndEmptyArrays': true } }",
-        "{ '\$match': { 'tripsDTO': { '\$ne': null } } }",
-        "{ '\$group': { " +
-                "'_id': '\$_id', " +
-                "'firstName': { '\$first': '\$firstName' }, " +
-                "'lastName': { '\$first': '\$lastName' }, " +
-                "'balance': { '\$first': '\$balance' }, " +
-                "'credentialsId': { '\$first': '\$credentialsId' }, " +
-                "'img': { '\$first': '\$img' }, " +
-                "'model': { '\$first': '\$model' }, " +
-                "'brand': { '\$first': '\$brand' }, " +
-                "'serial': { '\$first': '\$serial' }, " +
-                "'basePrice': { '\$first': '\$basePrice' }, " +
-                "'tripsDTO': { '\$push': '\$tripsDTO' }, " +
-                "'averageScore': { '\$avg': { '\$cond': [ { '\$gt': [ '\$tripsDTO.rating', 0 ] }, '\$tripsDTO.rating', null ] } }, " +
-                "'totalTrips': { '\$sum': 1 }, " +
-                "'ratedTrips': { '\$sum': { '\$cond': [ { '\$gt': [ '\$tripsDTO.rating', 0 ] }, 1, 0 ] } } " +
-                "} }",
+        // ...tus stages previos...
         "{ '\$project': { " +
                 "'_id': 1, " +
                 "'firstName': 1, " +
@@ -53,10 +35,9 @@ interface MongoDriverRepository: MongoRepository<Driver,String> {
                 "'serial': 1, " +
                 "'basePrice': 1, " +
                 "'tripsDTO': 1, " +
-                "'averageScore': { '\$ifNull': [ '\$averageScore', 0 ] } " +
+                "'averageScore': { '\$ifNull': [ '\$averageScore', 0 ] }, " +
+                "'_class': 1 " +         // <--- AGREGAR ESTO!
                 "} }"
     ])
     fun getAvailable(start: LocalDateTime, end: LocalDateTime): List<Driverwithscorage>
-
-
 }
