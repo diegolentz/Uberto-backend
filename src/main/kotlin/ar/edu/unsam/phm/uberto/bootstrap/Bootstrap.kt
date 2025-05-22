@@ -217,7 +217,7 @@ class Bootstrap(
         val toretto = drivers.first { it.lastName == "Toretto" }
         val colapinto = drivers.first { it.lastName == "Colapinto" }
         val lauda = drivers.first { it.lastName == "Lauda" }
-        val chano = drivers.first{it.lastName == "Chano"}
+        val chano = drivers.first{it.lastName == "Charpentier"}
 
         val adrian = passengers.first { it.firstName == "Adrian" }
         val matias = passengers.first { it.firstName == "Matias" }
