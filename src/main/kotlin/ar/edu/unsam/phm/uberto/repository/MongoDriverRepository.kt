@@ -22,7 +22,18 @@ interface MongoDriverRepository: MongoRepository<Driver,String> {
     fun findByPassengerIdFinishedTripsDTO(passengerId: Long, finisherdDate: LocalDateTime): List<Driver>
 
     @Aggregation(pipeline = [
-        // ...tus stages previos...
+        "{ '\$match': { 'tripsDTO': { '\$not': { '\$elemMatch': { 'date': { '\$lt': ?1 }, 'finishedDateTime': { '\$gt': ?0 } } } } } }",
+        "{ '\$addFields': { " +
+                "'averageScore': { " +
+                "'\$avg': { " +
+                "'\$map': { " +
+                "'input': { '\$filter': { 'input': '\$tripsDTO', 'as': 't', 'cond': { '\$gt': ['\$\$t.rating', 0] } } }, " +
+                "'as': 't', " +
+                "'in': '\$\$t.rating' " +
+                "} " +
+                "} " +
+                "} " +
+                "} }",
         "{ '\$project': { " +
                 "'_id': 1, " +
                 "'firstName': 1, " +
@@ -35,9 +46,10 @@ interface MongoDriverRepository: MongoRepository<Driver,String> {
                 "'serial': 1, " +
                 "'basePrice': 1, " +
                 "'tripsDTO': 1, " +
-                "'averageScore': { '\$ifNull': [ '\$averageScore', 0 ] }, " +
-                "'_class': 1 " +         // <--- AGREGAR ESTO!
+                "'averageScore': { '\$ifNull': [ '\$averageScore', 0 ] } ," +
+                "'_class': 1 " +
                 "} }"
     ])
     fun getAvailable(start: LocalDateTime, end: LocalDateTime): List<Driverwithscorage>
+
 }

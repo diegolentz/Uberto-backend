@@ -91,7 +91,7 @@ data class Driverwithscorage(
     val serial: String,
     val basePrice: Double,
     val averageScore: Double,
-    val _class: String   // <--- AGREGAR ESTO!
+    val _class: String
 )
 
 fun Driverwithscorage.toDriverEntity(): Driver {
