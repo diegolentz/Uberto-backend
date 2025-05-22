@@ -77,8 +77,22 @@ fun Driver.toAvailableDTO(time: Int, numberPassenger: Int, scores: Double): Driv
 
 
 data class DriverAvailableDto(
-    val _id: String,
     val driver: Driver,
+    val averageScore: Double
+)
+
+data class Driverwithscorage(
+    val _id: String?,
+    val credentialsId: Long?,
+    val firstName: String,
+    val lastName: String,
+    val balance: Double,
+    val tripsDTO: List<TripDriver>, // <-- ¡AGREGALO!
+    val img: String,
+    val model: Int,
+    val brand: String,
+    val serial: String,
+    val basePrice: Double,
     val averageScore: Double
 )
 

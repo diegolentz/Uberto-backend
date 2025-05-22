@@ -37,21 +37,21 @@ class DriverController(
         @RequestParam origin: String,
         @RequestParam destination: String,
         @RequestParam numberpassengers: Int
-    ): DriverCardAndTimeDTO {
+    ): List<Driverwithscorage> {
         validateParameters(date, origin, destination, numberpassengers)
     
         val time = timeTripsService.getTime()["time"] 
             ?: throw BusinessException("Failure in the time calculation system")
         
-        return try {
-            val availableDrivers = driverService.getAvailableDrivers(date, time)
-            val availableDriverDTO = availableDrivers.map {
-                it.driver.toAvailableDTO(time, numberpassengers, it.averageScore)
-            }
-            DriverCardAndTimeDTO(time = time, cardDrivers = availableDriverDTO)
-        } catch (e: Exception) {
-            throw BusinessException("Error retrieving available drivers: ${e.message}")
-        }
+//        return try {
+            return  driverService.getAvailableDrivers(date, time)
+//            val availableDriverDTO = availableDrivers.map {
+//                it.driver.toAvailableDTO(time, numberpassengers, it.averageScore)
+//            }
+//            DriverCardAndTimeDTO(time = time, cardDrivers = availableDriverDTO)
+//        } catch (e: Exception) {
+//            throw BusinessException("Error retrieving available drivers: ${e.message}")
+
     }
 
     @PostMapping()

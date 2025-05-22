@@ -3,6 +3,7 @@ package ar.edu.unsam.phm.uberto.services
 //import ar.edu.unsam.phm.uberto.repository.DriverAvgDTO
 import ar.edu.unsam.phm.uberto.dto.DriverAvailableDto
 import ar.edu.unsam.phm.uberto.dto.DriverDTO
+import ar.edu.unsam.phm.uberto.dto.Driverwithscorage
 import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.repository.MongoDriverRepository
 import ar.edu.unsam.phm.uberto.repository.TripsRepository
@@ -53,7 +54,7 @@ class DriverService(
     }
 
     // En service:
-    fun getAvailableDrivers(start: LocalDateTime, end: Int): List<DriverAvailableDto> {
+    fun getAvailableDrivers(start: LocalDateTime, end: Int): List<Driverwithscorage> {
       var endDate = start.plusHours(end.toLong())
         return mongoDriverRepo.getAvailable(start, endDate)
     }

@@ -1,6 +1,7 @@
 package ar.edu.unsam.phm.uberto.repository
 
 import ar.edu.unsam.phm.uberto.dto.DriverAvailableDto
+import ar.edu.unsam.phm.uberto.dto.Driverwithscorage
 import ar.edu.unsam.phm.uberto.model.Driver
 import org.springframework.data.mongodb.repository.Aggregation
 import org.springframework.data.mongodb.repository.MongoRepository
@@ -26,22 +27,36 @@ interface MongoDriverRepository: MongoRepository<Driver,String> {
         "{ '\$match': { 'tripsDTO': { '\$ne': null } } }",
         "{ '\$group': { " +
                 "'_id': '\$_id', " +
-                "'driver': { '\$first': '\$\$ROOT' }, " +
-                "'averageScore': { " +
-                "'\$avg': { " +
-                "'\$cond': [ { '\$gt': [ '\$tripsDTO.rating', 0 ] }, '\$tripsDTO.rating', null ] " +
-                "} " +
-                "}, " +
+                "'firstName': { '\$first': '\$firstName' }, " +
+                "'lastName': { '\$first': '\$lastName' }, " +
+                "'balance': { '\$first': '\$balance' }, " +
+                "'credentialsId': { '\$first': '\$credentialsId' }, " +
+                "'img': { '\$first': '\$img' }, " +
+                "'model': { '\$first': '\$model' }, " +
+                "'brand': { '\$first': '\$brand' }, " +
+                "'serial': { '\$first': '\$serial' }, " +
+                "'basePrice': { '\$first': '\$basePrice' }, " +
+                "'tripsDTO': { '\$push': '\$tripsDTO' }, " +
+                "'averageScore': { '\$avg': { '\$cond': [ { '\$gt': [ '\$tripsDTO.rating', 0 ] }, '\$tripsDTO.rating', null ] } }, " +
                 "'totalTrips': { '\$sum': 1 }, " +
                 "'ratedTrips': { '\$sum': { '\$cond': [ { '\$gt': [ '\$tripsDTO.rating', 0 ] }, 1, 0 ] } } " +
                 "} }",
         "{ '\$project': { " +
                 "'_id': 1, " +
-                "'driver': 1, " +  // devuelve el driver completo
+                "'firstName': 1, " +
+                "'lastName': 1, " +
+                "'balance': 1, " +
+                "'credentialsId': 1, " +
+                "'img': 1, " +
+                "'model': 1, " +
+                "'brand': 1, " +
+                "'serial': 1, " +
+                "'basePrice': 1, " +
+                "'tripsDTO': 1, " +
                 "'averageScore': { '\$ifNull': [ '\$averageScore', 0 ] } " +
                 "} }"
     ])
-    fun getAvailable(start: LocalDateTime, end: LocalDateTime): List<DriverAvailableDto>
+    fun getAvailable(start: LocalDateTime, end: LocalDateTime): List<Driverwithscorage>
 
 
 }
