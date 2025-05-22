@@ -44,24 +44,22 @@ class TripsController(
         return trips.map { it.toPassengerGenericDTO() }
     }
 
-
-    @GetMapping("/profile/passenger")
+    @GetMapping("/profile/passenger") //TODO ok
     fun getProfilePassenger(request: HttpServletRequest): PendingAndFinishedTripsDTO {
         val idToken = jwtUtil.getIdFromTokenString(request)
-        val driverWithfinishedTrips = tripService.getDriverFinishedTripByPassenger(idToken)
-        val driverWithpendingTrips = tripService.getDriverPendingTripByPassenger(idToken)
-        return PendingAndFinishedTripsDTO(driverWithfinishedTrips.map {
-            it.tripsDTO.map { trip -> it.toDriverGenericDTO(trip) } }.flatten(),
-            driverWithpendingTrips.map {it.tripsDTO.map {
-                trip -> it.toDriverGenericDTO(trip) } }.flatten())
+        val driverWithFinishedTrips = tripService.getDriverFinishedTripByPassenger(idToken)
+        val  driverWithPendingTrips = tripService.getDriverPendingTripByPassenger(idToken)
+        return PendingAndFinishedTripsDTO(
+            listDriverToListDriverGenericDTO(driverWithPendingTrips),
+            listDriverToListDriverGenericDTO(driverWithFinishedTrips))
     }
 
-    @GetMapping("/profile/driver") //TODO machomenos machomenos, probar query
+    @GetMapping("/profile/driver") //TODO
     fun getProfileDriver(request: HttpServletRequest): PendingAndFinishedTripsDTO {
         val idToken = jwtUtil.getIdDriverFromTokenString(request)
         val finishedTrips = tripService.getFinishedTripDriver(idToken)
         val pendingTrips = listOf<TripGenericDTO>()
-        return PendingAndFinishedTripsDTO(finishedTrips.map { it.toPassengerGenericDTO() }, pendingTrips)
+        return PendingAndFinishedTripsDTO( pendingTrips, finishedTrips.map { it.toPassengerGenericDTO() })
     }
 
 }
