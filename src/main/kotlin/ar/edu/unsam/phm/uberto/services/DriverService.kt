@@ -9,17 +9,24 @@ import ar.edu.unsam.phm.uberto.repository.TripsRepository
 import exceptions.BusinessException
 import exceptions.NotFoundException
 import jakarta.transaction.Transactional
+import org.bson.Document
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.temporal.ChronoUnit
+import java.util.Date
 
 @Service
 class DriverService(
     private val mongoDriverRepo: MongoDriverRepository,
     private val tripsRepository: TripsRepository
 ) {
+    @Autowired
+    lateinit var mongoTemplate: MongoTemplate
 
     fun getDriverData(userID: String):Driver{
         val driver = mongoDriverRepo.findById(userID).orElseThrow { NotFoundException("Driver with id $userID not found") }
@@ -45,14 +52,14 @@ class DriverService(
         }
     }
 
-    fun getDriversAvailable(date: LocalDateTime, time: Int): List<Driver> {
-        try {
-            val endTime = date.plus(time.toLong(), ChronoUnit.MINUTES)
-            return mongoDriverRepo.getAvailable(date,endTime)
-        } catch ( e : Exception) {
-            throw BusinessException(e.message ?: "Error in the driver search")
-        }
+    // En service:
+    fun getAvailableDrivers(start: LocalDateTime, end: Int): List<DriverAvailableDto> {
+      var endDate = start.plusHours(end.toLong())
+        return mongoDriverRepo.getAvailable(start, endDate)
     }
+
+
+
 
     fun getByCredentialsId(id: String): Driver =
         mongoDriverRepo.findByCredentialsId(id.toLong())//.orElseThrow{throw NotFoundException("Driver no encontrado")}

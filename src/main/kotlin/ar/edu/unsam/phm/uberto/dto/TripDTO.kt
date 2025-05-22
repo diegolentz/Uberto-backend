@@ -85,18 +85,18 @@ fun Driver.toDriverGenericDTO(tripDriver: TripDriver) : TripGenericDTO {
 }
 
 data class TripDriver(
-    val id: Long,
-    val duration: Int,
-    val numberPassengers: Int,
-    val date: LocalDateTime,
-    val origin: String,
-    val destination: String,
-    val price: Double,
-    val finishedDateTime: LocalDateTime,
-    val rating: Int = 0,
-    val passengerId : Long = 0,
-
-){}
+    var id: Long = 0,
+    var duration: Int = 0,
+    var numberPassengers: Int = 0,
+    var date: LocalDateTime = LocalDateTime.now(),
+    var origin: String = "",
+    var destination: String = "",
+    var price: Double = 0.0,
+    var finishedDateTime: LocalDateTime = LocalDateTime.now(),
+    var rating: Int = 0,
+    var passengerId : Long = 0,
+)
+{}
 
 
 fun Trip.toTripDriverDTO() = TripDriver(

@@ -34,7 +34,8 @@ abstract class Driver():User {
     @Transient
     override var trips: MutableList<Trip> = mutableListOf()
 
-    var tripsDTO: MutableSet<TripDriver> = mutableSetOf()
+    var tripsDTO: MutableList<TripDriver> = mutableListOf()
+
 
     override lateinit var img: String
 
@@ -49,7 +50,7 @@ abstract class Driver():User {
     @PrePersist
     @PreUpdate
     fun toTripDTO() {
-        tripsDTO = trips.map { it.toTripDriverDTO() }.toMutableSet()
+        tripsDTO = trips.map { it.toTripDriverDTO() }.toMutableList()
     }
 
     override fun getScores(): List<TripScore> {
