@@ -43,7 +43,7 @@ class Bootstrap(
         createPassengers()
         createDrivers()
         createTrips()
-        createTripScore()
+//        createTripScore()
     }
 
     private fun createAccounts() {
@@ -372,35 +372,28 @@ class Bootstrap(
             .duration(durations[24]).origin(destination[24]).destination(origin[24])
             .passengerAmmount(passengersAmmounts[24]).build()
 
-        val allTrips: List<Trip> = tripRepo.saveAll(listOf(
+        val allTrips: MutableList<Trip> = tripRepo.saveAll(listOf(
             tripAdrian01, tripAdrian02, tripAdrian03, tripAdrian04, tripAdrian05,
             tripMatias01, tripMatias02, tripMatias03, tripMatias04, tripMatias05,
             tripDiego01, tripDiego02, tripDiego03, tripDiego04, tripDiego05,
             tripPedro01, tripPedro02, tripPedro03, tripPedro04, tripPedro05,
             tripValentin01, tripValentin02, tripValentin03, tripValentin04, tripValentin05
-        )).toList()
+        )).toMutableList()
 
+        createTripScore(allTrips)
         colapinto.tripsDTO.addAll(allTrips.filter { it.driverId == colapinto.id }.map { it.toTripDriverDTO() })
         lauda.tripsDTO.addAll(allTrips.filter { it.driverId == lauda.id }.map { it.toTripDriverDTO() })
         toretto.tripsDTO.addAll(allTrips.filter { it.driverId == toretto.id }.map { it.toTripDriverDTO() })
+
 
         mongoRepoDriver.saveAll(drivers)
 
     }
 
-    private fun createTripScore(){
-        val tripPassenger : MutableList<Trip> = mutableListOf()
-        val passenger = passengerRepo.findAll()
-        passenger.forEach{
-            val tripFinished = tripService.getFinishedTripPassenger(it)
-            tripPassenger.add(tripFinished[0]) // me piden no valorar todos, solo 1
-        }
-        if(!tripPassenger.isEmpty()){
-            tripPassenger.forEach{
-                factory.createTripScore(it)
-            }
-        }
-        tripRepo.saveAll(tripPassenger)
+    private fun createTripScore(listaTrip : MutableList<Trip>) : List<Trip> {
+        listaTrip.filter { it ->  it.finished() }.forEach { factory.createTripScore(it) }
+        return tripRepo.saveAll(listaTrip).toList()
+
     }
 
 }

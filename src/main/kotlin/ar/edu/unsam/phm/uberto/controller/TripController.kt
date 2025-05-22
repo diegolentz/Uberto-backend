@@ -44,6 +44,7 @@ class TripsController(
         return trips.map { it.toPassengerGenericDTO() }
     }
 
+
     @GetMapping("/profile/passenger")
     fun getProfilePassenger(request: HttpServletRequest): PendingAndFinishedTripsDTO {
         val idToken = jwtUtil.getIdFromTokenString(request)
@@ -62,4 +63,5 @@ class TripsController(
         val pendingTrips = listOf<TripGenericDTO>()
         return PendingAndFinishedTripsDTO(finishedTrips.map { it.toPassengerGenericDTO() }, pendingTrips)
     }
+
 }

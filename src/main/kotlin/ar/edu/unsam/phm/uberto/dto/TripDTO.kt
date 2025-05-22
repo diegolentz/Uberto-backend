@@ -93,7 +93,9 @@ data class TripDriver(
     val destination: String,
     val price: Double,
     val finishedDateTime: LocalDateTime,
-    val passengerId: Long
+    val rating: Int = 0,
+    val passengerId : Long = 0,
+
 ){}
 
 
@@ -106,7 +108,9 @@ fun Trip.toTripDriverDTO() = TripDriver(
     numberPassengers = numberPassengers,
     price = price,
     finishedDateTime = finishedDateTime,
-    passengerId = client.id!!
+    rating = this.score?.scorePoints ?: 0,
+    passengerId = client.id!!,
+
 )
 
 data class TripCreateDTO(
