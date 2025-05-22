@@ -49,10 +49,9 @@ class TripsController(
         val idToken = jwtUtil.getIdFromTokenString(request)
         val driverWithFinishedTrips = tripService.getDriverFinishedTripByPassenger(idToken)
         val  driverWithPendingTrips = tripService.getDriverPendingTripByPassenger(idToken)
-        return PendingAndFinishedTripsDTO(driverWithPendingTrips.map {
-            it.tripsDTO.map { trip -> it.toDriverGenericDTO(trip) } }.flatten(),
-            driverWithFinishedTrips.map {it.tripsDTO.map {
-                trip -> it.toDriverGenericDTO(trip) } }.flatten())
+        return PendingAndFinishedTripsDTO(
+            listDriverToListDriverGenericDTO(driverWithPendingTrips),
+            listDriverToListDriverGenericDTO(driverWithFinishedTrips))
     }
 
     @GetMapping("/profile/driver") //TODO
