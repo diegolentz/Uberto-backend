@@ -58,6 +58,7 @@ class DriverService(
       var endDate = start.plusHours(end.toLong())
         var driversFromRepository = mongoDriverRepo.getAvailable(start, endDate)
         return driversFromRepository.map {it.toAvailableDto()
+
         }
     }
 
@@ -65,7 +66,7 @@ class DriverService(
 
 
     fun getByCredentialsId(id: String): Driver =
-        mongoDriverRepo.findByCredentialsId(id.toLong())//.orElseThrow{throw NotFoundException("Driver no encontrado")}
+        mongoDriverRepo.findByCredentialsId(id.toLong())
 
     fun findAllByIds(ids: List<String>): List<Driver> {
         return mongoDriverRepo.findAllById(ids)

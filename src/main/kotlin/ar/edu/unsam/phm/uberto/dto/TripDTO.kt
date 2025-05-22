@@ -84,6 +84,11 @@ fun Driver.toDriverGenericDTO(tripDriver: TripDriver) : TripGenericDTO {
     )
 }
 
+fun listDriverToListDriverGenericDTO(listDriver: List<Driver>) :List<TripGenericDTO>{
+    return listDriver.map { it.tripsDTO.map { trip -> it.toDriverGenericDTO(trip) } }.flatten()
+}
+
+
 data class TripDriver(
     var id: Long = 0,
     var duration: Int = 0,

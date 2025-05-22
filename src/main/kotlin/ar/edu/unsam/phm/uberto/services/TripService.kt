@@ -81,7 +81,7 @@ class TripService(
     }
 
     fun getDriverPendingTripByPassenger(passengerId: Long): List<Driver> {
-        return driverRepo.findByPassengerIdFinishedTripsDTO(passengerId, LocalDateTime.now())
+        return driverRepo.findByPassengerIdPendingTripsDTO(passengerId, LocalDateTime.now())
     }
 
     fun getTripsPendingFromDriver(
