@@ -5,7 +5,7 @@ import ar.edu.unsam.phm.uberto.model.Driver
 //import ar.edu.unsam.phm.uberto.repository.DriverAvgDTO
 
 data class DriverDTO(
-    val id: Long,
+    val id: String,
     val serial: String,
     val firstName: String,
     val lastName: String,
@@ -16,10 +16,10 @@ data class DriverDTO(
     )
 
 fun Driver.toDTO(): DriverDTO {
-    val credId = requireNotNull(credentials?.id) { "UserAuthCredentials ID is null" }
+//    val credId = requireNotNull(credentials?.id) { "UserAuthCredentials ID is null" }
 
     return DriverDTO(
-        id = credId,
+        id = this.id.toString(),
         serial = serial,
         firstName = firstName,
         lastName = lastName,
@@ -59,27 +59,27 @@ fun Driver.toCardDTO(time: Int, numberPassenger: Int): DriverCardDTO {
     )
 }
 
-//fun MongoDriver.toAvailableDTO(time: Int, numberPassenger: Int, scores: Double): DriverCardDTO {
-//    val driverId = requireNotNull(id) { "Driver entity ID is null" }
-//
-//    return DriverCardDTO(
-//        id = driverId,
-//        serial = serial,
-//        brand = brand,
-//        name = "$firstName $lastName",
-//        model = model,
-//        price = fee(time, numberPassenger),
-//        img = img,
-//        rating = scores,
-//        type = toString()
-//    )
-//}
+fun Driver.toAvailableDTO(time: Int, numberPassenger: Int, scores: Double): DriverCardDTO {
+    val driverId = requireNotNull(id) { "Driver entity ID is null" }
+
+    return DriverCardDTO(
+        id = driverId,
+        serial = serial,
+        brand = brand,
+        name = "$firstName $lastName",
+        model = model,
+        price = fee(time, numberPassenger),
+        img = img,
+        rating = scores,
+        type = toString()
+    )
+}
 
 
-//data class DriverAvailableDto(
-//    val driver: Driver,
-//    val averageScore: Double
-//)
+data class DriverAvailableDto(
+    val driver: Driver,
+    val averageScore: Double
+)
 
 
 data class DriverCardAndTimeDTO(

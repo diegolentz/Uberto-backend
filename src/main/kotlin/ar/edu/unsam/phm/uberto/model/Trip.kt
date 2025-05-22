@@ -42,7 +42,7 @@ class Trip(
     @Column(name = "driverMongoId")
     lateinit var driverId: String
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL],  orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL],  orphanRemoval = true )
     @JoinColumn(name = "tripscore_id", referencedColumnName = "id")
     var score: TripScore? = null
 

@@ -1,11 +1,13 @@
 package ar.edu.unsam.phm.uberto.repository
 
+import ar.edu.unsam.phm.uberto.dto.DriverAvailableDto
 import ar.edu.unsam.phm.uberto.model.Driver
 import org.springframework.data.mongodb.repository.Aggregation
 import org.springframework.data.mongodb.repository.MongoRepository
 import java.time.LocalDateTime
 
 interface MongoDriverRepository: MongoRepository<Driver,String> {
+
 
     fun findByCredentialsId(id: Long) : Driver
 
@@ -23,6 +25,7 @@ interface MongoDriverRepository: MongoRepository<Driver,String> {
     )
     fun findByPassengerIdPendingTripsDTO(passengerId: Long, finisherdDate: LocalDateTime): List<Driver>
 
+<<<<<<< HEAD
     @Aggregation(
         pipeline = [
             "{ '\$match': { 'tripsDTO.passengerId': ?0 } }",
@@ -38,3 +41,10 @@ interface MongoDriverRepository: MongoRepository<Driver,String> {
     fun findByPassengerIdFinishedTripsDTO(passengerId: Long, date: LocalDateTime): List<Driver>
 
 }
+=======
+    @Query(
+        value = "{ 'tripsDTO': { '\$not': { '\$elemMatch': { 'date': { '\$lt': ?1 }, 'finishedDateTime': { '\$gt': ?0 } } } } }"
+    )
+    fun getAvailable(date: LocalDateTime, endTime: LocalDateTime): List<Driver>
+}
+>>>>>>> dev

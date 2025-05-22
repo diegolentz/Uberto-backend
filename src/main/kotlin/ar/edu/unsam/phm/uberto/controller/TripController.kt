@@ -62,4 +62,5 @@ class TripsController(
         val pendingTrips = listOf<TripGenericDTO>()
         return PendingAndFinishedTripsDTO( pendingTrips, finishedTrips.map { it.toPassengerGenericDTO() })
     }
+
 }
