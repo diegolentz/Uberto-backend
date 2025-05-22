@@ -5,7 +5,7 @@ import ar.edu.unsam.phm.uberto.model.Driver
 //import ar.edu.unsam.phm.uberto.repository.DriverAvgDTO
 
 data class DriverDTO(
-    val id: Long,
+    val id: String,
     val serial: String,
     val firstName: String,
     val lastName: String,
@@ -16,10 +16,10 @@ data class DriverDTO(
     )
 
 fun Driver.toDTO(): DriverDTO {
-    val credId = requireNotNull(credentials?.id) { "UserAuthCredentials ID is null" }
+//    val credId = requireNotNull(credentials?.id) { "UserAuthCredentials ID is null" }
 
     return DriverDTO(
-        id = credId,
+        id = this.id.toString(),
         serial = serial,
         firstName = firstName,
         lastName = lastName,
