@@ -49,7 +49,14 @@ interface TripsRepository : CrudRepository<Trip, Long> {
     @EntityGraph(attributePaths = ["client"])
     fun findByDriverIdFinishedTrips(@Param("driverId") driverId: String): List<Trip>
 
-
+    @Query("""
+        SELECT t FROM Trip t 
+            WHERE t.finishedDateTime > :date AND t.date < :endDate  AND t.driverId = :driverId
+    """)
+    fun checkAvailableDriver(
+        @Param("driverId") driverId: String,
+        @Param("date") date: LocalDateTime,
+        @Param("endDate") endDate: LocalDateTime) : List<Trip>
 
 //    @Query("""
 //SELECT
