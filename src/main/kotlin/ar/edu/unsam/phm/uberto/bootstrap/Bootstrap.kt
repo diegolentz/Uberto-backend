@@ -57,8 +57,9 @@ class Bootstrap(
         val account06 = authFactory.createAccount(username = "premium", password = passwordEncoder.encode("premium"), role = Role.DRIVER)
         val account07 = authFactory.createAccount(username = "simple", password = passwordEncoder.encode("simple"), role = Role.DRIVER)
         val account08 = authFactory.createAccount(username = "biker", password = passwordEncoder.encode("biker"), role = Role.DRIVER)
+        val account09 = authFactory.createAccount(username = "mandarina", password = passwordEncoder.encode("mandarina"), role = Role.DRIVER)
 
-        val accounts = listOf(account01, account02, account03, account04, account05, account06, account07, account08)
+        val accounts = listOf(account01, account02, account03, account04, account05, account06, account07, account08, account09)
 
         authRepo.saveAll(accounts)
     }
@@ -107,17 +108,18 @@ class Bootstrap(
         }
         val driverList = mutableListOf<Driver>()
         val users = authRepo.findByRole(Role.DRIVER)
-        val names = listOf<String>("Dominic", "Franco", "Nicky")
-        val lastNames = listOf<String>("Toretto", "Colapinto", "Lauda")
-        val balances = listOf<Double>(200.0, 5000.0, 10000.0)
-        val driverType = listOf(PremiumDriver(), SimpleDriver(), BikeDriver())
-        val brand = listOf("Fiat Uno", "Fiat Uno", "Gilera")
-        val serial = listOf("FTG 879", "DEV 666", "AAA 123")
-        val model = listOf(2013, 1999, 2003)
+        val names = listOf<String>("Dominic", "Franco", "Nicky", "Chano")
+        val lastNames = listOf<String>("Toretto", "Colapinto", "Lauda", "Charpentier")
+        val balances = listOf<Double>(200.0, 5000.0, 10000.0, 500.0)
+        val driverType = listOf(PremiumDriver(), SimpleDriver(), BikeDriver(), SimpleDriver())
+        val brand = listOf("Fiat Uno", "Fiat Uno", "Gilera", "Falcon")
+        val serial = listOf("FTG 879", "DEV 666", "AAA 123", "GIL 123")
+        val model = listOf(2013, 1999, 2003, 1998)
         val img = listOf("https://res.cloudinary.com/dumcjdzxo/image/upload/toreto_wx2me4.jpg",
             "https://res.cloudinary.com/dumcjdzxo/image/upload/colapinto_bihvlt.jpg",
-            "https://res.cloudinary.com/dumcjdzxo/image/upload/laudo_hmkucz.jpg")
-        val baseP = listOf(900.0, 700.0, 800.0)
+            "https://res.cloudinary.com/dumcjdzxo/image/upload/laudo_hmkucz.jpg",
+            "https://s.yimg.com/ny/api/res/1.2/pDQ.2O97G7kjKifAaDEIRg--/YXBwaWQ9aGlnaGxhbmRlcjt3PTY0MDtoPTM2MQ--/https://media.zenfs.com/en/homerun/feed_manager_auto_publish_494/8346eca0608b3a3c423caf07cef0486a")
+        val baseP = listOf(900.0, 700.0, 800.0,150.0)
 
         users.forEachIndexed { index: Int, user: UserAuthCredentials ->
             val driver = DriverBuilder(driverType[index])
@@ -215,6 +217,7 @@ class Bootstrap(
         val toretto = drivers.first { it.lastName == "Toretto" }
         val colapinto = drivers.first { it.lastName == "Colapinto" }
         val lauda = drivers.first { it.lastName == "Lauda" }
+        val chano = drivers.first{it.lastName == "Charpentier"}
 
         val adrian = passengers.first { it.firstName == "Adrian" }
         val matias = passengers.first { it.firstName == "Matias" }
@@ -385,7 +388,23 @@ class Bootstrap(
         lauda.tripsDTO.addAll(allTrips.filter { it.driverId == lauda.id }.map { it.toTripDriverDTO() })
         toretto.tripsDTO.addAll(allTrips.filter { it.driverId == toretto.id }.map { it.toTripDriverDTO() })
 
+        //Para la query 5
+        val finishedDate = LocalDateTime.now().minusDays(4).plusHours(3).plusMinutes(10).truncatedTo(ChronoUnit.SECONDS)
+        val finishedDate2 = LocalDateTime.now().minusDays(4).plusHours(3).plusMinutes(10).truncatedTo(ChronoUnit.SECONDS)
 
+        val tripValentinMock = TripBuilder().passenger(valentin).driver(chano)
+            .setDate(finishedDate.toString())
+            .duration(durations[21]).origin(destination[21]).destination(origin[21])
+            .passengerAmmount(passengersAmmounts[21]).build()
+        val tripValentinMock2 = TripBuilder().passenger(valentin).driver(chano)
+            .setDate(finishedDate2.toString())
+            .duration(durations[21]).origin(destination[21]).destination(origin[21])
+            .passengerAmmount(passengersAmmounts[21]).build()
+        val trip1 = tripRepo.save(tripValentinMock)
+        val trip2 = tripRepo.save(tripValentinMock2)
+        chano.tripsDTO.add(trip1.toTripDriverDTO())
+        chano.tripsDTO.add(trip2.toTripDriverDTO())
+        //Para la query 5
         mongoRepoDriver.saveAll(drivers)
 
     }

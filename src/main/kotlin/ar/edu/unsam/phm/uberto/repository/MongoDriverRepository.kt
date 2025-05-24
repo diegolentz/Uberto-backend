@@ -45,7 +45,7 @@ interface MongoDriverRepository: MongoRepository<Driver,String> {
     )
     fun findByPassengerIdFinishedTripsDTO(passengerId: Long, date: LocalDateTime): List<Driver>
 
-}
+
 
 
     @Aggregation(pipeline = [

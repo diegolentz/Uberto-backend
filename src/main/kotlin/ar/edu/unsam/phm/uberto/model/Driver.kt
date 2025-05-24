@@ -102,9 +102,6 @@ abstract class Driver():User {
     fun finishedTrips() = trips.filter { trip:Trip ->trip.finished()}
 
     fun responseTrip(newTrip: Trip, time: Int) {
-        if(!avaliable(newTrip.date, time)){
-            throw DriverNotAvaliableException()
-        }
         addTrip(newTrip)
     }
 

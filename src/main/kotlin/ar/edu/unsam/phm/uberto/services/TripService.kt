@@ -1,5 +1,6 @@
 package ar.edu.unsam.phm.uberto.services
 
+import ar.edu.unsam.phm.uberto.BusinessException
 import ar.edu.unsam.phm.uberto.FailSaveException
 import ar.edu.unsam.phm.uberto.dto.TripCreateDTO
 import ar.edu.unsam.phm.uberto.dto.toTripDriverDTO
@@ -39,25 +40,30 @@ class TripService(
             driverId = driver.id!!
         }
 
-        try{ //TODO mandar a un metodo privado
-            client.requestTrip(newTrip)
-            driver.responseTrip(newTrip, trip.duration)
-        }catch (e: Exception){
-            return ResponseEntity.badRequest().body("${e.message}")
+        if(!checkAvailableDriver( driver, newTrip)){//Valida en postgres
+            throw BusinessException("Driver no disponible en este momento")
         }
+
+        //Pago y Cobro de viaje
+        client.requestTrip(newTrip)
+        driver.responseTrip(newTrip, trip.duration)
 
         try{
             tripRepo.save(newTrip)
+        }catch (e: DataAccessException){
+            throw FailSaveException("Error en la creación del viaje")
+        }
+
+        try{
             driver.tripsDTO.add(newTrip.toTripDriverDTO())
             driverRepo.save(driver)
-        }catch (e: DataAccessException){ //TODO atrapar las 2 excepciones porque son de 2 db distintas
-            throw FailSaveException("Error en la creación del viaje")
+        }catch (e: DataAccessException){
+            throw FailSaveException("Error al asignar viaje al chofer ")
         }
 
         return ResponseEntity
             .status(HttpStatus.OK)
             .body("Se reserva de viaje exitosamente")
-
     }
 
     fun getAllByPassenger(passenger: Passenger): List<Trip> {
@@ -91,5 +97,9 @@ class TripService(
         name: String,
         driverId: String): List<Trip> {
         return tripRepo.searchByForm(origin, destination, numberPassenger, name, driverId)
+    }
+
+    fun checkAvailableDriver(driver: Driver, trip: Trip): Boolean{
+        return tripRepo.checkAvailableDriver(driver.id!!, trip.date, trip.finalizationDate()).isEmpty()
     }
 }
