@@ -2,6 +2,7 @@ package ar.edu.unsam.phm.uberto.repository
 
 import ar.edu.unsam.phm.uberto.dto.DriverAvailableDto
 import ar.edu.unsam.phm.uberto.dto.Driverwithscorage
+import ar.edu.unsam.phm.uberto.dto.TripScoreDTOMongo
 import ar.edu.unsam.phm.uberto.model.Driver
 import org.springframework.data.mongodb.repository.Aggregation
 import org.springframework.data.mongodb.repository.MongoRepository
@@ -79,5 +80,17 @@ interface MongoDriverRepository: MongoRepository<Driver,String> {
     ])
     fun getAvailable(start: LocalDateTime, end: LocalDateTime): List<Driverwithscorage>
 
+    @Aggregation(
+        pipeline = [
+            "{ '\$match': { 'tripsDTO.passengerId': ?0 } }",
+            "{ '\$addFields': { " +
+                    "'tripsDTO': { '\$filter': { " +
+                    "'input': '\$tripsDTO', 'as': 'trip', " +
+                    "'cond': { '\$and': [ " +
+                    "{ '\$eq': ['\$\$trip.passengerId', ?0] }, " +
+                    "{ '\$lt': ['\$\$trip.finishedDateTime', ?1] } " +
+                    "] } } } } }"
+        ])
+    fun getScoreByDriverID(id : String): List<TripScoreDTOMongo>
 }
   

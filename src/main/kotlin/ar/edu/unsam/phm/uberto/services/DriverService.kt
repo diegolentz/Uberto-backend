@@ -1,10 +1,7 @@
 package ar.edu.unsam.phm.uberto.services
 
 //import ar.edu.unsam.phm.uberto.repository.DriverAvgDTO
-import ar.edu.unsam.phm.uberto.dto.DriverAvailableDto
-import ar.edu.unsam.phm.uberto.dto.DriverDTO
-import ar.edu.unsam.phm.uberto.dto.Driverwithscorage
-import ar.edu.unsam.phm.uberto.dto.toAvailableDto
+import ar.edu.unsam.phm.uberto.dto.*
 import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.repository.MongoDriverRepository
 import ar.edu.unsam.phm.uberto.repository.TripsRepository
@@ -38,6 +35,9 @@ class DriverService(
     fun getByIdTrip(id: String): Driver =
         mongoDriverRepo.findById(id)
             .orElseThrow { NotFoundException("Driver with id $id not found") }
+
+    fun getScoreByDriverID(driverId: String): List<TripScoreDTOMongo> =
+        mongoDriverRepo.getScoreByDriverID(driverId)
 
     @Transactional
     fun updateProfile(dto : DriverDTO, id: String) : ResponseEntity<String> {

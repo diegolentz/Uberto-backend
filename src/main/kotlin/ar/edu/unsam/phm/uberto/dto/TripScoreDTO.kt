@@ -11,3 +11,11 @@ data class TripScoreDTO(
     val avatarUrlDriver: String,
     val delete: Boolean
 )
+
+data class TripScoreDTOMongo(
+    val avatarUrlPassenger: String,
+    val date: String,
+    val passengerName: String,
+    val message: String,
+    val scorePoints: Int,
+)

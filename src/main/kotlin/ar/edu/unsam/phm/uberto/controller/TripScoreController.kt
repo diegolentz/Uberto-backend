@@ -1,6 +1,7 @@
 package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.dto.TripScoreDTO
+import ar.edu.unsam.phm.uberto.dto.TripScoreDTOMongo
 import ar.edu.unsam.phm.uberto.dto.scoreToDTO
 import ar.edu.unsam.phm.uberto.model.TripScore
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
@@ -33,23 +34,24 @@ class TripScoreController(
         return tripScore.map { it!!.scoreToDTO(idToken) }
     }
 
-//    @GetMapping("/driver")
-//    fun getScoreDriver(request: HttpServletRequest): List<TripScoreDTO>{
-//        val idToken = jwtUtil.getIdDriverFromTokenString(request)
-//        val driver = driverService.getByIdTrip(idToken)
+    @GetMapping("/driver")
+    fun getScoreDriver(request: HttpServletRequest): List<TripScoreDTOMongo>{
+        val idToken = jwtUtil.getIdDriverFromTokenString(request)
+        val driver = driverService.getScoreByDriverID(idToken)
 
-//        val trips = tripService.getAllByDriver(driver)
-//        val tripScore = tripScoreService.getFromDriver(trips)
-//        return tripScore.map { it!!.scoreToDTO(null) }
-//    }
+        // A partir del Driver me tengo que traer toodo, es decir a partir de aca me traigo lo que necesito de tripScor
+        // Agregarle a driver lo que necesito del tripScore
+        // hacer la query
+        return driver
+    }
 
-//    @GetMapping("/confirmation")
-//    fun getScoreConfirmation( @RequestParam driverId: String): List<TripScoreDTO>{
-//        val driver = driverService.getByIdTrip(driverId)
-//        val trips = tripService.getAllByDriver(driver)
-//        val tripScore = tripScoreService.getFromDriver(trips)
-//        return tripScore.map { it!!.scoreToDTO(null) }
-//    }
+    @GetMapping("/confirmation")
+    fun getScoreConfirmation( @RequestParam driverId: String): List<TripScoreDTO>{
+        val driver = driverService.getByIdTrip(driverId)
+        val trips = tripService.getAllByDriver(driver.id!!)
+        val tripScore = tripScoreService.getFromDriver(trips)
+        return tripScore.map { it!!.scoreToDTO(null) }
+    }
 
     @PostMapping()
     fun create(@RequestBody tripScoreDTO: TripScoreDTO): ResponseEntity<String> {
