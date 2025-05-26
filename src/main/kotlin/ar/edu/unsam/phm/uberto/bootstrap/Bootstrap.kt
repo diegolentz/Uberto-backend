@@ -384,9 +384,10 @@ class Bootstrap(
             tripValentin01, tripValentin02, tripValentin03, tripValentin04, tripValentin05
         )).toMutableList()
 
-        val tripsWithScore: List<Trip> = allTrips.filter { it ->  it.finished() }
+        var tripsWithScore: List<Trip> = allTrips.filter { it ->  it.finished() }
         tripsWithScore.forEach { factory.createTripScore(it) }
         tripRepo.saveAll(tripsWithScore).toList()
+        tripsWithScore = tripRepo.findAll().toList()
 
         colapinto.tripsDTO.addAll(allTrips.filter { it.driverId == colapinto.id }.map { it.toTripDriverDTO() })
         colapinto.tripsScoreDTO.addAll(tripsWithScore.filter { it.driverId == colapinto.id }.map { it.toTripScoreDTOMongo()})

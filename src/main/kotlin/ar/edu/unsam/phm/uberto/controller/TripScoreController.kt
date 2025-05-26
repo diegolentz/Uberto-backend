@@ -48,11 +48,11 @@ class TripScoreController(
     }
 
     @PostMapping()
-    fun create(@RequestBody tripScoreDTO: TripScoreDTO): ResponseEntity<String> {
-        val trip = tripService.getById(tripScoreDTO.tripId)
+    fun create(@RequestBody tripScore: TripScoreDTOMongo): ResponseEntity<String> {
+        val trip = tripService.getById(tripScore.id)
         val score = TripScore()
-        score.message = tripScoreDTO.message
-        score.scorePoints = tripScoreDTO.scorePoints
+        score.message = tripScore.message
+        score.scorePoints = tripScore.scorePoints
         return tripScoreService.create(trip,score)
     }
 
