@@ -384,13 +384,17 @@ class Bootstrap(
             tripValentin01, tripValentin02, tripValentin03, tripValentin04, tripValentin05
         )).toMutableList()
 
-        val tripsWithScore: List<Trip> = createTripScore(allTrips)
-
+        val tripsWithScore: List<Trip> = allTrips.filter { it ->  it.finished() }
+        tripsWithScore.forEach { factory.createTripScore(it) }
+        tripRepo.saveAll(tripsWithScore).toList()
 
         colapinto.tripsDTO.addAll(allTrips.filter { it.driverId == colapinto.id }.map { it.toTripDriverDTO() })
         colapinto.tripsScoreDTO.addAll(tripsWithScore.filter { it.driverId == colapinto.id }.map { it.toTripScoreDTOMongo()})
         lauda.tripsDTO.addAll(allTrips.filter { it.driverId == lauda.id }.map { it.toTripDriverDTO() })
+        lauda.tripsScoreDTO.addAll(tripsWithScore.filter { it.driverId == lauda.id }.map { it.toTripScoreDTOMongo()})
         toretto.tripsDTO.addAll(allTrips.filter { it.driverId == toretto.id }.map { it.toTripDriverDTO() })
+        toretto.tripsScoreDTO.addAll(tripsWithScore.filter { it.driverId == toretto.id }.map { it.toTripScoreDTOMongo()})
+
 
         //Para la query 5
         val finishedDate = LocalDateTime.now().minusDays(4).plusHours(3).plusMinutes(10).truncatedTo(ChronoUnit.SECONDS)

@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.repository.MongoRepository
 import java.time.LocalDateTime
 import org.bson.Document
 import org.springframework.cglib.core.Local
+import org.springframework.data.mongodb.repository.Query
 import java.util.Date
 
 
@@ -92,5 +93,9 @@ interface MongoDriverRepository: MongoRepository<Driver,String> {
                     "] } } } } }"
         ])
     fun getScoreByDriverID(id : String): List<TripScoreDTOMongo>
+
+    @Query(value = "{ '_id': ?0 }", fields = "{ 'tripsScoreDTO': 1, '_id': 0 }")
+    fun findOnlyTripsScoreDTOByDriverId(driverId: String): Map<String, List<TripScoreDTOMongo>>
+
 }
   
