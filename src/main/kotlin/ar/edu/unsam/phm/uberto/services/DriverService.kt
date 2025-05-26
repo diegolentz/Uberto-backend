@@ -37,7 +37,7 @@ class DriverService(
             .orElseThrow { NotFoundException("Driver with id $id not found") }
 
     fun getScoreByDriverID(driverId: String): List<TripScoreDTOMongo> =
-        mongoDriverRepo.getScoreByDriverID(driverId)
+        mongoDriverRepo.getScoreByDriverID(driverId).get(key = "tripsScoreDTO")!! as List<TripScoreDTOMongo>
 
     @Transactional
     fun updateProfile(dto : DriverDTO, id: String) : ResponseEntity<String> {
