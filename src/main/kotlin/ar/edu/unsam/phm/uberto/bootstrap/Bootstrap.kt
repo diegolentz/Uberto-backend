@@ -33,7 +33,9 @@ class Bootstrap(
     @Autowired val jwtUtil: TokenJwtUtil,
     @Autowired val driverService: DriverService,
     @Autowired val passengerService: PassengerService,
-    @Autowired val mongoRepoDriver: MongoDriverRepository
+    @Autowired val mongoRepoDriver: MongoDriverRepository,
+    @Autowired val analyticsRepository: AnalyticsRepository
+
 ) : CommandLineRunner {
 
     val factory = TestFactory(authService, passengerService, driverService ,jwtUtil)

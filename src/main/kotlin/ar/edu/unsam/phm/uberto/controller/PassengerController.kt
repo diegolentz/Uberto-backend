@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/passenger")
 class PassengerController(
     private val passengerService: PassengerService,
-    private val jwtUtil: TokenJwtUtil
+    private val jwtUtil: TokenJwtUtil,
 ) {
 
     @GetMapping()
