@@ -38,19 +38,13 @@ class TripScoreController(
     fun getScoreDriver(request: HttpServletRequest): List<TripScoreDTOMongo>{
         val idToken = jwtUtil.getIdDriverFromTokenString(request)
         val driver = driverService.getScoreByDriverID(idToken)
-
-        // A partir del Driver me tengo que traer toodo, es decir a partir de aca me traigo lo que necesito de tripScor
-        // Agregarle a driver lo que necesito del tripScore
-        // hacer la query
         return driver
     }
 
     @GetMapping("/confirmation")
-    fun getScoreConfirmation( @RequestParam driverId: String): List<TripScoreDTO>{
-        val driver = driverService.getByIdTrip(driverId)
-        val trips = tripService.getAllByDriver(driver.id!!)
-        val tripScore = tripScoreService.getFromDriver(trips)
-        return tripScore.map { it!!.scoreToDTO(null) }
+    fun getScoreConfirmation( @RequestParam driverId: String): List<TripScoreDTOMongo>{
+        val driver = driverService.getScoreByDriverID(driverId)
+        return driver
     }
 
     @PostMapping()

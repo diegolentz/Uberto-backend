@@ -81,21 +81,21 @@ interface MongoDriverRepository: MongoRepository<Driver,String> {
     ])
     fun getAvailable(start: LocalDateTime, end: LocalDateTime): List<Driverwithscorage>
 
-    @Aggregation(
-        pipeline = [
-            "{ '\$match': { 'tripsDTO.passengerId': ?0 } }",
-            "{ '\$addFields': { " +
-                    "'tripsDTO': { '\$filter': { " +
-                    "'input': '\$tripsDTO', 'as': 'trip', " +
-                    "'cond': { '\$and': [ " +
-                    "{ '\$eq': ['\$\$trip.passengerId', ?0] }, " +
-                    "{ '\$lt': ['\$\$trip.finishedDateTime', ?1] } " +
-                    "] } } } } }"
-        ])
-    fun getScoreByDriverID(id : String): List<TripScoreDTOMongo>
+//    @Aggregation(
+//        pipeline = [
+//            "{ '\$match': { 'tripsDTO.passengerId': ?0 } }",
+//            "{ '\$addFields': { " +
+//                    "'tripsDTO': { '\$filter': { " +
+//                    "'input': '\$tripsDTO', 'as': 'trip', " +
+//                    "'cond': { '\$and': [ " +
+//                    "{ '\$eq': ['\$\$trip.passengerId', ?0] }, " +
+//                    "{ '\$lt': ['\$\$trip.finishedDateTime', ?1] } " +
+//                    "] } } } } }"
+//        ])
+//    fun getScoreByDriverID(id : String): List<TripScoreDTOMongo>
 
     @Query(value = "{ '_id': ?0 }", fields = "{ 'tripsScoreDTO': 1, '_id': 0 }")
-    fun findOnlyTripsScoreDTOByDriverId(driverId: String): Map<String, List<TripScoreDTOMongo>>
+    fun getScoreByDriverID(driverId: String): Map<String, List<TripScoreDTOMongo>>
 
 }
   
