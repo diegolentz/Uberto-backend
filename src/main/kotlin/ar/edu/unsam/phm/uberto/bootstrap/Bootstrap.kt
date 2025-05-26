@@ -14,6 +14,7 @@ import ar.edu.unsam.phm.uberto.services.AuthService
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.PassengerService
 import ar.edu.unsam.phm.uberto.services.TripService
+import com.fasterxml.jackson.core.util.DefaultIndenter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -376,25 +377,33 @@ class Bootstrap(
             .duration(durations[24]).origin(destination[24]).destination(origin[24])
             .passengerAmmount(passengersAmmounts[24]).build()
 
-        val allTrips: MutableList<Trip> = tripRepo.saveAll(listOf(
+        tripRepo.saveAll(listOf(
             tripAdrian01, tripAdrian02, tripAdrian03, tripAdrian04, tripAdrian05,
             tripMatias01, tripMatias02, tripMatias03, tripMatias04, tripMatias05,
             tripDiego01, tripDiego02, tripDiego03, tripDiego04, tripDiego05,
             tripPedro01, tripPedro02, tripPedro03, tripPedro04, tripPedro05,
             tripValentin01, tripValentin02, tripValentin03, tripValentin04, tripValentin05
-        )).toMutableList()
+        ))
+        val allTrips: MutableList<Trip> = tripRepo.findAll().toList().toMutableList()
 
         var tripsWithScore: List<Trip> = allTrips.filter { it ->  it.finished() }
+        tripRepo.saveAll(tripsWithScore).toList()
         tripsWithScore.forEach { factory.createTripScore(it) }
         tripRepo.saveAll(tripsWithScore).toList()
-        tripsWithScore = tripRepo.findAll().toList()
+
+        matias.scoreTrip(tripMatias01 , "Este esta copado", 4)
+        matias.scoreTrip(tripMatias02 , "una cagada", 2)
+        adrian.scoreTrip(tripAdrian01 , "El viaje fue muy bueno", 5)
+        tripRepo.save(tripMatias01)
+        tripRepo.save(tripMatias02)
+        tripRepo.save(tripAdrian01)
+        colapinto.tripsScoreDTO.add(tripMatias02.toTripScoreDTOMongo()) // Colapinto
+        lauda.tripsScoreDTO.add(tripMatias01.toTripScoreDTOMongo()) // Lauda
+        toretto.tripsScoreDTO.add(tripAdrian01.toTripScoreDTOMongo())// Toreto
 
         colapinto.tripsDTO.addAll(allTrips.filter { it.driverId == colapinto.id }.map { it.toTripDriverDTO() })
-        colapinto.tripsScoreDTO.addAll(tripsWithScore.filter { it.driverId == colapinto.id }.map { it.toTripScoreDTOMongo()})
         lauda.tripsDTO.addAll(allTrips.filter { it.driverId == lauda.id }.map { it.toTripDriverDTO() })
-        lauda.tripsScoreDTO.addAll(tripsWithScore.filter { it.driverId == lauda.id }.map { it.toTripScoreDTOMongo()})
         toretto.tripsDTO.addAll(allTrips.filter { it.driverId == toretto.id }.map { it.toTripDriverDTO() })
-        toretto.tripsScoreDTO.addAll(tripsWithScore.filter { it.driverId == toretto.id }.map { it.toTripScoreDTOMongo()})
 
 
         //Para la query 5

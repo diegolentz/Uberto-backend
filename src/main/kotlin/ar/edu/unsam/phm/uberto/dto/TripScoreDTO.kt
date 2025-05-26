@@ -26,7 +26,7 @@ data class TripScoreDTOMongo(
 )
 
 fun Trip.toTripScoreDTOMongo() = TripScoreDTOMongo(
-    id = score!!.id!!,
+    id = 0,
     avatarUrlPassenger = client.img,
     date = date,
     passengerName = client.firstName + client.lastName,
