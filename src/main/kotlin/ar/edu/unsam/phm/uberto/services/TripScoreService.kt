@@ -38,6 +38,7 @@ class TripScoreService(
 
         try {
             val trip2 = tripRepo.save(trip)
+            driver.tripsDTO.add(trip2.toTripDriverDTO())
             driver.tripsScoreDTO.add(trip2.toTripScoreDTOMongo())
             driverRepo.save(driver)
         } catch (e: Exception) {

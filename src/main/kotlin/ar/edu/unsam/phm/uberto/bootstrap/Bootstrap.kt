@@ -386,10 +386,10 @@ class Bootstrap(
         ))
         val allTrips: MutableList<Trip> = tripRepo.findAll().toList().toMutableList()
 
-        var tripsWithScore: List<Trip> = allTrips.filter { it ->  it.finished() }
-        tripRepo.saveAll(tripsWithScore).toList()
-        tripsWithScore.forEach { factory.createTripScore(it) }
-        tripRepo.saveAll(tripsWithScore).toList()
+//        var tripsWithScore: List<Trip> = allTrips.filter { it ->  it.finished() }
+//        tripRepo.saveAll(tripsWithScore).toList()
+//        tripsWithScore.forEach { factory.createTripScore(it) }
+//        tripRepo.saveAll(tripsWithScore).toList()
 
         matias.scoreTrip(tripMatias01 , "Este esta copado", 4)
         matias.scoreTrip(tripMatias02 , "una cagada", 2)
@@ -401,10 +401,9 @@ class Bootstrap(
         lauda.tripsScoreDTO.add(tripMatias01.toTripScoreDTOMongo()) // Lauda
         toretto.tripsScoreDTO.add(tripAdrian01.toTripScoreDTOMongo())// Toreto
 
-        colapinto.tripsDTO.addAll(allTrips.filter { it.driverId == colapinto.id }.map { it.toTripDriverDTO() })
-        lauda.tripsDTO.addAll(allTrips.filter { it.driverId == lauda.id }.map { it.toTripDriverDTO() })
-        toretto.tripsDTO.addAll(allTrips.filter { it.driverId == toretto.id }.map { it.toTripDriverDTO() })
-
+        colapinto.tripsDTO.add(tripMatias02.toTripDriverDTO())
+        lauda.tripsDTO.add(tripMatias01.toTripDriverDTO())
+        toretto.tripsDTO.add(tripAdrian01.toTripDriverDTO())
 
         //Para la query 5
         val finishedDate = LocalDateTime.now().minusDays(4).plusHours(3).plusMinutes(10).truncatedTo(ChronoUnit.SECONDS)

@@ -17,7 +17,7 @@ import java.time.LocalDateTime
 //)
 
 data class TripScoreDTOMongo(
-    val id: Long ,
+    val tripId: Long ,
     val avatarUrlPassenger: String,
     val date: LocalDateTime,
     val passengerName: String,
@@ -26,7 +26,7 @@ data class TripScoreDTOMongo(
 )
 
 fun Trip.toTripScoreDTOMongo() = TripScoreDTOMongo(
-    id = 0,
+    tripId = id!!,
     avatarUrlPassenger = client.img,
     date = date,
     passengerName = client.firstName + client.lastName,
