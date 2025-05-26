@@ -95,7 +95,11 @@ interface MongoDriverRepository: MongoRepository<Driver,String> {
 //    fun getScoreByDriverID(id : String): List<TripScoreDTOMongo>
 
     @Query(value = "{ '_id': ?0 }", fields = "{ 'tripsScoreDTO': 1, '_id': 0 }")
-    fun getScoreByDriverID(driverId: String): Map<String, List<TripScoreDTOMongo>>
+    fun getScoreByDriverID(driverId: String): DriverTripScoresProjection?
+
 
 }
-  
+
+data class DriverTripScoresProjection(
+    val tripsScoreDTO: List<TripScoreDTOMongo>
+)
