@@ -10,6 +10,7 @@ import java.time.LocalDateTime
 import org.bson.Document
 import org.springframework.cglib.core.Local
 import org.springframework.data.mongodb.repository.Query
+import java.time.Instant
 import java.util.Date
 
 
@@ -49,9 +50,16 @@ interface MongoDriverRepository: MongoRepository<Driver,String> {
 
 
 
-
     @Aggregation(pipeline = [
-        "{ '\$match': { 'tripsDTO': { '\$not': { '\$elemMatch': { 'date': { '\$lt': ?1 }, 'finishedDateTime': { '\$gt': ?0 } } } } } }",
+        "{ '\$match': { '\$or': [ " +
+                "{ 'tripsDTO': { '\$exists': false } }, " +                    // No tiene el campo tripsDTO
+                "{ 'tripsDTO': { '\$size': 0 } }, " +                         // tripsDTO está vacío
+                "{ 'tripsDTO': { '\$not': { '\$elemMatch': { " +
+                "'date': { '\$lt': ?1 }, " +                              // El viaje comienza antes del fin del rango solicitado
+                "'finishedDateTime': { '\$gt': ?0 } " +                  // El viaje termina después del inicio del rango solicitado
+                "} } } }" +                                                  // Excluye viajes que se solapen
+                "] } }",
+
         "{ '\$addFields': { " +
                 "'averageScore': { " +
                 "'\$avg': { " +
@@ -63,6 +71,7 @@ interface MongoDriverRepository: MongoRepository<Driver,String> {
                 "} " +
                 "} " +
                 "} }",
+
         "{ '\$project': { " +
                 "'_id': 1, " +
                 "'firstName': 1, " +
@@ -75,11 +84,11 @@ interface MongoDriverRepository: MongoRepository<Driver,String> {
                 "'serial': 1, " +
                 "'basePrice': 1, " +
                 "'tripsDTO': 1, " +
-                "'averageScore': { '\$ifNull': [ '\$averageScore', 0 ] } ," +
+                "'averageScore': { '\$ifNull': [ '\$averageScore', 0 ] }, " +
                 "'_class': 1 " +
                 "} }"
     ])
-    fun getAvailable(start: LocalDateTime, end: LocalDateTime): List<Driverwithscorage>
+    fun getAvailable(start: Instant, end: Instant): List<Driverwithscorage>
 
 //    @Aggregation(
 //        pipeline = [

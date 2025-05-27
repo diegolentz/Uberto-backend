@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 import java.util.Date
 
@@ -56,8 +57,10 @@ class DriverService(
     }
 
     fun getAvailableDrivers(start: LocalDateTime, end: Int): List<DriverAvailableDto> {
-      var endDate = start.plusHours(end.toLong())
-        var driversFromRepository = mongoDriverRepo.getAvailable(start, endDate)
+
+        val start = start.atZone(ZoneOffset.UTC).toInstant()
+        val endTime = start.plusSeconds(end.toLong())
+        var driversFromRepository = mongoDriverRepo.getAvailable(start, endTime)
         return driversFromRepository.map {it.toAvailableDto()
 
         }
