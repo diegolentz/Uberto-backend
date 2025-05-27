@@ -4,17 +4,17 @@ import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.model.Trip
 import java.time.LocalDateTime
 
-fun Trip.scoreToDTO(userId: Long?) = TripScoreDTO(
-    tripId = id!!,
-    message = score!!.message,
-    scorePoints = score!!.scorePoints,
-    date = date.toString(),
-    passengerName= client.firstName + "" + client.lastName,
-    driverName = driver.firstName + "" + driver.lastName,
-    avatarUrlPassenger = client.img,
-    avatarUrlDriver = driver.img,
-    delete = if (userId != null) canDeleteScore(userId) else false
-)
+//fun Trip.scoreToDTO(userId: Long?) = TripScoreDTO(
+//    tripId = id!!,
+//    message = score!!.message,
+//    scorePoints = score!!.scorePoints,
+//    date = date.toString(),
+//    passengerName= client.firstName + "" + client.lastName,
+//    driverName = driver.firstName + "" + driver.lastName,
+//    avatarUrlPassenger = client.img,
+//    avatarUrlDriver = driver.img,
+//    delete = if (userId != null) canDeleteScore(userId) else false
+//)
 
 data class FormTripDTO(
     val origin: String,

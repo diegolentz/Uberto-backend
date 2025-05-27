@@ -2,12 +2,14 @@ package ar.edu.unsam.phm.uberto.repository
 
 import ar.edu.unsam.phm.uberto.dto.DriverAvailableDto
 import ar.edu.unsam.phm.uberto.dto.Driverwithscorage
+import ar.edu.unsam.phm.uberto.dto.TripScoreDTOMongo
 import ar.edu.unsam.phm.uberto.model.Driver
 import org.springframework.data.mongodb.repository.Aggregation
 import org.springframework.data.mongodb.repository.MongoRepository
 import java.time.LocalDateTime
 import org.bson.Document
 import org.springframework.cglib.core.Local
+import org.springframework.data.mongodb.repository.Query
 import java.util.Date
 
 
@@ -79,5 +81,25 @@ interface MongoDriverRepository: MongoRepository<Driver,String> {
     ])
     fun getAvailable(start: LocalDateTime, end: LocalDateTime): List<Driverwithscorage>
 
+//    @Aggregation(
+//        pipeline = [
+//            "{ '\$match': { 'tripsDTO.passengerId': ?0 } }",
+//            "{ '\$addFields': { " +
+//                    "'tripsDTO': { '\$filter': { " +
+//                    "'input': '\$tripsDTO', 'as': 'trip', " +
+//                    "'cond': { '\$and': [ " +
+//                    "{ '\$eq': ['\$\$trip.passengerId', ?0] }, " +
+//                    "{ '\$lt': ['\$\$trip.finishedDateTime', ?1] } " +
+//                    "] } } } } }"
+//        ])
+//    fun getScoreByDriverID(id : String): List<TripScoreDTOMongo>
+
+    @Query(value = "{ '_id': ?0 }", fields = "{ 'tripsScoreDTO': 1, '_id': 0 }")
+    fun getScoreByDriverID(driverId: String): DriverTripScoresProjection?
+
+
 }
-  
+
+data class DriverTripScoresProjection(
+    val tripsScoreDTO: List<TripScoreDTOMongo>
+)

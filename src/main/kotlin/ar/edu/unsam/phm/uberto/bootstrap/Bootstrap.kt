@@ -4,6 +4,7 @@ import ar.edu.unsam.phm.uberto.builder.DriverBuilder
 import ar.edu.unsam.phm.uberto.builder.PassengerBuilder
 import ar.edu.unsam.phm.uberto.builder.TripBuilder
 import ar.edu.unsam.phm.uberto.dto.toTripDriverDTO
+import ar.edu.unsam.phm.uberto.dto.toTripScoreDTOMongo
 import ar.edu.unsam.phm.uberto.factory.AuthFactory
 import ar.edu.unsam.phm.uberto.factory.TestFactory
 import ar.edu.unsam.phm.uberto.model.*
@@ -13,6 +14,7 @@ import ar.edu.unsam.phm.uberto.services.AuthService
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.PassengerService
 import ar.edu.unsam.phm.uberto.services.TripService
+import com.fasterxml.jackson.core.util.DefaultIndenter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -377,18 +379,40 @@ class Bootstrap(
             .duration(durations[24]).origin(destination[24]).destination(origin[24])
             .passengerAmmount(passengersAmmounts[24]).build()
 
-        val allTrips: MutableList<Trip> = tripRepo.saveAll(listOf(
+        var allTrips = tripRepo.saveAll(listOf(
             tripAdrian01, tripAdrian02, tripAdrian03, tripAdrian04, tripAdrian05,
             tripMatias01, tripMatias02, tripMatias03, tripMatias04, tripMatias05,
             tripDiego01, tripDiego02, tripDiego03, tripDiego04, tripDiego05,
             tripPedro01, tripPedro02, tripPedro03, tripPedro04, tripPedro05,
             tripValentin01, tripValentin02, tripValentin03, tripValentin04, tripValentin05
-        )).toMutableList()
+        ))
 
-        createTripScore(allTrips)
-        colapinto.tripsDTO.addAll(allTrips.filter { it.driverId == colapinto.id }.map { it.toTripDriverDTO() })
-        lauda.tripsDTO.addAll(allTrips.filter { it.driverId == lauda.id }.map { it.toTripDriverDTO() })
-        toretto.tripsDTO.addAll(allTrips.filter { it.driverId == toretto.id }.map { it.toTripDriverDTO() })
+        allTrips.filter{ it.finished() }.forEach {
+            it.score = TripScore().apply {
+                message = "Este esta copado"
+                scorePoints = 5
+            }
+        }
+        tripRepo.saveAll(allTrips)
+        allTrips = tripRepo.findAll()
+
+//        }
+        allTrips.filter{ it.driverId == colapinto.id }.forEach {
+            if(it.score != null) colapinto.tripsScoreDTO.add(it.toTripScoreDTOMongo())
+            colapinto.tripsDTO.add(it.toTripDriverDTO())
+        }
+
+        allTrips.filter{ it.driverId == lauda.id }.forEach {
+            if(it.score != null) lauda.tripsScoreDTO.add(it.toTripScoreDTOMongo())
+            lauda.tripsDTO.add(it.toTripDriverDTO())
+        }
+
+        allTrips.filter{ it.driverId == toretto.id }.forEach {
+            if(it.score != null) toretto.tripsScoreDTO.add(it.toTripScoreDTOMongo())
+            toretto.tripsDTO.add(it.toTripDriverDTO())
+        }
+
+
 
         //Para la query 5
         val finishedDate = LocalDateTime.now().minusDays(4).plusHours(3).plusMinutes(10).truncatedTo(ChronoUnit.SECONDS)

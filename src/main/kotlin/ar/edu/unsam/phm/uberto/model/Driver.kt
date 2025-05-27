@@ -1,9 +1,7 @@
 package ar.edu.unsam.phm.uberto.model
 
 import ar.edu.unsam.phm.uberto.DriverNotAvaliableException
-import ar.edu.unsam.phm.uberto.dto.DriverDTO
-import ar.edu.unsam.phm.uberto.dto.TripDriver
-import ar.edu.unsam.phm.uberto.dto.toTripDriverDTO
+import ar.edu.unsam.phm.uberto.dto.*
 import exceptions.BusinessException
 import jakarta.persistence.PrePersist
 import jakarta.persistence.PreUpdate
@@ -36,6 +34,7 @@ abstract class Driver():User {
 
     var tripsDTO: MutableList<TripDriver> = mutableListOf()
 
+    var tripsScoreDTO: MutableList<TripScoreDTOMongo> = mutableListOf()
 
     override lateinit var img: String
 

@@ -58,6 +58,9 @@ interface TripsRepository : CrudRepository<Trip, Long> {
         @Param("date") date: LocalDateTime,
         @Param("endDate") endDate: LocalDateTime) : List<Trip>
 
+    @EntityGraph(attributePaths = ["client", "score"]) // Para el Boostrap
+    override fun findAll(): List<Trip>
+
 //    @Query("""
 //SELECT
 //    new ar.edu.unsam.phm.uberto.dto.DriverAvailableDto(
