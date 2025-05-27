@@ -6,18 +6,24 @@ import java.time.LocalDateTime
 
 data class TripScoreDTOMongo(
     val tripId: Long ,
-    val avatarUrlPassenger: String,
+    val name: String,
     val date: LocalDateTime,
-    val passengerName: String,
-    val message: String,
     val scorePoints: Int,
+    val message: String,
+    val avatarUrlImg: String,
+    val isDeleted : Boolean,
+    val isEditMode : Boolean
+
+
 )
 
 fun Trip.toTripScoreDTOMongo() = TripScoreDTOMongo(
     tripId = id!!,
-    avatarUrlPassenger = client.img,
+    name = client.firstName + client.lastName,
     date = date,
-    passengerName = client.firstName + client.lastName,
+    scorePoints = score!!.scorePoints,
     message = score!!.message,
-    scorePoints = score!!.scorePoints
+    avatarUrlImg = client.img,
+    isDeleted = score!!. == ,
+    isEditMode = score!!.isEditMode
 )
