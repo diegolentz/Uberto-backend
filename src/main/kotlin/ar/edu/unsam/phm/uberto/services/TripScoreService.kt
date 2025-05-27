@@ -53,6 +53,8 @@ class TripScoreService(
     @Transactional
     fun delete(passenger: Passenger, trip: Trip) : ResponseEntity<String> {
         trip.deleteScore(passenger)
+        val driver = driverRepo.findById(trip.driverId).get()
+
         try {
             tripRepo.save(trip)
         } catch (e: Exception) {
