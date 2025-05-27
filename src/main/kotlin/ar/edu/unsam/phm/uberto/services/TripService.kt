@@ -102,4 +102,8 @@ class TripService(
     fun checkAvailableDriver(driver: Driver, trip: Trip): Boolean{
         return tripRepo.checkAvailableDriver(driver.id!!, trip.date, trip.finalizationDate()).isEmpty()
     }
+
+    fun getWithPassengerByIdAndPassengerId(tripId: Long, passengerId: Long): Trip {
+        return tripRepo.findTripByIdAndClient_Id(tripId, passengerId).get()
+    }
 }

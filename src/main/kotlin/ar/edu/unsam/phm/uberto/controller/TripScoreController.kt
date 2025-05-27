@@ -58,9 +58,8 @@ class TripScoreController(
     @DeleteMapping()
     fun delete(request: HttpServletRequest , @RequestParam tripId: Long): ResponseEntity<String>{
         val idToken = jwtUtil.getIdFromTokenString(request)
-        val trip = tripService.getById(tripId)
-        val passenger = passengerService.getById(idToken)
-        return tripScoreService.delete(passenger,trip)
+        val trip = tripService.getWithPassengerByIdAndPassengerId(tripId, idToken)
+        return tripScoreService.delete(trip)
     }
 
 }

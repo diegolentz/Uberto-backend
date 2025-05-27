@@ -51,9 +51,13 @@ class TripScoreService(
     }
 
     @Transactional
-    fun delete(passenger: Passenger, trip: Trip) : ResponseEntity<String> {
-        trip.deleteScore(passenger)
+    fun delete( trip: Trip ) : ResponseEntity<String> {
+        trip.deleteScore(trip.client)
         try {
+            val driver = driverRepo.findById(trip.driverId).get()
+            driver.tripsDTO.find {it.id == trip.id }?.rating = 0
+            driver.tripsScoreDTO.removeIf {it.tripId == trip.id }
+            driverRepo.save(driver)
             tripRepo.save(trip)
         } catch (e: Exception) {
             throw FailSaveException("Error en la eliminacion de una calificacion")

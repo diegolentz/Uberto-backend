@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.query.Param
 import java.time.LocalDateTime
+import java.util.*
 
 import javax.print.attribute.standard.Destination
 
@@ -60,6 +61,9 @@ interface TripsRepository : CrudRepository<Trip, Long> {
 
     @EntityGraph(attributePaths = ["client", "score"]) // Para el Boostrap
     override fun findAll(): List<Trip>
+
+    @EntityGraph(attributePaths = ["client", "score"])
+    fun findTripByIdAndClient_Id(tripID: Long, passengerId:Long): Optional<Trip>
 
 //    @Query("""
 //SELECT
