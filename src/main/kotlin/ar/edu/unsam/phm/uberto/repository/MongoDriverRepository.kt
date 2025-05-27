@@ -107,6 +107,36 @@ interface MongoDriverRepository: MongoRepository<Driver,String> {
     fun getScoreByDriverID(driverId: String): DriverTripScoresProjection?
 
 
+    @Aggregation(
+        pipeline = [
+            "{ '\$match': { 'tripsDTO.passengerId': ?0 } }",  // Filtrar conductores con tripsDTO donde passengerId coincide
+            "{ '\$unwind': '\$tripsDTO' }",                  // Descomponer tripsDTO en documentos individuales
+            "{ '\$match': { 'tripsDTO.passengerId': ?0 } }", // Filtrar únicamente los viajes con el passengerId específico
+            "{ '\$project': { '_id': 0, 'tripId': '\$tripsDTO._id' } }" // Proyectar únicamente el tripId
+        ]
+    )
+    fun findTripIdsByPassengerId(passengerId: Long): List<Long>
+
+    @Aggregation(
+        pipeline = [
+            "{ '\$unwind': '\$tripsScoreDTO' }",
+            "{ '\$match': { '\$and': [ " +
+                    "{ 'tripsScoreDTO.tripId': { '\$in': ?0 } }, " + // Coincide con los tripIds de la lista
+                    "{ 'tripsScoreDTO.scorePoints': { '\$gt': 0 } } " + // Solo valoraciones con puntuación
+                    "] } }",
+            "{ '\$project': { " +
+                    "'tripId': '\$tripsScoreDTO.tripId', " +
+                    "'name': { '\$concat': ['\$firstName', ' ', '\$lastName'] }, " + // Concatenar nombre y apellido
+                    "'date': '\$tripsScoreDTO.date', " +
+                    "'scorePoints': '\$tripsScoreDTO.scorePoints', " +
+                    "'message': '\$tripsScoreDTO.message', " +
+                    "'avatarUrlImg': '\$img', " + // Imagen del conductor
+                    "'isDeleted': '\$tripsScoreDTO.isDeleted', " +
+                    "'isEditMode': '\$tripsScoreDTO.isEditMode' " +
+                    "} }"
+        ]
+    )
+    fun findTripScoresByTripIds(tripIds: List<Long>): List<TripScoreDTOMongo>
 }
 
 data class DriverTripScoresProjection(

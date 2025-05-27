@@ -3,6 +3,7 @@ package ar.edu.unsam.phm.uberto.services
 import ar.edu.unsam.phm.uberto.BusinessException
 import ar.edu.unsam.phm.uberto.FailSaveException
 import ar.edu.unsam.phm.uberto.dto.TripCreateDTO
+import ar.edu.unsam.phm.uberto.dto.TripScoreDTOMongo
 import ar.edu.unsam.phm.uberto.dto.toTripDriverDTO
 import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.model.Passenger
@@ -19,7 +20,8 @@ import java.time.LocalDateTime
 @Service
 class TripService(
     val tripRepo: TripsRepository,
-    val driverRepo: MongoDriverRepository
+    val driverRepo: MongoDriverRepository,
+    private val mongoDriverRepository: MongoDriverRepository
 ) {
 
     fun getById(id: Long): Trip {
@@ -66,17 +68,24 @@ class TripService(
             .body("Se reserva de viaje exitosamente")
     }
 
-    fun getAllByPassenger(passenger: Passenger): List<Trip> {
-        return tripRepo.findByClient(passenger)
+    fun getAllByPassenger(id: Long): List<Long> {
+        return mongoDriverRepository.findTripIdsByPassengerId(id)
     }
 
-    fun getAllByDriver(driverId: String): List<Trip> {
-        return tripRepo.findByDriverId(driverId)
+    fun getTripScoresByTrips(tripIds: List<Long>): List<TripScoreDTOMongo> {
+        if (tripIds.isEmpty()) {
+            return emptyList() // Si no hay IDs, devuelve una lista vacía
+        }
+        return mongoDriverRepository.findTripScoresByTripIds(tripIds)
     }
 
-    fun getFinishedTripPassenger(passenger: Passenger): List<Trip> {
-        return getAllByPassenger(passenger).filter { it.finished() }
-    }
+//    fun getAllByDriver(driverId: String): List<Trip> {
+//        return tripRepo.findByDriverId(driverId)
+//    }
+
+//    fun getFinishedTripPassenger(passenger: Passenger): List<Trip> {
+//        return getAllByPassenger(passenger).filter { it.finished() }
+//    }
 
     fun getFinishedTripDriver(driverId: String): List<Trip> {
         return tripRepo.findByDriverIdFinishedTrips(driverId)
