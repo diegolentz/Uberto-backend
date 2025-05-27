@@ -405,6 +405,7 @@ class Bootstrap(
         lauda.tripsDTO.add(tripMatias01.toTripDriverDTO())
         toretto.tripsDTO.add(tripAdrian01.toTripDriverDTO())
 
+
         //Para la query 5
         val finishedDate = LocalDateTime.now().minusDays(4).plusHours(3).plusMinutes(10).truncatedTo(ChronoUnit.SECONDS)
         val finishedDate2 = LocalDateTime.now().minusDays(4).plusHours(3).plusMinutes(10).truncatedTo(ChronoUnit.SECONDS)

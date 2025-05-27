@@ -33,13 +33,13 @@ class TripScoreService(
     @Transactional
     fun create(trip : Trip , score: TripScore) : ResponseEntity<String> {
         val passenger = passengerRepo.findById(trip.client.id!!).get()
-        val driver = driverRepo.findById(trip.driver.id!!).get()
+        val driver = driverRepo.findById(trip.driverId).get()
         passenger.scoreTrip(trip,score.message,score.scorePoints)
 
         try {
-            val trip2 = tripRepo.save(trip)
-            driver.tripsDTO.add(trip2.toTripDriverDTO())
-            driver.tripsScoreDTO.add(trip2.toTripScoreDTOMongo())
+            val savedTrip = tripRepo.save(trip)
+            driver.tripsDTO.find { it.id == savedTrip.id }?.apply { this.rating = score.scorePoints }
+            driver.tripsScoreDTO.add(savedTrip.toTripScoreDTOMongo())
             driverRepo.save(driver)
         } catch (e: Exception) {
             throw FailSaveException("Error en la calificacion de un viaje")
