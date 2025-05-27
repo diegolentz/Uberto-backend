@@ -27,7 +27,7 @@ services:
       - pgadmin-data:/var/lib/pgadmin
 
   mongodb:
-    image: mongo:6.0
+    image: mongo:4.4
     container_name: uberto_mongodb
     restart: always
     ports:
