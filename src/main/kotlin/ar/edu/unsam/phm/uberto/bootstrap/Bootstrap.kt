@@ -379,33 +379,39 @@ class Bootstrap(
             .duration(durations[24]).origin(destination[24]).destination(origin[24])
             .passengerAmmount(passengersAmmounts[24]).build()
 
-        tripRepo.saveAll(listOf(
+        var allTrips = tripRepo.saveAll(listOf(
             tripAdrian01, tripAdrian02, tripAdrian03, tripAdrian04, tripAdrian05,
             tripMatias01, tripMatias02, tripMatias03, tripMatias04, tripMatias05,
             tripDiego01, tripDiego02, tripDiego03, tripDiego04, tripDiego05,
             tripPedro01, tripPedro02, tripPedro03, tripPedro04, tripPedro05,
             tripValentin01, tripValentin02, tripValentin03, tripValentin04, tripValentin05
         ))
-        val allTrips: MutableList<Trip> = tripRepo.findAll().toList().toMutableList()
 
-//        var tripsWithScore: List<Trip> = allTrips.filter { it ->  it.finished() }
-//        tripRepo.saveAll(tripsWithScore).toList()
-//        tripsWithScore.forEach { factory.createTripScore(it) }
-//        tripRepo.saveAll(tripsWithScore).toList()
+        allTrips.filter{ it.finished() }.forEach {
+            it.score = TripScore().apply {
+                message = "Este esta copado"
+                scorePoints = 5
+            }
+        }
+        tripRepo.saveAll(allTrips)
+        allTrips = tripRepo.findAll()
 
-        matias.scoreTrip(tripMatias01 , "Este esta copado", 4)
-        matias.scoreTrip(tripMatias02 , "una cagada", 2)
-        adrian.scoreTrip(tripAdrian01 , "El viaje fue muy bueno", 5)
-        tripRepo.save(tripMatias01)
-        tripRepo.save(tripMatias02)
-        tripRepo.save(tripAdrian01)
-        colapinto.tripsScoreDTO.add(tripMatias02.toTripScoreDTOMongo()) // Colapinto
-        lauda.tripsScoreDTO.add(tripMatias01.toTripScoreDTOMongo()) // Lauda
-        toretto.tripsScoreDTO.add(tripAdrian01.toTripScoreDTOMongo())// Toreto
+//        }
+        allTrips.filter{ it.driverId == colapinto.id }.forEach {
+            if(it.score != null) colapinto.tripsScoreDTO.add(it.toTripScoreDTOMongo())
+            colapinto.tripsDTO.add(it.toTripDriverDTO())
+        }
 
-        colapinto.tripsDTO.add(tripMatias02.toTripDriverDTO())
-        lauda.tripsDTO.add(tripMatias01.toTripDriverDTO())
-        toretto.tripsDTO.add(tripAdrian01.toTripDriverDTO())
+        allTrips.filter{ it.driverId == lauda.id }.forEach {
+            if(it.score != null) lauda.tripsScoreDTO.add(it.toTripScoreDTOMongo())
+            lauda.tripsDTO.add(it.toTripDriverDTO())
+        }
+
+        allTrips.filter{ it.driverId == toretto.id }.forEach {
+            if(it.score != null) toretto.tripsScoreDTO.add(it.toTripScoreDTOMongo())
+            toretto.tripsDTO.add(it.toTripDriverDTO())
+        }
+
 
         //Para la query 5
         val finishedDate = LocalDateTime.now().minusDays(4).plusHours(3).plusMinutes(10).truncatedTo(ChronoUnit.SECONDS)
