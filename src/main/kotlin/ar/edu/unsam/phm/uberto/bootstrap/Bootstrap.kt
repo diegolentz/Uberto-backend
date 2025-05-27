@@ -107,9 +107,9 @@ class Bootstrap(
         passengerRepo.saveAll(passengerList)
     }
     private fun createDrivers() {
-//        if(mongoRepoDriver.count() != 0.toLong()){
-//            mongoRepoDriver.deleteAll()
-//        }
+        if(mongoRepoDriver.count() != 0.toLong()){
+            mongoRepoDriver.deleteAll()
+        }
         val driverList = mutableListOf<Driver>()
         val users = authRepo.findByRole(Role.DRIVER)
         val names = listOf<String>("Dominic", "Franco", "Nicky", "Chano")
