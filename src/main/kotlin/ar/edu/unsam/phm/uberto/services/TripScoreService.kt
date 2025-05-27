@@ -50,7 +50,7 @@ class TripScoreService(
             .body("Creado con exito")
     }
 
-        @Transactional
+    @Transactional
     fun delete(passenger: Passenger, trip: Trip) : ResponseEntity<String> {
         trip.deleteScore(passenger)
         try {
