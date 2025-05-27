@@ -13,8 +13,6 @@ data class TripScoreDTOMongo(
     val avatarUrlImg: String,
     val isDeleted : Boolean,
     val isEditMode : Boolean
-
-
 )
 
 fun Trip.toTripScoreDTOMongo() = TripScoreDTOMongo(
