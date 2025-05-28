@@ -23,7 +23,7 @@ fun Trip.toTripScoreDTOMongo() = TripScoreDTOMongo(
     message = score!!.message,
     avatarUrlImg = client.img,
     isDeleted = this.canDeleteScore(client.id!!),
-    isEditMode =  !this.canDeleteScore(client.id!!)
+    isEditMode =  this.scored()
 )
 
 fun Trip.toTripScorePassengerDTOMongo() = TripScoreDTOMongo(
