@@ -79,7 +79,7 @@ fun Driver.toDriverGenericDTO(tripDriver: TripDriver) : TripGenericDTO {
         date = tripDriver.date,
         origin = tripDriver.origin,
         imgAvatar = img,
-        scored = false,
+        scored = tripDriver.rating > 0,
         price = tripDriver.price
     )
 }
