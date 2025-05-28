@@ -50,18 +50,6 @@ fi
 echo "Esperando $WAIT_TIME segundos..."
 sleep $WAIT_TIME
 
-echo "Ejecutando el script de inicialización del Shard 03 (réplica a)..."
-docker compose exec shard03-a sh -c "mongosh < /scripts/init-shard03.js"
-SHARD03_STATUS=$?
-if [ $SHARD03_STATUS -ne 0 ]; then
-  echo "Error al ejecutar el script de inicialización del Shard 03 (código de salida: $SHARD03_STATUS). Saliendo."
-  exit 1
-else
-  echo "Script de inicialización del Shard 03 ejecutado exitosamente."
-fi
-echo "Esperando $WAIT_TIME segundos..."
-sleep $WAIT_TIME
-
 echo "Ejecutando el script de inicialización del Router 01 (mongos)..."
 docker compose exec router01 sh -c "mongosh < /scripts/init-router.js"
 ROUTER_STATUS=$?
