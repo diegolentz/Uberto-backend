@@ -77,7 +77,7 @@ fun Driver.toDriverGenericDTO(tripDriver: TripDriver) : TripGenericDTO {
         duration = tripDriver.duration,
         numberPassengers = tripDriver.numberPassengers,
         date = tripDriver.date,
-        origin = tripDriver.origin,
+        origin = tripDriver.origin, 
         imgAvatar = img,
         scored = tripDriver.rating > 0,
         price = tripDriver.price
