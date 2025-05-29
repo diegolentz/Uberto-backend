@@ -123,7 +123,7 @@ class Bootstrap(
             "https://res.cloudinary.com/dumcjdzxo/image/upload/colapinto_bihvlt.jpg",
             "https://res.cloudinary.com/dumcjdzxo/image/upload/laudo_hmkucz.jpg",
             "https://s.yimg.com/ny/api/res/1.2/pDQ.2O97G7kjKifAaDEIRg--/YXBwaWQ9aGlnaGxhbmRlcjt3PTY0MDtoPTM2MQ--/https://media.zenfs.com/en/homerun/feed_manager_auto_publish_494/8346eca0608b3a3c423caf07cef0486a")
-        val baseP = listOf(900.0, 700.0, 800.0,150.0)
+        val baseP = listOf(1000.0, 700.0, 4500.0,150.0)
 
         users.forEachIndexed { index: Int, user: UserAuthCredentials ->
             val driver = DriverBuilder(driverType[index])
