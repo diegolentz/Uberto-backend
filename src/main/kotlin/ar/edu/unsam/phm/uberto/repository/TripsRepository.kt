@@ -1,6 +1,5 @@
 package ar.edu.unsam.phm.uberto.repository
 
-//import ar.edu.unsam.phm.uberto.dto.DriverAvailableDto
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.Trip
 import org.springframework.data.jpa.repository.EntityGraph
@@ -64,27 +63,5 @@ interface TripsRepository : CrudRepository<Trip, Long> {
 
     @EntityGraph(attributePaths = ["client", "score"])
     fun findTripByIdAndClient_Id(tripID: Long, passengerId:Long): Optional<Trip>
-
-//    @Query("""
-//SELECT
-//    new ar.edu.unsam.phm.uberto.dto.DriverAvailableDto(
-//        d,
-//        COALESCE(AVG(ts.scorePoints), 0)
-//    )
-//FROM Driver d
-//LEFT JOIN Trip t ON t.driver.id = d.id
-//LEFT JOIN t.score ts
-//WHERE d.id NOT IN (
-//    SELECT t2.driver.id
-//    FROM Trip t2
-//    WHERE t2.date < :endDate AND t2.finishedDateTime > :date
-//)
-//GROUP BY d.id
-//""")
-//    fun getAvailable(
-//        @Param("date") date: LocalDateTime,
-//        @Param("endDate") endDate: LocalDateTime
-//    ): List<DriverAvailableDto>
-
 }
 

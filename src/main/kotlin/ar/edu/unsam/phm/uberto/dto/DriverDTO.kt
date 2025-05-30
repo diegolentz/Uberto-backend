@@ -17,7 +17,6 @@ data class DriverDTO(
     )
 
 fun Driver.toDTO(): DriverDTO {
-//    val credId = requireNotNull(credentials?.id) { "UserAuthCredentials ID is null" }
     return DriverDTO(
         id = this.id.toString(),
         serial = serial,
@@ -41,22 +40,6 @@ data class DriverCardDTO(
     val type: String
 )
 
-fun Driver.toCardDTO(time: Int, numberPassenger: Int): DriverCardDTO {
-    val driverId = requireNotNull(id) { "Driver entity ID is null" }
-
-    return DriverCardDTO(
-        id = driverId,
-        serial = serial,
-        brand = brand,
-        name = "$firstName $lastName",
-        model = model,
-        price = fee(time, numberPassenger),
-        img = img,
-        rating = scoreAVG(),
-        type = toString()
-    )
-}
-
 fun Driver.toAvailableDTO(time: Int, numberPassenger: Int, scores: Double): DriverCardDTO {
     val driverId = requireNotNull(id) { "Driver entity ID is null" }
 
@@ -72,8 +55,6 @@ fun Driver.toAvailableDTO(time: Int, numberPassenger: Int, scores: Double): Driv
         type = toString()
     )
 }
-
-
 
 data class DriverAvailableDto(
     val driver: Driver,
@@ -120,9 +101,6 @@ fun Driverwithscorage.toAvailableDto() = DriverAvailableDto(
     driver = this.toDriverEntity(),
     averageScore = this.averageScore
 )
-
-
-
 
 data class DriverCardAndTimeDTO(
     val time: Int,

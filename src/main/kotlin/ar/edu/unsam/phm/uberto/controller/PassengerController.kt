@@ -23,7 +23,6 @@ class PassengerController(
         return passenger.toDTOProfile()
     }
 
-
     @PutMapping("/addBalance")
     fun addBalance(@RequestParam balance: Double, request: HttpServletRequest): ResponseEntity<String> {
         val idToken = jwtUtil.getIdFromTokenString(request)

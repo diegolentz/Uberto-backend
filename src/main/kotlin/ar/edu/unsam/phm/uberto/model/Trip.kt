@@ -75,12 +75,6 @@ class Trip(
         return userId == client.id
     }
 
-
-    //fun price(): Double = this.driver.fee(duration, numberPassengers)
-
-
-    fun pendingTrip()  : Boolean = date > LocalDateTime.now()
-
     @PrePersist
     @PreUpdate
     fun calculatePrePersit() {

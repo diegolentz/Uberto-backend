@@ -79,14 +79,6 @@ class TripService(
         return mongoDriverRepository.findTripScoresByTripIds(tripIds)
     }
 
-//    fun getAllByDriver(driverId: String): List<Trip> {
-//        return tripRepo.findByDriverId(driverId)
-//    }
-
-//    fun getFinishedTripPassenger(passenger: Passenger): List<Trip> {
-//        return getAllByPassenger(passenger).filter { it.finished() }
-//    }
-
     fun getFinishedTripDriver(driverId: String): List<Trip> {
         return tripRepo.findByDriverIdFinishedTrips(driverId)
     }
