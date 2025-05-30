@@ -1,15 +1,11 @@
 package ar.edu.unsam.phm.uberto.model
 
-import ar.edu.unsam.phm.uberto.DriverNotAvaliableException
 import ar.edu.unsam.phm.uberto.dto.*
-import exceptions.BusinessException
 import jakarta.persistence.PrePersist
 import jakarta.persistence.PreUpdate
 import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.Transient
 import org.springframework.data.mongodb.core.mapping.Document
-import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 
 
 @Document(collection = "mongodriver")
@@ -58,26 +54,9 @@ abstract class Driver():User {
 
     abstract fun plusBasePrice(time: Int, numberPassengers: Int):Double
 
-
     private fun getScoredTrips():List<Trip>{
         return this.trips.filter { it.score != null }
     }
-
-
-    fun avaliable(tripDate: LocalDateTime, tripDuration: Int):Boolean{
-        if(tripDate.isBefore(LocalDateTime.now())){
-            throw BusinessException("The date must be later than the current date")
-        }
-        val finishedDate =  tripDate.plus(tripDuration.toLong(), ChronoUnit.MINUTES)
-        return !this.tripOverlapping(tripDate, finishedDate) || trips.isEmpty()
-    }
-
-    fun tripOverlapping(tripStart: LocalDateTime, tripEnd: LocalDateTime):Boolean{
-        return this.pendingTrips().any{ pending:Trip ->
-            tripStart < pending.finalizationDate() && tripEnd > pending.date
-        }
-    }
-
 
     fun scoreAVG():Double{
         val avg = getScoredTrips().map { it.score!!.scorePoints }.average()
@@ -96,9 +75,6 @@ abstract class Driver():User {
     fun acceditTrip(price: Double){
         this.balance += price
     }
-
-    fun pendingTrips() = trips.filter { trip:Trip ->trip.pendingTrip()}
-    fun finishedTrips() = trips.filter { trip:Trip ->trip.finished()}
 
     fun responseTrip(newTrip: Trip, time: Int) {
         addTrip(newTrip)

@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
-
 @CrossOrigin(origins = ["http://localhost:8080", "http://localhost:5173"])
 @RestController
 @RequestMapping("/tripScore")

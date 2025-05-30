@@ -32,7 +32,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 class ApplicationSecutityConfiguration(
     @Autowired val jwtUtil: TokenJwtUtil
 ) {
-
     @Bean
     fun securityFilterChain(httpSecurity: HttpSecurity): SecurityFilterChain {
         return httpSecurity

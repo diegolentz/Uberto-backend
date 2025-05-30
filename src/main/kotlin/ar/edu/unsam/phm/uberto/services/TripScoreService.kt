@@ -1,9 +1,7 @@
 package ar.edu.unsam.phm.uberto.services
 
 import ar.edu.unsam.phm.uberto.FailSaveException
-import ar.edu.unsam.phm.uberto.dto.toTripDriverDTO
 import ar.edu.unsam.phm.uberto.dto.toTripScoreDTOMongo
-import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.model.Trip
 import ar.edu.unsam.phm.uberto.model.TripScore
 import ar.edu.unsam.phm.uberto.repository.MongoDriverRepository
@@ -20,15 +18,6 @@ class TripScoreService(
     private val passengerRepo: PassengerRepository,
     private val driverRepo: MongoDriverRepository
 ) {
-    fun getFromPassenger(trips:List<Trip>): List<Trip?>{
-        val tripsScore  = trips.filter { it.score != null }
-        return tripsScore
-    }
-
-    fun getFromDriver(trips: List<Trip>): List<Trip?> {
-        val tripsScore  = trips.filter { it.score != null }
-        return tripsScore
-    }
 
     @Transactional
     fun create(trip : Trip , score: TripScore) : ResponseEntity<String> {
