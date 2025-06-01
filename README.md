@@ -56,15 +56,9 @@ DELETE /TripScore?userId={id}&tripScoreId={id}: Eliminar una recomendación.
 
 GET /Driver/{id}/trips: Obtener viajes asociados a un conductor.
 
-(Ver detalles completos en los controladores del proyecto)
+## ⚙️ Docker
 
-🤝 Contribuciones
-¡Las contribuciones son bienvenidas! Para colaborar:
 
-Forkeá este repositorio.
-
-Creá una rama con tu mejora o fix.
-
-Hacé commit de los cambios.
-
-Abrí un Pull Request.
+Para poder correr el proyecto es necesario levantar los contenedores. Para ello necesitamos 
+Correr los scrit bash en la carpeta 
+'./scripts/config-init-01.sh' y cuando finalice con exito correr './scripts/config-init-02.sh'
