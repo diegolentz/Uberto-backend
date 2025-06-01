@@ -16,14 +16,6 @@ class AnalyticsController(
     private val driverService: DriverService,
     private val jwtUtil: TokenJwtUtil,
 ) {
-//    @PostMapping()
-//    fun logClick(request: HttpServletRequest, @RequestParam driver_name: String) {
-//        val idToken = jwtUtil.getIdFromTokenString(request)
-//        val passenger = passengerService.getById(idToken)
-//        val passengerName = passenger.firstName + " " + passenger.lastName
-//        val clickData = ClickDTO(passengerName, driver_name)
-//        analyticsService.logClick(clickData)
-//    }
 
     @PostMapping()
     fun logClick(request: HttpServletRequest, @RequestParam driverId: String) {
