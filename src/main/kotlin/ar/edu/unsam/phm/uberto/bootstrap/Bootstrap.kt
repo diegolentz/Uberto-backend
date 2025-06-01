@@ -27,9 +27,7 @@ import java.time.temporal.ChronoUnit
 class Bootstrap(
     @Autowired val passengerRepo: PassengerRepository,
     @Autowired val tripRepo: TripsRepository,
-    @Autowired val tripService: TripService,
     @Autowired val authRepo: AuthRepository,
-    @Autowired val tripScoreRepo: TripScoreRepository,
     @Autowired val passwordEncoder: PasswordEncoder,
     @Autowired val authService: AuthService,
     @Autowired val jwtUtil: TokenJwtUtil,
@@ -47,7 +45,7 @@ class Bootstrap(
         createPassengers()
         createDrivers()
         createTrips()
-//        createTripScore()
+        deleteAnalitycs()
     }
 
     private fun createAccounts() {
@@ -439,6 +437,12 @@ class Bootstrap(
         listaTrip.filter { it ->  it.finished() }.forEach { factory.createTripScore(it) }
         return tripRepo.saveAll(listaTrip).toList()
 
+    }
+
+    private fun deleteAnalitycs() {
+        if (analyticsRepository.count() != 0.toLong()) {
+            analyticsRepository.deleteAll()
+        }
     }
 
 }

@@ -1,8 +1,8 @@
 package ar.edu.unsam.phm.uberto.controller
 
-import ar.edu.unsam.phm.uberto.dto.ClickDTO
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import ar.edu.unsam.phm.uberto.services.AnalyticsService
+import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.PassengerService
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.web.bind.annotation.*
@@ -13,14 +13,23 @@ import org.springframework.web.bind.annotation.*
 class AnalyticsController(
     private val analyticsService: AnalyticsService,
     private val passengerService: PassengerService,
+    private val driverService: DriverService,
     private val jwtUtil: TokenJwtUtil,
 ) {
+//    @PostMapping()
+//    fun logClick(request: HttpServletRequest, @RequestParam driver_name: String) {
+//        val idToken = jwtUtil.getIdFromTokenString(request)
+//        val passenger = passengerService.getById(idToken)
+//        val passengerName = passenger.firstName + " " + passenger.lastName
+//        val clickData = ClickDTO(passengerName, driver_name)
+//        analyticsService.logClick(clickData)
+//    }
+
     @PostMapping()
-    fun logClick(request: HttpServletRequest, @RequestParam driver_name: String) {
+    fun logClick(request: HttpServletRequest, @RequestParam driverId: String) {
         val idToken = jwtUtil.getIdFromTokenString(request)
         val passenger = passengerService.getById(idToken)
-        val passengerName = passenger.firstName + " " + passenger.lastName
-        val clickData = ClickDTO(passengerName, driver_name)
-        analyticsService.logClick(clickData)
+        val driver = driverService.getDriverData(driverId)
+        analyticsService.logClick(passenger, driver)
     }
 }
