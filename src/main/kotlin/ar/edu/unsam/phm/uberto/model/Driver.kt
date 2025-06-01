@@ -5,6 +5,7 @@ import jakarta.persistence.PrePersist
 import jakarta.persistence.PreUpdate
 import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.Transient
+import org.springframework.data.annotation.TypeAlias
 import org.springframework.data.mongodb.core.mapping.Document
 
 
@@ -92,7 +93,7 @@ abstract class Driver():User {
 
 }
 
-@Document
+@TypeAlias("motorbiker")
 class BikeDriver(): Driver() {
     private val reference:Double = 500.0
     override fun plusBasePrice(time: Int, numberPassengers: Int): Double {
@@ -101,7 +102,7 @@ class BikeDriver(): Driver() {
     override fun toString() = "Motorbiker"
 }
 
-@Document
+@TypeAlias("simple")
 class SimpleDriver(): Driver() {
     override fun plusBasePrice(time: Int, numberPassengers: Int): Double {
         return 1000.0
@@ -110,7 +111,7 @@ class SimpleDriver(): Driver() {
     override fun toString() = "Simple Driver"
 }
 
-@Document
+@TypeAlias("premium")
 class PremiumDriver(): Driver() {
     private val reference:Double = 1500.0
 
