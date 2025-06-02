@@ -34,7 +34,8 @@ class Bootstrap(
     @Autowired val driverService: DriverService,
     @Autowired val passengerService: PassengerService,
     @Autowired val mongoRepoDriver: MongoDriverRepository,
-    @Autowired val analyticsRepository: AnalyticsRepository
+    @Autowired val analyticsRepository: AnalyticsRepository,
+    @Autowired val homeRepository: HomeRepository
 
 ) : CommandLineRunner {
 
@@ -46,6 +47,7 @@ class Bootstrap(
         createDrivers()
         createTrips()
         deleteAnalitycs()
+        deleteDataHome()
     }
 
     private fun createAccounts() {
@@ -443,6 +445,10 @@ class Bootstrap(
         if (analyticsRepository.count() != 0.toLong()) {
             analyticsRepository.deleteAll()
         }
+    }
+
+    private fun deleteDataHome() {
+        homeRepository.deleteAll()
     }
 
 }

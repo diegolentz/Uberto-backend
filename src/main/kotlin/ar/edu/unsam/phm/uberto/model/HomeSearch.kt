@@ -12,9 +12,8 @@ data class HomeSearch (
     var date: LocalDateTime,
     var origin: String,
     var destination: String,
-    var passengerId: Long
 )
 {
     @Id
-    var id: String? = null
+    var passengerId: Long? = null
 }

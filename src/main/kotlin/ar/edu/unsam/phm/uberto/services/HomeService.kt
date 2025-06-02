@@ -16,9 +16,7 @@ class HomeService (
         return homeRepo.save(home)
     }
 
-fun getHomeByPassengerId(id: String): HomeSearch {
-    return homeRepo.findById(id).orElseThrow {
-        NotFoundException("HomeSearch with id $id not found")
+fun getHomeByPassengerId(id: Long): HomeSearch {
+    return homeRepo.findById(id).get()
     }
-}
 }

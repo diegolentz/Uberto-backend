@@ -84,6 +84,9 @@ class ApplicationSecutityConfiguration(
                 //Analytics controller
                 authorizeHttpRequests.requestMatchers(HttpMethod.POST, "/analytics").hasRole("PASSENGER")
 
+                //Home controller
+                authorizeHttpRequests.requestMatchers(HttpMethod.GET, "/home").hasRole("PASSENGER")
+
                 //SWAGER
                 authorizeHttpRequests.requestMatchers(
                     "/swagger-ui/**",
