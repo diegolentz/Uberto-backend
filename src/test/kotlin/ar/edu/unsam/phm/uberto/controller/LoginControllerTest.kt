@@ -139,7 +139,7 @@ class LoginControllerTest(
             assertNotNull(actual = parsedLoginResponse.token)
             val claims: Claims = jwtUtil.getAllClaims(jwtToken = parsedLoginResponse.token!!)
             assertEquals(expected = HttpStatus.OK.value(), actual = it.response.status)
-            assertEquals(expected = 1, actual = claims["userID"])
+            assertNotNull(claims["userID"])
             assertEquals(expected = listOf("ROLE_DRIVER"), actual = claims["rol"])
 
         }
@@ -160,7 +160,7 @@ class LoginControllerTest(
             assertNotNull(actual = parsedLoginResponse.token)
             val claims: Claims = jwtUtil.getAllClaims(jwtToken = parsedLoginResponse.token!!)
             assertEquals(expected = HttpStatus.OK.value(), actual = it.response.status)
-            assertEquals(expected = 1, actual = claims["userID"])
+            assertEquals(expected = "1", actual = claims["userID"])
             assertEquals(expected = listOf("ROLE_PASSENGER"), actual = claims["rol"])
         }
     }

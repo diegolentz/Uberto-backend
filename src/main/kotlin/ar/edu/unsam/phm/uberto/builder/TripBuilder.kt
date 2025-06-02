@@ -10,7 +10,7 @@ class TripBuilder(val newTrip: Trip = Trip()) {
 
     fun driver(driver: Driver): TripBuilder = apply {
         newTrip.driver = driver
-        newTrip.driverId = driver.id!!
+//        newTrip.driverId = driver.id!!
     }
 
 
