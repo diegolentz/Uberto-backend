@@ -6,17 +6,13 @@ import java.time.LocalDateTime
 import org.springframework.data.annotation.Id
 
 @Document(collection = "analytics")
-class Analytics (
-    val driver : String,
-    val passenger : String
-) {
-
+class Analytics () {
     @Id
     var id: ObjectId? = null
-
+    var passengerId: Long? = null
+    var passenger: String? = null
+    var driverId: String? = null
+    var driver: String? = null
     val timestamp: LocalDateTime = LocalDateTime.now()
-
-
-
 
 }

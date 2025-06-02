@@ -71,6 +71,7 @@ class DriverSpec: DescribeSpec( {
             val tomorrow = LocalDateTime.now().plus(1, ChronoUnit.DAYS).toString()
             val trip = TripBuilder().driver(driver).passenger(client).setDate(tomorrow).duration(10).build()
             driver.balance shouldBeExactly 0.0
+            trip.calculatePrePersit()
             driver.responseTrip(trip, trip.duration)
             driver.balance shouldBeExactly driver.fee(trip.duration, trip.numberPassengers)
         }
@@ -78,14 +79,17 @@ class DriverSpec: DescribeSpec( {
         describe("Driver solo acepta un viaje dentro de una franja horaria"){
             val tomorrow = LocalDateTime.now().plus(1, ChronoUnit.DAYS).toString()
             val trip = TripBuilder().driver(driver).passenger(client).setDate(tomorrow).duration(10).build()
+            trip.calculatePrePersit()
             it("Si esta disponible, acepta el viaje, y lo guarda en su coleccion") {
                 driver.responseTrip(trip, trip.duration)
                 driver.trips shouldContain trip
             }
             it("Si NO esta disponible, no lo puede aceptar") {
                 driver.trips.isEmpty() shouldBe true
+                trip.calculatePrePersit()
                 driver.responseTrip(trip, trip.duration)
                 val tripDateConflict = TripBuilder().driver(driver).passenger(client).setDate(tomorrow).duration(10).build()
+                tripDateConflict.calculatePrePersit()
                 shouldThrow<DriverNotAvaliableException> {
                     driver.responseTrip(tripDateConflict, tripDateConflict.duration)
                 }

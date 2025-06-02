@@ -78,9 +78,9 @@ data class Driverwithscorage(
 
 fun Driverwithscorage.toDriverEntity(): Driver {
     val driver = when (_class) {
-        "ar.edu.unsam.phm.uberto.model.PremiumDriver" -> PremiumDriver()
-        "ar.edu.unsam.phm.uberto.model.SimpleDriver" -> SimpleDriver()
-        "ar.edu.unsam.phm.uberto.model.BikeDriver" -> BikeDriver()
+        "premium" -> PremiumDriver()
+        "simple" -> SimpleDriver()
+        "motorbiker" -> BikeDriver()
         else -> throw IllegalArgumentException("Tipo de driver no soportado: $_class")
     }
     driver.id = this._id
