@@ -35,7 +35,7 @@ dependencies {
 //	DB CONNECTION
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 	runtimeOnly("org.postgresql:postgresql")
 
 //	SECURITY
@@ -48,7 +48,6 @@ dependencies {
 	implementation("io.jsonwebtoken:jjwt-jackson:0.12.6")
 
 // REDIS
-	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
 
 //	TESTING
