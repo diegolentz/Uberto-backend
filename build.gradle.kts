@@ -46,6 +46,11 @@ dependencies {
 	implementation("com.auth0:java-jwt:4.4.0")
 
 	implementation("io.jsonwebtoken:jjwt-jackson:0.12.6")
+
+// REDIS
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+
+
 //	TESTING
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
