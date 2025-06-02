@@ -1,8 +1,10 @@
 package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.dto.*
+import ar.edu.unsam.phm.uberto.model.HomeSearch
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import ar.edu.unsam.phm.uberto.services.DriverService
+import ar.edu.unsam.phm.uberto.services.HomeService
 import ar.edu.unsam.phm.uberto.services.TravelTimeMockService
 import exceptions.BusinessException
 import jakarta.servlet.http.HttpServletRequest
@@ -16,7 +18,8 @@ import java.time.LocalDateTime
 class DriverController(
     private val driverService: DriverService,
     private val timeTripsService: TravelTimeMockService,
-    private val jwtUtil: TokenJwtUtil
+    private val jwtUtil: TokenJwtUtil,
+    private val homeService: HomeService
 ) {
 
     @GetMapping()
@@ -35,17 +38,26 @@ class DriverController(
         @RequestParam date: LocalDateTime,
         @RequestParam origin: String,
         @RequestParam destination: String,
-        @RequestParam numberpassengers: Int
+        @RequestParam numberpassengers: Int,
+        request: HttpServletRequest
     ): DriverCardAndTimeDTO {
-        validateParameters(date, origin, destination, numberpassengers)
-    
+
         val time = timeTripsService.getTime()["time"] 
             ?: throw BusinessException("Failure in the time calculation system")
         val drivers = driverService.getAvailableDrivers(date, time)
         val availableDriverDTO = drivers.map {
                 it.driver.toAvailableDTO(time, numberpassengers, it.averageScore)
             }
-            return  DriverCardAndTimeDTO(time = time, cardDrivers = availableDriverDTO)
+        val passengerId = jwtUtil.getIdFromTokenString(request)
+        homeService.saveHome(
+        HomeSearch(
+            numberPassengers = numberpassengers,
+            date = date,
+            origin = origin,
+            destination = destination,
+            passengerId = passengerId
+        ))
+        return  DriverCardAndTimeDTO(time = time, cardDrivers = availableDriverDTO)
     }
 
     @PostMapping()
@@ -55,9 +67,3 @@ class DriverController(
     }
 }
 
-private fun validateParameters(date: LocalDateTime, origin: String, destination: String, numberpassengers: Int) {
-    require(numberpassengers > 0) { "Number of passengers must be positive" }
-    require(origin.isNotBlank()) { "Origin cannot be empty" }
-    require(destination.isNotBlank()) { "Destination cannot be empty" }
-    require(!date.isBefore(LocalDateTime.now())) { "Date cannot be in the past" }
-}

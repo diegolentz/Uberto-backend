@@ -10,9 +10,8 @@ class TripBuilder(val newTrip: Trip = Trip()) {
 
     fun driver(driver: Driver): TripBuilder = apply {
         newTrip.driver = driver
-//        newTrip.driverId = driver.id!!
+        newTrip.driverId = driver.id!! // Asegúrate de que driver.id nunca sea null
     }
-
 
     fun passenger(client: Passenger): TripBuilder = apply {
         newTrip.client = client
@@ -38,7 +37,5 @@ class TripBuilder(val newTrip: Trip = Trip()) {
         newTrip.date = LocalDateTime.parse(date)
     }
 
-
     fun build(): Trip = newTrip
-
 }
