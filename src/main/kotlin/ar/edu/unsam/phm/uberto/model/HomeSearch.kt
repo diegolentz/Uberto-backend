@@ -8,10 +8,10 @@ import java.time.LocalDateTime
 
 @RedisHash("registro", timeToLive = 180)
 data class HomeSearch (
-    var numberPassengers: Int,
-    var date: LocalDateTime,
-    var origin: String,
-    var destination: String,
+    var numberPassengers: Int?,
+    var date: LocalDateTime?,
+    var origin: String?,
+    var destination: String?,
 )
 {
     @Id
