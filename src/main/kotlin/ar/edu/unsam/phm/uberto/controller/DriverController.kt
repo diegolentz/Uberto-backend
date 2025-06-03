@@ -48,15 +48,14 @@ class DriverController(
         val availableDriverDTO = drivers.map {
                 it.driver.toAvailableDTO(time, numberpassengers, it.averageScore)
             }
-        val passengerId = jwtUtil.getIdFromTokenString(request)
+        val _passengerId = jwtUtil.getIdFromTokenString(request)
         homeService.saveHome(
         HomeSearch(
             numberPassengers = numberpassengers,
             date = date,
             origin = origin,
             destination = destination,
-            passengerId = passengerId
-        ))
+        ).apply { passengerId = _passengerId })
         return  DriverCardAndTimeDTO(time = time, cardDrivers = availableDriverDTO)
     }
 

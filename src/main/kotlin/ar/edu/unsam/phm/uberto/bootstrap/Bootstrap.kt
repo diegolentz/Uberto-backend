@@ -34,7 +34,8 @@ class Bootstrap(
     @Autowired val driverService: DriverService,
     @Autowired val passengerService: PassengerService,
     @Autowired val mongoRepoDriver: MongoDriverRepository,
-    @Autowired val analyticsRepository: AnalyticsRepository
+    @Autowired val analyticsRepository: AnalyticsRepository,
+    @Autowired val homeRepository: HomeRepository
 
 ) : CommandLineRunner {
 
@@ -46,16 +47,17 @@ class Bootstrap(
         createDrivers()
         createTrips()
         deleteAnalitycs()
+        deleteDataHome()
     }
 
     private fun createAccounts() {
         val authFactory: AuthFactory = AuthFactory()
 
         val account01 = authFactory.createAccount(username = "adrian", password = passwordEncoder.encode("adrian"), role = Role.PASSENGER)
-        val account02 = authFactory.createAccount(username = "diego", password = passwordEncoder.encode("diegoo"), role = Role.PASSENGER)
+        val account02 = authFactory.createAccount(username = "diego", password = passwordEncoder.encode("diego"), role = Role.PASSENGER)
         val account03 = authFactory.createAccount(username = "matias", password = passwordEncoder.encode("matias"), role = Role.PASSENGER)
-        val account04 = authFactory.createAccount(username = "pedro", password = passwordEncoder.encode("pedroo"), role = Role.PASSENGER)
-        val account05 = authFactory.createAccount(username = "valen", password = passwordEncoder.encode("valenn"), role = Role.PASSENGER)
+        val account04 = authFactory.createAccount(username = "pedro", password = passwordEncoder.encode("pedro"), role = Role.PASSENGER)
+        val account05 = authFactory.createAccount(username = "valen", password = passwordEncoder.encode("valen"), role = Role.PASSENGER)
         val account06 = authFactory.createAccount(username = "premium", password = passwordEncoder.encode("premium"), role = Role.DRIVER)
         val account07 = authFactory.createAccount(username = "simple", password = passwordEncoder.encode("simple"), role = Role.DRIVER)
         val account08 = authFactory.createAccount(username = "biker", password = passwordEncoder.encode("biker"), role = Role.DRIVER)
@@ -443,6 +445,10 @@ class Bootstrap(
         if (analyticsRepository.count() != 0.toLong()) {
             analyticsRepository.deleteAll()
         }
+    }
+
+    private fun deleteDataHome() {
+        homeRepository.deleteAll()
     }
 
 }
