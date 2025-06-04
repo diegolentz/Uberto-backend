@@ -8,6 +8,7 @@ import ar.edu.unsam.phm.uberto.dto.toTripScoreDTOMongo
 import ar.edu.unsam.phm.uberto.factory.AuthFactory
 import ar.edu.unsam.phm.uberto.factory.TestFactory
 import ar.edu.unsam.phm.uberto.model.*
+import ar.edu.unsam.phm.uberto.neo4j.PassengerNeo4jRepository
 import ar.edu.unsam.phm.uberto.repository.*
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import ar.edu.unsam.phm.uberto.services.AuthService
@@ -35,7 +36,9 @@ class Bootstrap(
     @Autowired val passengerService: PassengerService,
     @Autowired val mongoRepoDriver: MongoDriverRepository,
     @Autowired val analyticsRepository: AnalyticsRepository,
-    @Autowired val homeRepository: HomeRepository
+    @Autowired val homeRepository: HomeRepository,
+    @Autowired val passengerNeo4jRepo : PassengerNeo4jRepository,
+
 
 ) : CommandLineRunner {
 
@@ -69,42 +72,64 @@ class Bootstrap(
     }
 
     private fun createPassengers() {
-        val passengerList = mutableListOf<Passenger>()
+        val passengerListPostgres = mutableListOf<Passenger>()
+        val passengerListNeo4j = mutableListOf<Passenger>()
 
         val users = authRepo.findByRole(Role.PASSENGER)
-        val names = listOf<String>("Adrian", "Diego", "Matias", "Pedro", "Valentin")
-        val lastNames = listOf<String>("Perez", "Lentz", "Diaz", "Geragthy", "Pugliese")
-        val ages = listOf<LocalDate>(
+        val names = listOf("Adrian", "Diego", "Matias", "Pedro", "Valentin")
+        val lastNames = listOf("Perez", "Lentz", "Diaz", "Geragthy", "Pugliese")
+        val ages = listOf(
             LocalDate.now(),
             LocalDate.of(1990, 1, 1),
             LocalDate.of(1889, 12, 31),
             LocalDate.of(1995, 10, 11),
             LocalDate.of(1999, 11, 15)
         )
-        val imgenes = listOf<String>("https://res.cloudinary.com/dumcjdzxo/image/upload/adrian_cdouit.jpg",
+        val images = listOf(
+            "https://res.cloudinary.com/dumcjdzxo/image/upload/adrian_cdouit.jpg",
             "https://res.cloudinary.com/dumcjdzxo/image/upload/diego_uyhcwb.jpg",
             "https://res.cloudinary.com/dumcjdzxo/image/upload/matias_tclwsz.jpg",
             "https://res.cloudinary.com/dumcjdzxo/image/upload/perdo1_jfmu6o.jpg",
-            "https://res.cloudinary.com/dumcjdzxo/image/upload/valen_ilptyh.jpg")
+            "https://res.cloudinary.com/dumcjdzxo/image/upload/valen_ilptyh.jpg"
+        )
+        val balances = listOf(1000000.0, 1000000.0, 1000000.0, 1000000.0, 1.0)
+        val phones = listOf(1568568792, 1235598763, 1556876259, 1235468975, 1554876255)
 
-        val balances = listOf<Double>(1000000.0, 1000000.0, 1000000.0, 1000000.0, 1.0)
-        val phones = listOf<Int>(1568568792, 1235598763, 1556876259, 1235468975, 1554876255)
-
-        users.forEachIndexed { index: Int, user: UserAuthCredentials ->
-            val passenger = PassengerBuilder()
+        users.forEachIndexed { index, user ->
+            // Crear un pasajero para Postgres
+            val passengerPostgres = PassengerBuilder()
                 .userId(user.id!!)
                 .firstName(names[index])
                 .lastName(lastNames[index])
                 .birthDate(ages[index])
-                .img(imgenes[index])
+                .img(images[index])
                 .cellphone(phones[index])
                 .balance(balances[index])
                 .build()
 
-            passengerList.add(passenger)
+            // Crear un pasajero para Neo4J
+            val passengerNeo4j = Passenger(
+                id = null, // Neo4J generará el ID automáticamente
+                firstName = names[index],
+                lastName = lastNames[index],
+                balance = balances[index],
+                cellphone = phones[index],
+                birthDate = ages[index],
+                img = images[index],
+                credentials = user, // Relación con UserAuthCredentials
+                trips = mutableListOf(),
+                friends = mutableSetOf()
+            )
 
+            passengerListPostgres.add(passengerPostgres)
+            passengerListNeo4j.add(passengerNeo4j)
         }
-        passengerRepo.saveAll(passengerList)
+
+        // Persistir en Postgres
+        passengerRepo.saveAll(passengerListPostgres)
+
+        // Persistir en Neo4J
+        passengerNeo4jRepo.saveAll(passengerListNeo4j)
     }
     private fun createDrivers() {
         if(mongoRepoDriver.count() != 0.toLong()){

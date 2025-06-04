@@ -1,46 +1,62 @@
 package ar.edu.unsam.phm.uberto.model
 
-import ar.edu.unsam.phm.uberto.*
-import jakarta.persistence.*
+import ar.edu.unsam.phm.uberto.BalanceAmmountNotValidException
+import ar.edu.unsam.phm.uberto.FriendAlreadyExistException
+import ar.edu.unsam.phm.uberto.FriendNotExistException
+import ar.edu.unsam.phm.uberto.IncorrectValuesException
+import ar.edu.unsam.phm.uberto.InsufficientBalanceException
+import ar.edu.unsam.phm.uberto.IsEmptyException
+import jakarta.persistence.Entity
+import jakarta.persistence.Column
+import jakarta.persistence.FetchType
+import jakarta.persistence.GeneratedValue as JpaGeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToMany
+import jakarta.persistence.OneToMany
+import jakarta.persistence.OneToOne
+import org.springframework.data.neo4j.core.schema.Node
+import org.springframework.data.neo4j.core.schema.Id as Neo4jId
+import org.springframework.data.neo4j.core.schema.GeneratedValue as Neo4jGeneratedValue
+import org.springframework.data.neo4j.core.schema.Relationship
 import java.time.LocalDate
 import java.time.Period
 
-@Entity
-class Passenger : User {
+@Entity // JPA: Marks the class as an entity for Postgres
+@Node("Passenger") // Neo4J: Marks the class as a node for Neo4J
+open class Passenger(
+    @Neo4jId // Neo4J: Marks the identifier for Neo4J
+    @jakarta.persistence.Id // JPA: Marks the identifier for Postgres
+    @JpaGeneratedValue(strategy = GenerationType.IDENTITY) // JPA: Auto-generated ID for Postgres
+    @Neo4jGeneratedValue // Neo4J: Auto-generated ID for Neo4J
+    var id: Long? = null,
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null
+    @Column(length = 50) // JPA: Specifies column attributes for Postgres
+    var firstName: String = "",
 
-    @OneToOne
-    @JoinColumn(referencedColumnName = "id")
-    var credentials: UserAuthCredentials? = null
+    @Column(length = 50) // JPA: Specifies column attributes for Postgres
+    var lastName: String = "",
 
-    @Column(length = 50)
-    override var firstName: String = ""
+    var balance: Double = 0.0,
+    var cellphone: Int = 0,
+    var birthDate: LocalDate = LocalDate.now(),
 
-    @Column(length = 50)
-    override var lastName: String = ""
+    @Column(length = 255) // JPA: Specifies column attributes for Postgres
+    var img: String = "",
 
-    @Column
-    override var balance: Double = 0.0
+    @Relationship(type = "HAS_CREDENTIALS", direction = Relationship.Direction.OUTGOING) // Neo4J: Relationship for graph
+    @OneToOne // JPA: Defines a one-to-one relationship for Postgres
+    @JoinColumn(name = "credentials_id") // JPA: Specifies the foreign key column in Postgres
+    var credentials: UserAuthCredentials? = null,
 
+    @Relationship(type = "HAS_TRIP", direction = Relationship.Direction.OUTGOING) // Neo4J: Relationship for graph
     @OneToMany()
-    override val trips: MutableList<Trip> = mutableListOf()
+    val trips: MutableList<Trip> = mutableListOf(),
 
-    @Column
-    var cellphone: Int = 0
-
-    @Column
-    var birthDate: LocalDate = LocalDate.now()
-
-    @Column(length = 255)
-    override var img: String = ""
-
+    @Relationship(type = "FRIEND", direction = Relationship.Direction.OUTGOING) // Neo4J: Relationship for graph
     @ManyToMany(fetch = FetchType.LAZY)
     val friends: MutableSet<Passenger> = mutableSetOf()
-
-
+) {
     fun requestTrip(trip: Trip) {
         if (validateTrip(trip)) {
             throw InsufficientBalanceException()
@@ -100,7 +116,7 @@ class Passenger : User {
     }
 
 
-    override fun getScores(): List<TripScore> {
+    fun getScores(): List<TripScore> {
         return this.getScoredTrips().map { trip: Trip -> trip.score!! }
     }
 
@@ -108,5 +124,5 @@ class Passenger : User {
         return this.trips.filter { it.score != null }
     }
 
-
+    // Business logic methods...
 }
