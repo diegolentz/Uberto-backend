@@ -8,14 +8,14 @@ import ar.edu.unsam.phm.uberto.dto.toTripScoreDTOMongo
 import ar.edu.unsam.phm.uberto.factory.AuthFactory
 import ar.edu.unsam.phm.uberto.factory.TestFactory
 import ar.edu.unsam.phm.uberto.model.*
-import ar.edu.unsam.phm.uberto.neo4j.PassengerNeo4jRepository
+import ar.edu.unsam.phm.uberto.neo4j.PassNeo
+import ar.edu.unsam.phm.uberto.neo4j.PassNeo4jRepository
+import ar.edu.unsam.phm.uberto.neo4j.PassNeoService
 import ar.edu.unsam.phm.uberto.repository.*
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import ar.edu.unsam.phm.uberto.services.AuthService
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.PassengerService
-import ar.edu.unsam.phm.uberto.services.TripService
-import com.fasterxml.jackson.core.util.DefaultIndenter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -26,7 +26,6 @@ import java.time.temporal.ChronoUnit
 
 @Component
 class Bootstrap(
-    @Autowired val passengerRepo: PassengerRepository,
     @Autowired val tripRepo: TripsRepository,
     @Autowired val authRepo: AuthRepository,
     @Autowired val passwordEncoder: PasswordEncoder,
@@ -37,7 +36,9 @@ class Bootstrap(
     @Autowired val mongoRepoDriver: MongoDriverRepository,
     @Autowired val analyticsRepository: AnalyticsRepository,
     @Autowired val homeRepository: HomeRepository,
-    @Autowired val passengerNeo4jRepo : PassengerNeo4jRepository,
+    @Autowired val passengerRepo: PassengerRepository,
+    @Autowired val passengerNeoRepo : PassNeo4jRepository,
+    @Autowired val passNeoService : PassNeoService
 
 
 ) : CommandLineRunner {
@@ -49,6 +50,7 @@ class Bootstrap(
         createPassengers()
         createDrivers()
         createTrips()
+        createNeoPassenger()
         deleteAnalitycs()
         deleteDataHome()
     }
@@ -70,10 +72,9 @@ class Bootstrap(
 
         authRepo.saveAll(accounts)
     }
-
     private fun createPassengers() {
         val passengerListPostgres = mutableListOf<Passenger>()
-        val passengerListNeo4j = mutableListOf<Passenger>()
+        val passengerListNeo4j = mutableListOf<PassNeo>()
 
         val users = authRepo.findByRole(Role.PASSENGER)
         val names = listOf("Adrian", "Diego", "Matias", "Pedro", "Valentin")
@@ -107,29 +108,17 @@ class Bootstrap(
                 .balance(balances[index])
                 .build()
 
-            // Crear un pasajero para Neo4J
-            val passengerNeo4j = Passenger(
-                id = null, // Neo4J generará el ID automáticamente
-                firstName = names[index],
-                lastName = lastNames[index],
-                balance = balances[index],
-                cellphone = phones[index],
-                birthDate = ages[index],
-                img = images[index],
-                credentials = user, // Relación con UserAuthCredentials
-                trips = mutableListOf(),
-                friends = mutableSetOf()
-            )
+
+            // Crear un pasajero para Neo4j (solo id, firstName y lastName)
 
             passengerListPostgres.add(passengerPostgres)
-            passengerListNeo4j.add(passengerNeo4j)
         }
 
         // Persistir en Postgres
         passengerRepo.saveAll(passengerListPostgres)
 
-        // Persistir en Neo4J
-        passengerNeo4jRepo.saveAll(passengerListNeo4j)
+        // Persistir en Neo4j
+        passengerNeoRepo.saveAll(passengerListNeo4j)
     }
     private fun createDrivers() {
         if(mongoRepoDriver.count() != 0.toLong()){
@@ -465,6 +454,28 @@ class Bootstrap(
         return tripRepo.saveAll(listaTrip).toList()
 
     }
+
+    fun createNeoPassenger(): List<PassNeo> {
+        val passengers = passengerRepo.findAll()
+
+        // Mapear cada pasajero de Postgres a un objeto PassNeo
+        val passengersNeo = passengers.map { pass ->
+            PassNeo(
+                id = pass.id,
+                firstName = pass.firstName, // Acceso directo a la propiedad String
+                lastName = pass.lastName,  // Acceso directo a la propiedad String
+                friends = mutableListOf(), // Inicializar listas vacías para amigos
+                drivers = mutableListOf()  // Inicializar listas vacías para choferes
+            )
+        }
+
+        // Guardar todos los pasajeros en Neo4j
+        passNeoService.saveAll(passengersNeo)
+
+        // Retornar la lista de pasajeros Neo4j creados
+        return passengersNeo
+    }
+
 
     private fun deleteAnalitycs() {
         if (analyticsRepository.count() != 0.toLong()) {
