@@ -38,4 +38,8 @@ interface PassengerRepository : JpaRepository<Passenger, Long> {
     fun getByIdTrip(@Param("id") id: Long): Passenger
 
     fun findByCredentials_Id(id: Long): Optional<Passenger>
+
+    @EntityGraph(attributePaths = ["friends", "trips.driver"])
+    @Query("SELECT p FROM Passenger p")
+    fun findAllWithFriendsTripsAndDrivers(): List<Passenger>
 }

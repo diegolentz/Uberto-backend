@@ -37,19 +37,20 @@ class Bootstrap(
     @Autowired val analyticsRepository: AnalyticsRepository,
     @Autowired val homeRepository: HomeRepository,
     @Autowired val passengerRepo: PassengerRepository,
-    @Autowired val passengerNeoRepo : PassNeo4jRepository,
-    @Autowired val passNeoService : PassNeoService
+    @Autowired val passengerNeoRepo: PassNeo4jRepository,
+    @Autowired val passNeoService: PassNeoService
 
 
 ) : CommandLineRunner {
 
-    val factory = TestFactory(authService, passengerService, driverService ,jwtUtil)
+    val factory = TestFactory(authService, passengerService, driverService, jwtUtil)
     override fun run(vararg args: String?) {
 
         createAccounts()
         createPassengers()
         createDrivers()
         createTrips()
+        agregarAmigos()
         createNeoPassenger()
         deleteAnalitycs()
         deleteDataHome()
@@ -58,20 +59,58 @@ class Bootstrap(
     private fun createAccounts() {
         val authFactory: AuthFactory = AuthFactory()
 
-        val account01 = authFactory.createAccount(username = "adrian", password = passwordEncoder.encode("adrian"), role = Role.PASSENGER)
-        val account02 = authFactory.createAccount(username = "diego", password = passwordEncoder.encode("diego"), role = Role.PASSENGER)
-        val account03 = authFactory.createAccount(username = "matias", password = passwordEncoder.encode("matias"), role = Role.PASSENGER)
-        val account04 = authFactory.createAccount(username = "pedro", password = passwordEncoder.encode("pedro"), role = Role.PASSENGER)
-        val account05 = authFactory.createAccount(username = "valen", password = passwordEncoder.encode("valen"), role = Role.PASSENGER)
-        val account06 = authFactory.createAccount(username = "premium", password = passwordEncoder.encode("premium"), role = Role.DRIVER)
-        val account07 = authFactory.createAccount(username = "simple", password = passwordEncoder.encode("simple"), role = Role.DRIVER)
-        val account08 = authFactory.createAccount(username = "biker", password = passwordEncoder.encode("biker"), role = Role.DRIVER)
-        val account09 = authFactory.createAccount(username = "mandarina", password = passwordEncoder.encode("mandarina"), role = Role.DRIVER)
+        val account01 = authFactory.createAccount(
+            username = "adrian",
+            password = passwordEncoder.encode("adrian"),
+            role = Role.PASSENGER
+        )
+        val account02 = authFactory.createAccount(
+            username = "diego",
+            password = passwordEncoder.encode("diego"),
+            role = Role.PASSENGER
+        )
+        val account03 = authFactory.createAccount(
+            username = "matias",
+            password = passwordEncoder.encode("matias"),
+            role = Role.PASSENGER
+        )
+        val account04 = authFactory.createAccount(
+            username = "pedro",
+            password = passwordEncoder.encode("pedro"),
+            role = Role.PASSENGER
+        )
+        val account05 = authFactory.createAccount(
+            username = "valen",
+            password = passwordEncoder.encode("valen"),
+            role = Role.PASSENGER
+        )
+        val account06 = authFactory.createAccount(
+            username = "premium",
+            password = passwordEncoder.encode("premium"),
+            role = Role.DRIVER
+        )
+        val account07 = authFactory.createAccount(
+            username = "simple",
+            password = passwordEncoder.encode("simple"),
+            role = Role.DRIVER
+        )
+        val account08 = authFactory.createAccount(
+            username = "biker",
+            password = passwordEncoder.encode("biker"),
+            role = Role.DRIVER
+        )
+        val account09 = authFactory.createAccount(
+            username = "mandarina",
+            password = passwordEncoder.encode("mandarina"),
+            role = Role.DRIVER
+        )
 
-        val accounts = listOf(account01, account02, account03, account04, account05, account06, account07, account08, account09)
+        val accounts =
+            listOf(account01, account02, account03, account04, account05, account06, account07, account08, account09)
 
         authRepo.saveAll(accounts)
     }
+
     private fun createPassengers() {
         val passengerListPostgres = mutableListOf<Passenger>()
         val passengerListNeo4j = mutableListOf<PassNeo>()
@@ -120,8 +159,9 @@ class Bootstrap(
         // Persistir en Neo4j
         passengerNeoRepo.saveAll(passengerListNeo4j)
     }
+
     private fun createDrivers() {
-        if(mongoRepoDriver.count() != 0.toLong()){
+        if (mongoRepoDriver.count() != 0.toLong()) {
             mongoRepoDriver.deleteAll()
         }
         val driverList = mutableListOf<Driver>()
@@ -133,11 +173,13 @@ class Bootstrap(
         val brand = listOf("Fiat Uno", "Fiat Uno", "Gilera", "Falcon")
         val serial = listOf("FTG 879", "DEV 666", "AAA 123", "GIL 123")
         val model = listOf(2013, 1999, 2003, 1998)
-        val img = listOf("https://res.cloudinary.com/dumcjdzxo/image/upload/toreto_wx2me4.jpg",
+        val img = listOf(
+            "https://res.cloudinary.com/dumcjdzxo/image/upload/toreto_wx2me4.jpg",
             "https://res.cloudinary.com/dumcjdzxo/image/upload/colapinto_bihvlt.jpg",
             "https://res.cloudinary.com/dumcjdzxo/image/upload/laudo_hmkucz.jpg",
-            "https://s.yimg.com/ny/api/res/1.2/pDQ.2O97G7kjKifAaDEIRg--/YXBwaWQ9aGlnaGxhbmRlcjt3PTY0MDtoPTM2MQ--/https://media.zenfs.com/en/homerun/feed_manager_auto_publish_494/8346eca0608b3a3c423caf07cef0486a")
-        val baseP = listOf(1000.0, 700.0, 4500.0,150.0)
+            "https://s.yimg.com/ny/api/res/1.2/pDQ.2O97G7kjKifAaDEIRg--/YXBwaWQ9aGlnaGxhbmRlcjt3PTY0MDtoPTM2MQ--/https://media.zenfs.com/en/homerun/feed_manager_auto_publish_494/8346eca0608b3a3c423caf07cef0486a"
+        )
+        val baseP = listOf(1000.0, 700.0, 4500.0, 150.0)
 
         users.forEachIndexed { index: Int, user: UserAuthCredentials ->
             val driver = DriverBuilder(driverType[index])
@@ -235,7 +277,7 @@ class Bootstrap(
         val toretto = drivers.first { it.lastName == "Toretto" }
         val colapinto = drivers.first { it.lastName == "Colapinto" }
         val lauda = drivers.first { it.lastName == "Lauda" }
-        val chano = drivers.first{it.lastName == "Charpentier"}
+        val chano = drivers.first { it.lastName == "Charpentier" }
 
         val adrian = passengers.first { it.firstName == "Adrian" }
         val matias = passengers.first { it.firstName == "Matias" }
@@ -271,8 +313,8 @@ class Bootstrap(
             LocalDateTime.now().plusDays(20).withHour(17).withMinute(30).truncatedTo(ChronoUnit.SECONDS),
             LocalDateTime.now().plusDays(25).withHour(11).withMinute(15).truncatedTo(ChronoUnit.SECONDS),
             LocalDateTime.now().plusDays(30).withHour(14).withMinute(40).truncatedTo(ChronoUnit.SECONDS),
-            LocalDateTime.now().plusDays(35).withHour(13).withMinute(55).truncatedTo(ChronoUnit.SECONDS))
-
+            LocalDateTime.now().plusDays(35).withHour(13).withMinute(55).truncatedTo(ChronoUnit.SECONDS)
+        )
 
 
 //        trips realizados
@@ -393,15 +435,17 @@ class Bootstrap(
             .duration(durations[24]).origin(destination[24]).destination(origin[24])
             .passengerAmmount(passengersAmmounts[24]).build()
 
-        var allTrips = tripRepo.saveAll(listOf(
-            tripAdrian01, tripAdrian02, tripAdrian03, tripAdrian04, tripAdrian05,
-            tripMatias01, tripMatias02, tripMatias03, tripMatias04, tripMatias05,
-            tripDiego01, tripDiego02, tripDiego03, tripDiego04, tripDiego05,
-            tripPedro01, tripPedro02, tripPedro03, tripPedro04, tripPedro05,
-            tripValentin01, tripValentin02, tripValentin03, tripValentin04, tripValentin05
-        ))
+        var allTrips = tripRepo.saveAll(
+            listOf(
+                tripAdrian01, tripAdrian02, tripAdrian03, tripAdrian04, tripAdrian05,
+                tripMatias01, tripMatias02, tripMatias03, tripMatias04, tripMatias05,
+                tripDiego01, tripDiego02, tripDiego03, tripDiego04, tripDiego05,
+                tripPedro01, tripPedro02, tripPedro03, tripPedro04, tripPedro05,
+                tripValentin01, tripValentin02, tripValentin03, tripValentin04, tripValentin05
+            )
+        )
 
-        allTrips.filter{ it.finished() }.forEach {
+        allTrips.filter { it.finished() }.forEach {
             it.score = TripScore().apply {
                 message = "Este esta copado"
                 scorePoints = 5
@@ -411,26 +455,26 @@ class Bootstrap(
         allTrips = tripRepo.findAll()
 
 //        }
-        allTrips.filter{ it.driverId == colapinto.id }.forEach {
-            if(it.score != null) colapinto.tripsScoreDTO.add(it.toTripScoreDTOMongo())
+        allTrips.filter { it.driverId == colapinto.id }.forEach {
+            if (it.score != null) colapinto.tripsScoreDTO.add(it.toTripScoreDTOMongo())
             colapinto.tripsDTO.add(it.toTripDriverDTO())
         }
 
-        allTrips.filter{ it.driverId == lauda.id }.forEach {
-            if(it.score != null) lauda.tripsScoreDTO.add(it.toTripScoreDTOMongo())
+        allTrips.filter { it.driverId == lauda.id }.forEach {
+            if (it.score != null) lauda.tripsScoreDTO.add(it.toTripScoreDTOMongo())
             lauda.tripsDTO.add(it.toTripDriverDTO())
         }
 
-        allTrips.filter{ it.driverId == toretto.id }.forEach {
-            if(it.score != null) toretto.tripsScoreDTO.add(it.toTripScoreDTOMongo())
+        allTrips.filter { it.driverId == toretto.id }.forEach {
+            if (it.score != null) toretto.tripsScoreDTO.add(it.toTripScoreDTOMongo())
             toretto.tripsDTO.add(it.toTripDriverDTO())
         }
 
 
-
         //Para la query 5
         val finishedDate = LocalDateTime.now().minusDays(4).plusHours(3).plusMinutes(10).truncatedTo(ChronoUnit.SECONDS)
-        val finishedDate2 = LocalDateTime.now().minusDays(4).plusHours(3).plusMinutes(10).truncatedTo(ChronoUnit.SECONDS)
+        val finishedDate2 =
+            LocalDateTime.now().minusDays(4).plusHours(3).plusMinutes(10).truncatedTo(ChronoUnit.SECONDS)
 
         val tripValentinMock = TripBuilder().passenger(valentin).driver(chano)
             .setDate(finishedDate.toString())
@@ -449,32 +493,59 @@ class Bootstrap(
 
     }
 
-    private fun createTripScore(listaTrip : MutableList<Trip>) : List<Trip> {
-        listaTrip.filter { it ->  it.finished() }.forEach { factory.createTripScore(it) }
+    private fun createTripScore(listaTrip: MutableList<Trip>): List<Trip> {
+        listaTrip.filter { it -> it.finished() }.forEach { factory.createTripScore(it) }
         return tripRepo.saveAll(listaTrip).toList()
 
     }
 
-    fun createNeoPassenger(): List<PassNeo> {
+    fun agregarAmigos() {
+        val adrian = passengerRepo.findById(1).get()
+        val diego = passengerRepo.findById(2).get()
+        val matias = passengerRepo.findById(3).get()
+        val pedro = passengerRepo.findById(4).get()
+        val valentin = passengerRepo.findById(5).get()
+
+
+        passengerService.addFriend(adrian.id!!, diego.id!!)
+        passengerService.addFriend(diego.id!!, matias.id!!)
+        passengerService.addFriend(matias.id!!, pedro.id!!)
+        passengerService.addFriend(pedro.id!!, valentin.id!!)
+        passengerService.addFriend(valentin.id!!, adrian.id!!)
+
+
+//        var all: List<Passenger> = listOf(adrian, diego, matias, pedro, valentin)
+
+
+    }
+
+    fun createNeoPassenger() {
         val passengers = passengerRepo.findAll()
 
         // Mapear cada pasajero de Postgres a un objeto PassNeo
         val passengersNeo = passengers.map { pass ->
+            var trips = tripRepo.findByClient(pass!!)
+            var friends = passengerService.getFriends(pass.id!!)
             PassNeo(
                 id = pass.id,
-                firstName = pass.firstName, // Acceso directo a la propiedad String
-                lastName = pass.lastName,  // Acceso directo a la propiedad String
-                friends = mutableListOf(), // Inicializar listas vacías para amigos
-                drivers = mutableListOf()  // Inicializar listas vacías para choferes
+                firstName = pass.firstName,
+                lastName = pass.lastName,
+                friends = friends.map { friend ->
+                    PassNeo(
+                        id = friend.id,
+                        firstName = friend.firstname,
+                        lastName = friend.lastname
+                    )
+                }.toMutableList(),
+
             )
         }
-
-        // Guardar todos los pasajeros en Neo4j
         passNeoService.saveAll(passengersNeo)
 
-        // Retornar la lista de pasajeros Neo4j creados
-        return passengersNeo
     }
+
+
+
 
 
     private fun deleteAnalitycs() {

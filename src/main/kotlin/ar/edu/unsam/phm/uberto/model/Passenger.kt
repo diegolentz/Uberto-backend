@@ -1,9 +1,6 @@
 package ar.edu.unsam.phm.uberto.model
-
 import ar.edu.unsam.phm.uberto.*
 import jakarta.persistence.*
-import org.springframework.data.neo4j.core.schema.Node
-import org.springframework.data.neo4j.core.schema.Property
 
 import java.time.LocalDate
 import java.time.Period
