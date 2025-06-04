@@ -1,17 +1,22 @@
 package ar.edu.unsam.phm.uberto.model
 import ar.edu.unsam.phm.uberto.*
 import jakarta.persistence.*
+import org.springframework.data.neo4j.core.schema.Node
+import org.springframework.data.neo4j.core.schema.Property
 
 import java.time.LocalDate
 import java.time.Period
 
 @Entity
+@Node
 class Passenger : User {
     @Id
+    @org.springframework.data.neo4j.core.schema.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
     @Column(length = 50)
+    @Property("first_name")
     override var firstName: String = ""
 
     @OneToOne
@@ -20,12 +25,14 @@ class Passenger : User {
 
 
     @Column(length = 50)
+    @Property("last_name")
     override var lastName: String = ""
 
     @Column
     override var balance: Double = 0.0 // NO será persistido en Neo4j (sin @Property)
 
     @OneToMany
+    @Property("trips")
     override val trips: MutableList<Trip> = mutableListOf() // NO será persistido en Neo4j (sin @Property)
 
     @Column
@@ -38,6 +45,7 @@ class Passenger : User {
     override var img: String = "" // NO será persistido en Neo4j (sin @Property)
 
     @ManyToMany(fetch = FetchType.LAZY)
+    @Property("friends")
     val friends: MutableSet<Passenger> = mutableSetOf() // NO será persistido en Neo4j (sin @Property)
 
     fun requestTrip(trip: Trip) {

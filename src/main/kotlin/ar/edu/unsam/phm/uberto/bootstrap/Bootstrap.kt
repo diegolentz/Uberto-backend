@@ -8,7 +8,6 @@ import ar.edu.unsam.phm.uberto.dto.toTripScoreDTOMongo
 import ar.edu.unsam.phm.uberto.factory.AuthFactory
 import ar.edu.unsam.phm.uberto.factory.TestFactory
 import ar.edu.unsam.phm.uberto.model.*
-import ar.edu.unsam.phm.uberto.neo4j.PassNeo
 import ar.edu.unsam.phm.uberto.neo4j.PassNeo4jRepository
 import ar.edu.unsam.phm.uberto.neo4j.PassNeoService
 import ar.edu.unsam.phm.uberto.repository.*
@@ -51,7 +50,7 @@ class Bootstrap(
         createDrivers()
         createTrips()
         agregarAmigos()
-        createNeoPassenger()
+//        createNeoPassenger()
         deleteAnalitycs()
         deleteDataHome()
     }
@@ -113,7 +112,6 @@ class Bootstrap(
 
     private fun createPassengers() {
         val passengerListPostgres = mutableListOf<Passenger>()
-        val passengerListNeo4j = mutableListOf<PassNeo>()
 
         val users = authRepo.findByRole(Role.PASSENGER)
         val names = listOf("Adrian", "Diego", "Matias", "Pedro", "Valentin")
@@ -156,8 +154,6 @@ class Bootstrap(
         // Persistir en Postgres
         passengerRepo.saveAll(passengerListPostgres)
 
-        // Persistir en Neo4j
-        passengerNeoRepo.saveAll(passengerListNeo4j)
     }
 
     private fun createDrivers() {
@@ -519,31 +515,20 @@ class Bootstrap(
 
     }
 
-    fun createNeoPassenger() {
-        val passengers = passengerRepo.findAll()
+    private fun createNeoPassenger() {
+        val passengers = passengerRepo.findNeoData(1)
+        val passengers1 = passengerRepo.findNeoData(2)
+        val passengers2 = passengerRepo.findNeoData(3)
+        val passengers3 = passengerRepo.findNeoData(4)
+        val passengers4 = passengerRepo.findNeoData(5)
 
-        // Mapear cada pasajero de Postgres a un objeto PassNeo
-        val passengersNeo = passengers.map { pass ->
-            var trips = tripRepo.findByClient(pass!!)
-            var friends = passengerService.getFriends(pass.id!!)
-            PassNeo(
-                id = pass.id,
-                firstName = pass.firstName,
-                lastName = pass.lastName,
-                friends = friends.map { friend ->
-                    PassNeo(
-                        id = friend.id,
-                        firstName = friend.firstname,
-                        lastName = friend.lastname
-                    )
-                }.toMutableList(),
+        // Use listOf to create the list and handle nullable values
+        val total: List<Passenger> = listOfNotNull(
+            passengers, passengers1, passengers2, passengers3, passengers4
+        )
 
-            )
-        }
-        passNeoService.saveAll(passengersNeo)
-
+        passNeoService.saveAll(total)
     }
-
 
 
 
