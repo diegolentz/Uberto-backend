@@ -6,6 +6,7 @@ import org.springframework.data.neo4j.core.schema.Property
 
 import java.time.LocalDate
 import java.time.Period
+import org.springframework.data.annotation.Transient as TransianN4j
 
 @Entity
 @Node
@@ -20,6 +21,7 @@ class Passenger : User {
     override var firstName: String = ""
 
     @OneToOne
+    @TransianN4j
     @JoinColumn(referencedColumnName = "id")
     var credentials: UserAuthCredentials? = null
 
@@ -29,6 +31,7 @@ class Passenger : User {
     override var lastName: String = ""
 
     @Column
+    @TransianN4j
     override var balance: Double = 0.0 // NO será persistido en Neo4j (sin @Property)
 
     @OneToMany
@@ -36,6 +39,7 @@ class Passenger : User {
     override val trips: MutableList<Trip> = mutableListOf() // NO será persistido en Neo4j (sin @Property)
 
     @Column
+    @Transient
     var cellphone: Int = 0 // NO será persistido en Neo4j (sin @Property)
 
     @Column
