@@ -1,45 +1,61 @@
 package ar.edu.unsam.phm.uberto.model
-
 import ar.edu.unsam.phm.uberto.*
 import jakarta.persistence.*
+import org.springframework.data.neo4j.core.schema.Node
+import org.springframework.data.neo4j.core.schema.Property
+
 import java.time.LocalDate
 import java.time.Period
+import org.springframework.data.annotation.Transient as TransianN4j
 
 @Entity
+@Node
 class Passenger : User {
-
     @Id
+    @org.springframework.data.neo4j.core.schema.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
+    @Column(length = 50)
+    @Property("first_name")
+    override var firstName: String = ""
+
     @OneToOne
+    @TransianN4j
     @JoinColumn(referencedColumnName = "id")
     var credentials: UserAuthCredentials? = null
 
-    @Column(length = 50)
-    override var firstName: String = ""
 
     @Column(length = 50)
+    @Property("last_name")
     override var lastName: String = ""
 
     @Column
+    @TransianN4j
     override var balance: Double = 0.0
 
-    @OneToMany()
+    @OneToMany
+    @Property("trips")
+//    @TransianN4j
     override val trips: MutableList<Trip> = mutableListOf()
 
     @Column
+    @TransianN4j
     var cellphone: Int = 0
 
     @Column
+    @TransianN4j
     var birthDate: LocalDate = LocalDate.now()
 
     @Column(length = 255)
     override var img: String = ""
 
     @ManyToMany(fetch = FetchType.LAZY)
-    val friends: MutableSet<Passenger> = mutableSetOf()
+    @Property("friends")
+    var friends: MutableSet<Passenger> = mutableSetOf()
 
+    @Transient
+    var driver : List<String> = mutableListOf()
 
     fun requestTrip(trip: Trip) {
         if (validateTrip(trip)) {
@@ -72,7 +88,7 @@ class Passenger : User {
     }
 
     fun scoreTrip(trip: Trip, message: String, scorePoints: Int) {
-        validateScoreTrip(message,scorePoints)
+        validateScoreTrip(message, scorePoints)
         val score = TripScore()
         score.message = message
         score.scorePoints = scorePoints
@@ -81,9 +97,13 @@ class Passenger : User {
 
     fun age(): Int = Period.between(birthDate, LocalDate.now()).years
 
-    private fun validateScoreTrip(message: String,scorePoints: Int) {
-        if (message.isEmpty()) { throw IsEmptyException() }
-        if (scorePoints <= 0 || scorePoints > 6) { throw IncorrectValuesException() }
+    private fun validateScoreTrip(message: String, scorePoints: Int) {
+        if (message.isEmpty()) {
+            throw IsEmptyException()
+        }
+        if (scorePoints <= 0 || scorePoints > 6) {
+            throw IncorrectValuesException()
+        }
     }
 
     private fun validateTrip(trip: Trip): Boolean {
@@ -99,7 +119,6 @@ class Passenger : User {
         this.balance -= price
     }
 
-
     override fun getScores(): List<TripScore> {
         return this.getScoredTrips().map { trip: Trip -> trip.score!! }
     }
@@ -108,5 +127,7 @@ class Passenger : User {
         return this.trips.filter { it.score != null }
     }
 
-
+    fun updateDriver(){
+        driver = this.trips.map { it.driverId }
+    }
 }

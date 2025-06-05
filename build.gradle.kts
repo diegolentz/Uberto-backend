@@ -37,6 +37,11 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 	runtimeOnly("org.postgresql:postgresql")
+	implementation("org.springframework.boot:spring-boot-starter-data-neo4j")
+	implementation("org.neo4j.driver:neo4j-java-driver:5.17.0")
+	implementation("org.springframework:spring-tx")
+
+
 
 //	SECURITY
 	implementation("org.springframework.boot:spring-boot-starter-security")
