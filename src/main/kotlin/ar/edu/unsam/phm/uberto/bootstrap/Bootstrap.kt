@@ -45,6 +45,7 @@ class Bootstrap(
     val factory = TestFactory(authService, passengerService, driverService, jwtUtil)
     override fun run(vararg args: String?) {
 
+        deleteNeo4j()
         createAccounts()
         createPassengers()
         createDrivers()
@@ -539,4 +540,8 @@ class Bootstrap(
         homeRepository.deleteAll()
     }
 
+    private fun deleteNeo4j(){
+        passengerNeoRepo.deleteAll()
+
+    }
 }
