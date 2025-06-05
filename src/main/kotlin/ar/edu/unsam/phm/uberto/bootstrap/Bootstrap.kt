@@ -157,7 +157,6 @@ class Bootstrap(
     }
 
 
-
     private fun createDrivers() {
         if (mongoRepoDriver.count() != 0.toLong()) {
             mongoRepoDriver.deleteAll()
@@ -516,18 +515,19 @@ class Bootstrap(
 
 
     }
+
     private fun createNeoPassenger() {
+
         val total = passengerRepo.findAll()
-        println("El total es: ${total.size}")
-        println("El total es: ${total.size}")
-        println("El total es: ${total.size}")
-        println("El total es: ${total.size}")
+        total.forEach { pass ->
+            pass.updateDriver()
+        }
+//        println("El total es: ${total[0].trips[0]}")
+//        println("El total es: ${total[1].trips[0]}")
+//        println("El total es: ${total}")
+//        println("El total es: ${total}")
         passengerNeoRepo.saveAll(total)
-
-
     }
-
-
 
 
     private fun deleteAnalitycs() {
@@ -540,7 +540,7 @@ class Bootstrap(
         homeRepository.deleteAll()
     }
 
-    private fun deleteNeo4j(){
+    private fun deleteNeo4j() {
         passengerNeoRepo.deleteAll()
 
     }

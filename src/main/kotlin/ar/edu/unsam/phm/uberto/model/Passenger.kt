@@ -36,7 +36,7 @@ class Passenger : User {
 
     @OneToMany
     @Property("trips")
-    @TransianN4j
+//    @TransianN4j
     override val trips: MutableList<Trip> = mutableListOf()
 
     @Column
@@ -54,8 +54,8 @@ class Passenger : User {
     @Property("friends")
     var friends: MutableSet<Passenger> = mutableSetOf()
 
-//    @Transient
-//    var driver : List<String> = trips.map { it.driverId }
+    @Transient
+    var driver : List<String> = mutableListOf()
 
     fun requestTrip(trip: Trip) {
         if (validateTrip(trip)) {
@@ -125,5 +125,9 @@ class Passenger : User {
 
     private fun getScoredTrips(): List<Trip> {
         return this.trips.filter { it.score != null }
+    }
+
+    fun updateDriver(){
+        driver = this.trips.map { it.driverId }
     }
 }
