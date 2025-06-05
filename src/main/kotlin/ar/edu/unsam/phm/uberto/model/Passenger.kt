@@ -46,7 +46,7 @@ class Passenger : User {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @Property("friends")
-    val friends: MutableSet<Passenger> = mutableSetOf() // NO será persistido en Neo4j (sin @Property)
+    var friends: MutableSet<Passenger> = mutableSetOf() // NO será persistido en Neo4j (sin @Property)
 
     fun requestTrip(trip: Trip) {
         if (validateTrip(trip)) {

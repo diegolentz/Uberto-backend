@@ -153,6 +153,7 @@ class Bootstrap(
 
         // Persistir en Postgres
         passengerRepo.saveAll(passengerListPostgres)
+        passengerNeoRepo.saveAll(passengerListPostgres)
 
     }
 
@@ -514,20 +515,11 @@ class Bootstrap(
 
 
     }
-
     private fun createNeoPassenger() {
-        val passengers = passengerRepo.findNeoData(1)
-        val passengers1 = passengerRepo.findNeoData(2)
-        val passengers2 = passengerRepo.findNeoData(3)
-        val passengers3 = passengerRepo.findNeoData(4)
-        val passengers4 = passengerRepo.findNeoData(5)
+        val total = passengerRepo.findAll()
 
-        // Use listOf to create the list and handle nullable values
-        val total: List<Passenger> = listOfNotNull(
-            passengers, passengers1, passengers2, passengers3, passengers4
-        )
 
-        passNeoService.saveAll(total)
+
     }
 
 
