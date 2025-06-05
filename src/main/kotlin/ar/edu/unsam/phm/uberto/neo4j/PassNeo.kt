@@ -1,6 +1,5 @@
 package ar.edu.unsam.phm.uberto.neo4j
 
-import ar.edu.unsam.phm.uberto.model.Driver
 import org.springframework.data.neo4j.core.schema.Node
 import org.springframework.data.neo4j.core.schema.Relationship
 import org.springframework.data.neo4j.core.schema.GeneratedValue as Neo4jGeneratedValue
