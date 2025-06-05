@@ -39,11 +39,13 @@ interface PassengerRepository : JpaRepository<Passenger, Long> {
 
     fun findByCredentials_Id(id: Long): Optional<Passenger>
 
-    @EntityGraph(attributePaths = ["friends", "trips.driver"])
-    @Query("SELECT p FROM Passenger p")
-    fun findAllWithFriendsTripsAndDrivers(): List<Passenger>
-
-    @EntityGraph(attributePaths = ["friends", "trips.driver"])
-    @Query("SELECT p FROM Passenger p WHERE p.id = :id")
-    fun findNeoData(@Param("id") id: Long): Passenger?
+//    @EntityGraph(attributePaths = ["friends", "trips.driver"])
+//    @Query("SELECT p FROM Passenger p")
+//    fun findAllWithFriendsTripsAndDrivers(): List<Passenger>
+//
+//    @EntityGraph(attributePaths = ["friends", "trips.driver"])
+//    @Query("SELECT p FROM Passenger p WHERE p.id = :id")
+//    fun findNeoData(@Param("id") id: Long): Passenger?
+    @EntityGraph(attributePaths = ["friends", "trips"])
+    override fun findAll(): List<Passenger>
 }

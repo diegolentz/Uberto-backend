@@ -50,7 +50,7 @@ class Bootstrap(
         createDrivers()
         createTrips()
         agregarAmigos()
-//        createNeoPassenger()
+        createNeoPassenger()
         deleteAnalitycs()
         deleteDataHome()
     }
@@ -146,16 +146,16 @@ class Bootstrap(
                 .build()
 
 
-            // Crear un pasajero para Neo4j (solo id, firstName y lastName)
-
             passengerListPostgres.add(passengerPostgres)
         }
 
         // Persistir en Postgres
         passengerRepo.saveAll(passengerListPostgres)
-        passengerNeoRepo.saveAll(passengerListPostgres)
+//        passengerNeoRepo.saveAll(passengerListPostgres)
 
     }
+
+
 
     private fun createDrivers() {
         if (mongoRepoDriver.count() != 0.toLong()) {
@@ -517,7 +517,11 @@ class Bootstrap(
     }
     private fun createNeoPassenger() {
         val total = passengerRepo.findAll()
-
+        println("El total es: ${total.size}")
+        println("El total es: ${total.size}")
+        println("El total es: ${total.size}")
+        println("El total es: ${total.size}")
+        passengerNeoRepo.saveAll(total)
 
 
     }

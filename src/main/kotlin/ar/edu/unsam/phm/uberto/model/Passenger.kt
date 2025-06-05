@@ -32,25 +32,30 @@ class Passenger : User {
 
     @Column
     @TransianN4j
-    override var balance: Double = 0.0 // NO será persistido en Neo4j (sin @Property)
+    override var balance: Double = 0.0
 
     @OneToMany
     @Property("trips")
-    override val trips: MutableList<Trip> = mutableListOf() // NO será persistido en Neo4j (sin @Property)
+    @TransianN4j
+    override val trips: MutableList<Trip> = mutableListOf()
 
     @Column
-    @Transient
-    var cellphone: Int = 0 // NO será persistido en Neo4j (sin @Property)
+    @TransianN4j
+    var cellphone: Int = 0
 
     @Column
-    var birthDate: LocalDate = LocalDate.now() // NO será persistido en Neo4j (sin @Property)
+    @TransianN4j
+    var birthDate: LocalDate = LocalDate.now()
 
     @Column(length = 255)
-    override var img: String = "" // NO será persistido en Neo4j (sin @Property)
+    override var img: String = ""
 
     @ManyToMany(fetch = FetchType.LAZY)
     @Property("friends")
-    var friends: MutableSet<Passenger> = mutableSetOf() // NO será persistido en Neo4j (sin @Property)
+    var friends: MutableSet<Passenger> = mutableSetOf()
+
+//    @Transient
+//    var driver : List<String> = trips.map { it.driverId }
 
     fun requestTrip(trip: Trip) {
         if (validateTrip(trip)) {
