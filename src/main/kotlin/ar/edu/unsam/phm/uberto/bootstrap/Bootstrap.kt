@@ -598,11 +598,11 @@ class Bootstrap(
         neoPedro.friends.addAll(listOf(neoValentin, neoMatias))
         neoValentin.friends.addAll(listOf(neoAdrian, neoPedro))
 
-        neoAdrian.drivers.addAll(listOf(toretoNeo, colapintoNeo))
-        neoDiego.drivers.addAll(listOf(laudaNeo, chanoNeo))
-        neoMatias.drivers.addAll(listOf(colapintoNeo, toretoNeo))
-        neoPedro.drivers.addAll(listOf(chanoNeo, laudaNeo))
-        neoValentin.drivers.addAll(listOf(laudaNeo, chanoNeo))
+        neoAdrian.drivers.addAll(listOf(laudaNeo, toretoNeo))
+        neoDiego.drivers.addAll(listOf(toretoNeo, colapintoNeo))
+        neoMatias.drivers.addAll(listOf(colapintoNeo, laudaNeo))
+        neoPedro.drivers.addAll(listOf(colapintoNeo))
+        neoValentin.drivers.addAll(listOf(toretoNeo,laudaNeo, chanoNeo))
 
 
 
