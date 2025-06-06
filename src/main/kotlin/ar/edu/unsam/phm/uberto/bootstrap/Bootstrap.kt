@@ -8,6 +8,9 @@ import ar.edu.unsam.phm.uberto.dto.toTripScoreDTOMongo
 import ar.edu.unsam.phm.uberto.factory.AuthFactory
 import ar.edu.unsam.phm.uberto.factory.TestFactory
 import ar.edu.unsam.phm.uberto.model.*
+import ar.edu.unsam.phm.uberto.neo4j.DriverNeo
+import ar.edu.unsam.phm.uberto.neo4j.DriverNeoRepository
+import ar.edu.unsam.phm.uberto.neo4j.PassNeo
 import ar.edu.unsam.phm.uberto.neo4j.PassNeo4jRepository
 import ar.edu.unsam.phm.uberto.neo4j.PassNeoService
 import ar.edu.unsam.phm.uberto.repository.*
@@ -15,6 +18,7 @@ import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import ar.edu.unsam.phm.uberto.services.AuthService
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.PassengerService
+import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -37,7 +41,7 @@ class Bootstrap(
     @Autowired val homeRepository: HomeRepository,
     @Autowired val passengerRepo: PassengerRepository,
     @Autowired val passengerNeoRepo: PassNeo4jRepository,
-    @Autowired val passNeoService: PassNeoService
+    @Autowired val driverNeoRepo: DriverNeoRepository
 
 
 ) : CommandLineRunner {
@@ -51,10 +55,12 @@ class Bootstrap(
         createDrivers()
         createTrips()
         agregarAmigos()
+        createNeoDriver()
         createNeoPassenger()
         deleteAnalitycs()
         deleteDataHome()
     }
+
 
     private fun createAccounts() {
         val authFactory: AuthFactory = AuthFactory()
@@ -145,17 +151,11 @@ class Bootstrap(
                 .cellphone(phones[index])
                 .balance(balances[index])
                 .build()
-
-
             passengerListPostgres.add(passengerPostgres)
         }
-
-        // Persistir en Postgres
         passengerRepo.saveAll(passengerListPostgres)
-//        passengerNeoRepo.saveAll(passengerListPostgres)
 
     }
-
 
     private fun createDrivers() {
         if (mongoRepoDriver.count() != 0.toLong()) {
@@ -515,18 +515,102 @@ class Bootstrap(
 
 
     }
-
-    private fun createNeoPassenger() {
-
-        val total = passengerRepo.findAll()
-        total.forEach { pass ->
-            pass.updateDriver()
+    fun createNeoDriver() {
+        println("Creating DriverNeo nodes in Neo4j...")
+        val mongoDrivers = mongoRepoDriver.findAll()
+        val driverNeoList = mongoDrivers.mapNotNull { mongoDriver ->
+            mongoDriver.id?.let { driverIdString -> // Asumiendo que Driver.id es el ObjectId de Mongo
+                DriverNeo().apply {
+                    this.driverId = driverIdString.toString()
+                    // Aquí puedes mapear otros campos de mongoDriver a DriverNeo si es necesario
+                    // Ejemplo: this.name = mongoDriver.firstName
+                }
+            }
         }
-//        println("El total es: ${total[0].trips[0]}")
-//        println("El total es: ${total[1].trips[0]}")
-//        println("El total es: ${total}")
-//        println("El total es: ${total}")
-        passengerNeoRepo.saveAll(total)
+        if (driverNeoList.isNotEmpty()) {
+            driverNeoRepo.saveAll(driverNeoList)
+            println("Saved ${driverNeoList.size} DriverNeo objects to Neo4j.")
+        } else {
+            println("No DriverNeo objects to create/save in Neo4j.")
+        }
+    }
+
+    fun createNeoPassenger() {
+        println("Creating DriverNeo nodes in Neo4j...")
+        val passengers = passengerRepo.findAll()
+        val diego = passengers.first { it.firstName == "Diego" }
+        val adrian = passengers.first { it.firstName == "Adrian" }
+        val matias = passengers.first { it.firstName == "Matias" }
+        val pedro = passengers.first { it.firstName == "Pedro" }
+        val valentin = passengers.first { it.firstName == "Valentin" }
+
+        val allDrivers = mongoRepoDriver.findAll()
+        var driverNeo = driverNeoRepo.findAll()
+
+        val toreto = allDrivers.first { it.firstName == "Dominic" }
+        val colapinto = allDrivers.first { it.firstName == "Franco" }
+        val lauda = allDrivers.first { it.firstName == "Nicky" }
+        val chano = allDrivers.first { it.firstName == "Chano" }
+
+        val toretoNeo = driverNeo.first { it.driverId == toreto.id.toString() }
+        val colapintoNeo = driverNeo.first { it.driverId == colapinto.id.toString() }
+        val laudaNeo = driverNeo.first { it.driverId == lauda.id.toString() }
+        val chanoNeo = driverNeo.first { it.driverId == chano.id.toString() }
+
+        var neoAdrian = PassNeo().apply {
+            firstName = adrian.firstName
+            lastName = adrian.lastName
+            friends = mutableListOf()
+            drivers = mutableListOf()
+        }
+
+        var neoMatias = PassNeo().apply {
+            firstName = matias.firstName
+            lastName = matias.lastName
+            friends = mutableListOf()
+            drivers = mutableListOf()
+        }
+
+        var neoValentin = PassNeo().apply {
+            firstName = valentin.firstName
+            lastName = valentin.lastName
+            friends = mutableListOf()
+            drivers = mutableListOf()
+        }
+
+        var neoPedro = PassNeo().apply {
+            firstName = pedro.firstName
+            lastName = pedro.lastName
+            friends = mutableListOf()
+            drivers = mutableListOf()
+        }
+
+        var neoDiego = PassNeo().apply {
+            firstName = diego.firstName
+            lastName = diego.lastName
+            friends = mutableListOf()
+            drivers = mutableListOf()
+        }
+
+        neoAdrian.friends.addAll(listOf(neoDiego, neoValentin))
+        neoDiego.friends.addAll(listOf(neoAdrian, neoMatias))
+        neoMatias.friends.addAll(listOf(neoDiego, neoPedro))
+        neoPedro.friends.addAll(listOf(neoValentin, neoMatias))
+        neoValentin.friends.addAll(listOf(neoAdrian, neoPedro))
+
+        neoAdrian.drivers.addAll(listOf(laudaNeo, toretoNeo))
+        neoDiego.drivers.addAll(listOf(toretoNeo, colapintoNeo))
+        neoMatias.drivers.addAll(listOf(colapintoNeo, laudaNeo))
+        neoPedro.drivers.addAll(listOf(colapintoNeo))
+        neoValentin.drivers.addAll(listOf(toretoNeo,laudaNeo, chanoNeo))
+
+
+
+
+
+
+        var all = listOf(neoAdrian, neoMatias, neoValentin, neoPedro, neoDiego)
+        passengerNeoRepo.saveAll(all)
     }
 
 
@@ -542,6 +626,7 @@ class Bootstrap(
 
     private fun deleteNeo4j() {
         passengerNeoRepo.deleteAll()
-
+        driverNeoRepo.deleteAll()
     }
+
 }

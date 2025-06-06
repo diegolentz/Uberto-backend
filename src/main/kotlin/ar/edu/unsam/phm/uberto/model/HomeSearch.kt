@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 
 
 
-@RedisHash("registro", timeToLive = 180)
+@RedisHash("registro", timeToLive = 180000)
 data class HomeSearch (
     var numberPassengers: Int?,
     var date: LocalDateTime?,
