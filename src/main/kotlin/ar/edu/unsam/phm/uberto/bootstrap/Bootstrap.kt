@@ -18,6 +18,7 @@ import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import ar.edu.unsam.phm.uberto.services.AuthService
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.PassengerService
+import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -40,7 +41,6 @@ class Bootstrap(
     @Autowired val homeRepository: HomeRepository,
     @Autowired val passengerRepo: PassengerRepository,
     @Autowired val passengerNeoRepo: PassNeo4jRepository,
-    @Autowired val passNeoService: PassNeoService,
     @Autowired val driverNeoRepo: DriverNeoRepository
 
 
@@ -48,12 +48,14 @@ class Bootstrap(
 
     val factory = TestFactory(authService, passengerService, driverService, jwtUtil)
     override fun run(vararg args: String?) {
+
         deleteNeo4j()
         createAccounts()
         createPassengers()
         createDrivers()
         createTrips()
         agregarAmigos()
+        createNeoDriver()
         createNeoPassenger()
         deleteAnalitycs()
         deleteDataHome()
@@ -117,7 +119,6 @@ class Bootstrap(
 
     private fun createPassengers() {
         val passengerListPostgres = mutableListOf<Passenger>()
-        val passengerListNeo4j = mutableListOf<PassNeo>()
 
         val users = authRepo.findByRole(Role.PASSENGER)
         val names = listOf("Adrian", "Diego", "Matias", "Pedro", "Valentin")
@@ -150,18 +151,10 @@ class Bootstrap(
                 .cellphone(phones[index])
                 .balance(balances[index])
                 .build()
-
-
-            // Crear un pasajero para Neo4j (solo id, firstName y lastName)
-
             passengerListPostgres.add(passengerPostgres)
         }
-
-        // Persistir en Postgres
         passengerRepo.saveAll(passengerListPostgres)
 
-        // Persistir en Neo4j
-        passengerNeoRepo.saveAll(passengerListNeo4j)
     }
 
     private fun createDrivers() {
@@ -523,40 +516,59 @@ class Bootstrap(
 
     }
 
-    fun createNeoPassenger() {
-        val passengers = passengerRepo.findAll()
+    fun createNeoDriver() {
         val idsDriver = mongoRepoDriver.findAll().map { it.id!! }
-
         val driverNeoList = idsDriver.map { drivId ->
             DriverNeo().apply {
-                driverId = drivId.toString() // Conversión a String si driverId es String
+                driverId = drivId.toString()
             }
         }
         driverNeoRepo.saveAll(driverNeoList)
+    }
+
+    fun createNeoPassenger() {
+        val passengers = passengerRepo.findAll()
+        val driverList = driverNeoRepo.findAll().map { it.driverId }
+        val friendsLists = passengers.map { pass ->
+            pass.friends.map { it.id.toString() }
+        }
 
         val passNeoList = passengers.map { pass ->
             PassNeo(
                 firstName = pass.firstName,
                 lastName = pass.lastName,
                 id = pass.id,
-            ).apply {
-                // Filtro mejorado para obtener amigos, evitando poner al mismo pasajero como amigo
-                friends = passengers
-                    .filter { other -> other.id != pass.id && pass.friends.any { f -> f.id == other.id } }
-                    .map { other -> PassNeo(
-                        firstName = other.firstName,
-                        lastName = other.lastName,
-                        id = other.id
-                    ) }
-                    .toMutableList()
+                friends = getFriends(friendsLists, pass),
+                drivers = getDriversId(pass, driverList)
+            )
+        }
+//        passNeoList.forEach { it.drivers = passengerRepo.findBy_AndFriendsOrId(passengers.friends.) }
+        passengerNeoRepo.saveAll(passNeoList)
+    }
 
-                // Conversión de id si hace falta, y uso de MutableList
-                drivers = driverNeoList
-                    .filter { it.driverId == pass.id.toString() }
-                    .toMutableList()
+    private fun getDriversId(passenger: Passenger, driverList: List<String>): MutableList<DriverNeo> {
+        val passengerDriverIds = passenger.trips.map { it.driverId }
+        val matchingDriverIds = passengerDriverIds.filter { it in driverList }
+        // Busca los DriverNeo usando el repositorio
+        return matchingDriverIds.map { driverId -> driverNeoRepo.findByDriverId(driverId) }.toMutableList()
+    }
+
+
+    private fun getFriends(friendsLists: List<List<String>>, passengers: List<Passenger>): MutableList<PassNeo> {
+        val friendsNeo = mutableListOf<PassNeo>()
+        friendsLists.forEachIndexed { index, friends ->
+            friends.forEach { friendId ->
+                val friend = passengers.firstOrNull { it.id.toString() == friendId }
+                if (friend != null) {
+                    friendsNeo.add(PassNeo().apply {
+                        id = friend.id
+                        firstName = friend.firstName
+                        lastName = friend.lastName
+                    })
+                }
             }
         }
-        passNeoService.saveAll(passNeoList)
+        return friendsNeo
     }
 
 
@@ -571,13 +583,9 @@ class Bootstrap(
         homeRepository.deleteAll()
     }
 
-    private fun deleteNeo4j(){
-        if (passengerNeoRepo.count() != 0.toLong()) {
-            passengerNeoRepo.deleteAll()
-        }
-        if (driverNeoRepo.count() != 0.toLong()) {
-            driverNeoRepo.deleteAll()
-        }
+    private fun deleteNeo4j() {
+        passengerNeoRepo.deleteAll()
+        driverNeoRepo.deleteAll()
     }
 
 }
