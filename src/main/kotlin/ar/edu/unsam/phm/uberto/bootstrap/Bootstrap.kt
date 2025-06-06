@@ -515,7 +515,6 @@ class Bootstrap(
 
 
     }
-
     fun createNeoDriver() {
         println("Creating DriverNeo nodes in Neo4j...")
         val mongoDrivers = mongoRepoDriver.findAll()
@@ -535,52 +534,83 @@ class Bootstrap(
             println("No DriverNeo objects to create/save in Neo4j.")
         }
     }
+
     fun createNeoPassenger() {
-        val passengersFromDb = passengerRepo.findAll()
-        // 1. Mapea TODOS los PassNeo por id (usa Long)
-        val passNeoMap = passengersFromDb.associate { pass ->
-            pass.id!! to PassNeo(
-                id = pass.id,
-                firstName = pass.firstName,
-                lastName = pass.lastName
-            )
+        println("Creating DriverNeo nodes in Neo4j...")
+        val passengers = passengerRepo.findAll()
+        val diego = passengers.first { it.firstName == "Diego" }
+        val adrian = passengers.first { it.firstName == "Adrian" }
+        val matias = passengers.first { it.firstName == "Matias" }
+        val pedro = passengers.first { it.firstName == "Pedro" }
+        val valentin = passengers.first { it.firstName == "Valentin" }
+
+        val allDrivers = mongoRepoDriver.findAll()
+        var driverNeo = driverNeoRepo.findAll()
+
+        val toreto = allDrivers.first { it.firstName == "Dominic" }
+        val colapinto = allDrivers.first { it.firstName == "Franco" }
+        val lauda = allDrivers.first { it.firstName == "Nicky" }
+        val chano = allDrivers.first { it.firstName == "Chano" }
+
+        val toretoNeo = driverNeo.first { it.driverId == toreto.id.toString() }
+        val colapintoNeo = driverNeo.first { it.driverId == colapinto.id.toString() }
+        val laudaNeo = driverNeo.first { it.driverId == lauda.id.toString() }
+        val chanoNeo = driverNeo.first { it.driverId == chano.id.toString() }
+
+        var neoAdrian = PassNeo().apply {
+            firstName = adrian.firstName
+            lastName = adrian.lastName
+            friends = mutableListOf()
+            drivers = mutableListOf()
         }
 
-        // 2. Mapea todos los DriverNeo por driverId (usa Long!)
-        val allDriverNeoFromDb = driverNeoRepo.findAll()
-        val driverNeoByIdMap = allDriverNeoFromDb
-            .filter { it.driverId != null } // Asegura usar driverId (Long)
-            .associateBy { it.driverId!! }
-
-        passengersFromDb.forEach { pass ->
-            val neo = passNeoMap[pass.id!!]!!
-            // Amigos:
-            pass.friends.forEach { friend ->
-                friend.id?.let { friendId ->
-                    passNeoMap[friendId]?.let { neoFriend ->
-                        if (neoFriend != neo && !neo.friends.contains(neoFriend)) {
-                            neo.friends.add(neoFriend)
-                        }
-                    }
-                }
-            }
-            // Drivers:
-            pass.trips.forEach { trip ->
-                val driverId = trip.driverId
-                if (driverId != null) {
-                    val driverNeo = driverNeoByIdMap[driverId]
-                    if (driverNeo != null) {
-                        if (!neo.drivers.contains(driverNeo)) {
-                            neo.drivers.add(driverNeo)
-                        }
-                    } else {
-                        println("WARNING: No se encontró DriverNeo con id: $driverId")
-                    }
-                }
-            }
+        var neoMatias = PassNeo().apply {
+            firstName = matias.firstName
+            lastName = matias.lastName
+            friends = mutableListOf()
+            drivers = mutableListOf()
         }
 
-        passengerNeoRepo.saveAll(passNeoMap.values)
+        var neoValentin = PassNeo().apply {
+            firstName = valentin.firstName
+            lastName = valentin.lastName
+            friends = mutableListOf()
+            drivers = mutableListOf()
+        }
+
+        var neoPedro = PassNeo().apply {
+            firstName = pedro.firstName
+            lastName = pedro.lastName
+            friends = mutableListOf()
+            drivers = mutableListOf()
+        }
+
+        var neoDiego = PassNeo().apply {
+            firstName = diego.firstName
+            lastName = diego.lastName
+            friends = mutableListOf()
+            drivers = mutableListOf()
+        }
+
+        neoAdrian.friends.addAll(listOf(neoDiego, neoValentin))
+        neoDiego.friends.addAll(listOf(neoAdrian, neoMatias))
+        neoMatias.friends.addAll(listOf(neoDiego, neoPedro))
+        neoPedro.friends.addAll(listOf(neoValentin, neoMatias))
+        neoValentin.friends.addAll(listOf(neoAdrian, neoPedro))
+
+        neoAdrian.drivers.addAll(listOf(toretoNeo, colapintoNeo))
+        neoDiego.drivers.addAll(listOf(laudaNeo, chanoNeo))
+        neoMatias.drivers.addAll(listOf(colapintoNeo, toretoNeo))
+        neoPedro.drivers.addAll(listOf(chanoNeo, laudaNeo))
+        neoValentin.drivers.addAll(listOf(laudaNeo, chanoNeo))
+
+
+
+
+
+
+        var all = listOf(neoAdrian, neoMatias, neoValentin, neoPedro, neoDiego)
+        passengerNeoRepo.saveAll(all)
     }
 
 
