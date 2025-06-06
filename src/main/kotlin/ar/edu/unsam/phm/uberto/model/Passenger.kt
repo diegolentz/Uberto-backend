@@ -23,22 +23,22 @@ class Passenger : User {
     override var lastName: String = ""
 
     @Column
-    override var balance: Double = 0.0 // NO será persistido en Neo4j (sin @Property)
+    override var balance: Double = 0.0
 
     @OneToMany
-    override val trips: MutableList<Trip> = mutableListOf() // NO será persistido en Neo4j (sin @Property)
+    override val trips: MutableList<Trip> = mutableListOf()
 
     @Column
-    var cellphone: Int = 0 // NO será persistido en Neo4j (sin @Property)
+    var cellphone: Int = 0
 
     @Column
-    var birthDate: LocalDate = LocalDate.now() // NO será persistido en Neo4j (sin @Property)
+    var birthDate: LocalDate = LocalDate.now()
 
     @Column(length = 255)
-    override var img: String = "" // NO será persistido en Neo4j (sin @Property)
+    override var img: String = ""
 
     @ManyToMany(fetch = FetchType.LAZY)
-    val friends: MutableSet<Passenger> = mutableSetOf() // NO será persistido en Neo4j (sin @Property)
+    val friends: MutableSet<Passenger> = mutableSetOf()
 
     fun requestTrip(trip: Trip) {
         if (validateTrip(trip)) {

@@ -20,11 +20,4 @@ class PassNeo(
     @Relationship(type = "DRIVER", direction = Relationship.Direction.OUTGOING)
     var drivers: MutableList<DriverNeo> = mutableListOf()
 ) {
-//    fun addFriend(friend: PassNeo) {
-//        friends.add(friend)
-//    }
-//
-//    fun addDriver(driver: PassNeo) {
-//        drivers.add(driver)
-//    }
 }

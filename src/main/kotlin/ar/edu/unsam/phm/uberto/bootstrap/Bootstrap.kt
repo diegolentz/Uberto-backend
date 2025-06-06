@@ -528,46 +528,58 @@ class Bootstrap(
 
     fun createNeoPassenger() {
         val passengers = passengerRepo.findAll()
-        val driverList = driverNeoRepo.findAll().map { it.driverId }
-        val friendsLists = passengers.map { pass ->
-            pass.friends.map { it.id.toString() }
-        }
-
+        // 1. Armá todos los PassNeo y DriverNeo en memoria
         val passNeoList = passengers.map { pass ->
             PassNeo(
-                firstName = pass.firstName,
-                lastName = pass.lastName,
                 id = pass.id,
-                friends = getFriends(friendsLists, pass),
-                drivers = getDriversId(pass, driverList)
+                firstName = pass.firstName,
+                lastName = pass.lastName
             )
         }
-//        passNeoList.forEach { it.drivers = passengerRepo.findBy_AndFriendsOrId(passengers.friends.) }
+        val passNeoById = passNeoList.associateBy { it.id }
+
+        val driverNeoList = driverNeoRepo.findAll()
+        val driverNeoById = driverNeoList.associateBy { it.driverId }
+
+        // 2. Ahora asigná amigos y drivers a cada PassNeo (sin crear nodos duplicados)
+        passengers.forEach { pass ->
+            val neo = passNeoById[pass.id]
+            // Amigos propios
+            neo?.friends?.addAll(
+                pass.friends.mapNotNull { friend -> passNeoById[friend.id] }
+            )
+            // Drivers propios (por los que viajó)
+            val driverIds = pass.trips.map { it.driverId }
+            neo?.drivers?.addAll(
+                driverIds.mapNotNull { dId -> driverNeoById[dId.toString()] }
+            )
+        }
+
         passengerNeoRepo.saveAll(passNeoList)
     }
 
     private fun getDriversId(passenger: Passenger, driverList: List<String>): MutableList<DriverNeo> {
         val passengerDriverIds = passenger.trips.map { it.driverId }
         val matchingDriverIds = passengerDriverIds.filter { it in driverList }
-        // Busca los DriverNeo usando el repositorio
-        return matchingDriverIds.map { driverId -> driverNeoRepo.findByDriverId(driverId) }.toMutableList()
+        // Busca los DriverNeo usando el repositorio (¡asegurate que trae los mismos!)
+        return matchingDriverIds.mapNotNull { driverId -> driverNeoRepo.findByDriverId(driverId) }.toMutableList()
     }
 
 
-    private fun getFriends(friendsLists: List<List<String>>, passengers: List<Passenger>): MutableList<PassNeo> {
+    private fun getFriends(passengers: List<Passenger>): MutableList<PassNeo> {
         val friendsNeo = mutableListOf<PassNeo>()
-        friendsLists.forEachIndexed { index, friends ->
-            friends.forEach { friendId ->
-                val friend = passengers.firstOrNull { it.id.toString() == friendId }
-                if (friend != null) {
-                    friendsNeo.add(PassNeo().apply {
-                        id = friend.id
-                        firstName = friend.firstName
-                        lastName = friend.lastName
-                    })
-                }
+        val friendsLists = mutableListOf<PassNeo>()
+        passengers.forEach { passenger ->
+            val friends = passenger.friends.mapNotNull { friend ->
+                passengerNeoRepo.findById(friend.id!!).orElse(null)
             }
+            friendsLists.addAll(friends)
         }
+        print(friendsLists)
+        print(friendsLists)
+        print(friendsLists)
+        print(friendsLists)
+        print(friendsLists)
         return friendsNeo
     }
 
