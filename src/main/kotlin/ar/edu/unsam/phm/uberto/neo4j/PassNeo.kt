@@ -7,21 +7,24 @@ import org.springframework.data.neo4j.core.schema.Id as Neo4jId
 
 @Node
 class PassNeo(
-    @Neo4jId @Neo4jGeneratedValue var id: Long? = null,
+    @Neo4jId
+    @Neo4jGeneratedValue
+    var id: Long? = null,
+
     var firstName: String = "",
     var lastName: String = "",
 
-    @Relationship(type = "FRIEND", direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "FRIEND", direction = Relationship.Direction.OUTGOING )
     var friends: MutableList<PassNeo> = mutableListOf(),
 
     @Relationship(type = "DRIVER", direction = Relationship.Direction.OUTGOING)
-    var drivers: MutableList<PassNeo> = mutableListOf()
+    var drivers: MutableList<DriverNeo> = mutableListOf()
 ) {
-    fun addFriend(friend: PassNeo) {
-        friends.add(friend)
-    }
-
-    fun addDriver(driver: PassNeo) {
-        drivers.add(driver)
-    }
+//    fun addFriend(friend: PassNeo) {
+//        friends.add(friend)
+//    }
+//
+//    fun addDriver(driver: PassNeo) {
+//        drivers.add(driver)
+//    }
 }

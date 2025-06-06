@@ -8,6 +8,8 @@ import ar.edu.unsam.phm.uberto.dto.toTripScoreDTOMongo
 import ar.edu.unsam.phm.uberto.factory.AuthFactory
 import ar.edu.unsam.phm.uberto.factory.TestFactory
 import ar.edu.unsam.phm.uberto.model.*
+import ar.edu.unsam.phm.uberto.neo4j.DriverNeo
+import ar.edu.unsam.phm.uberto.neo4j.DriverNeoRepository
 import ar.edu.unsam.phm.uberto.neo4j.PassNeo
 import ar.edu.unsam.phm.uberto.neo4j.PassNeo4jRepository
 import ar.edu.unsam.phm.uberto.neo4j.PassNeoService
@@ -38,14 +40,15 @@ class Bootstrap(
     @Autowired val homeRepository: HomeRepository,
     @Autowired val passengerRepo: PassengerRepository,
     @Autowired val passengerNeoRepo: PassNeo4jRepository,
-    @Autowired val passNeoService: PassNeoService
+    @Autowired val passNeoService: PassNeoService,
+    @Autowired val driverNeoRepo: DriverNeoRepository
 
 
 ) : CommandLineRunner {
 
     val factory = TestFactory(authService, passengerService, driverService, jwtUtil)
     override fun run(vararg args: String?) {
-
+        deleteNeo4j()
         createAccounts()
         createPassengers()
         createDrivers()
@@ -55,6 +58,7 @@ class Bootstrap(
         deleteAnalitycs()
         deleteDataHome()
     }
+
 
     private fun createAccounts() {
         val authFactory: AuthFactory = AuthFactory()
@@ -521,30 +525,39 @@ class Bootstrap(
 
     fun createNeoPassenger() {
         val passengers = passengerRepo.findAll()
+        val idsDriver = mongoRepoDriver.findAll().map { it.id!! }
 
-        // Mapear cada pasajero de Postgres a un objeto PassNeo
-        val passengersNeo = passengers.map { pass ->
-            var trips = tripRepo.findByClient(pass!!)
-            var friends = passengerService.getFriends(pass.id!!)
+        val driverNeoList = idsDriver.map { drivId ->
+            DriverNeo().apply {
+                driverId = drivId.toString() // Conversión a String si driverId es String
+            }
+        }
+        driverNeoRepo.saveAll(driverNeoList)
+
+        val passNeoList = passengers.map { pass ->
             PassNeo(
-                id = pass.id,
                 firstName = pass.firstName,
                 lastName = pass.lastName,
-                friends = friends.map { friend ->
-                    PassNeo(
-                        id = friend.id,
-                        firstName = friend.firstname,
-                        lastName = friend.lastname
-                    )
-                }.toMutableList(),
+                id = pass.id,
+            ).apply {
+                // Filtro mejorado para obtener amigos, evitando poner al mismo pasajero como amigo
+                friends = passengers
+                    .filter { other -> other.id != pass.id && pass.friends.any { f -> f.id == other.id } }
+                    .map { other -> PassNeo(
+                        firstName = other.firstName,
+                        lastName = other.lastName,
+                        id = other.id
+                    ) }
+                    .toMutableList()
 
-            )
+                // Conversión de id si hace falta, y uso de MutableList
+                drivers = driverNeoList
+                    .filter { it.driverId == pass.id.toString() }
+                    .toMutableList()
+            }
         }
-        passNeoService.saveAll(passengersNeo)
-
+        passNeoService.saveAll(passNeoList)
     }
-
-
 
 
 
@@ -556,6 +569,15 @@ class Bootstrap(
 
     private fun deleteDataHome() {
         homeRepository.deleteAll()
+    }
+
+    private fun deleteNeo4j(){
+        if (passengerNeoRepo.count() != 0.toLong()) {
+            passengerNeoRepo.deleteAll()
+        }
+        if (driverNeoRepo.count() != 0.toLong()) {
+            driverNeoRepo.deleteAll()
+        }
     }
 
 }
