@@ -9,11 +9,7 @@ open class PassNeoService(
     private val passNeo4jRepository: PassNeo4jRepository
 ) {
 
-//    fun findAll(): List<PassNeo> = passNeo4jRepository.findAll()
-//    fun findById(id: Long): PassNeo? = passNeo4jRepository.findById(id).orElse(null)
-//    fun save(passNeo: PassNeo): PassNeo = passNeo4jRepository.save(passNeo)
-//    fun deleteById(id: Long) = passNeo4jRepository.deleteById(id)
-//    fun saveAll(passengers: List<PassNeo>): List<PassNeo> {
-//        return passNeo4jRepository.saveAll(passengers)
-//    }
+    fun findSuggestionsById(id : Long): List<PassNeo> {
+        return passNeo4jRepository.findSuggestionsById(id)
+    }
 }

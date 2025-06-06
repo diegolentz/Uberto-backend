@@ -2,14 +2,14 @@ package ar.edu.unsam.phm.uberto.neo4j
 
 import org.springframework.data.neo4j.core.schema.Node
 import org.springframework.data.neo4j.core.schema.Relationship
-import org.springframework.data.neo4j.core.schema.GeneratedValue as Neo4jGeneratedValue
-import org.springframework.data.neo4j.core.schema.Id as Neo4jId
+import org.springframework.data.neo4j.core.schema.GeneratedValue // Renamed import
+import org.springframework.data.neo4j.core.schema.Id // Renamed import
 
 @Node
 class PassNeo(
-    @Neo4jId
-    @Neo4jGeneratedValue
-    var id: Long? = null,
+    @Id // Using the renamed import
+    @GeneratedValue // Using the renamed import
+    var id: Long? = null, // Esto es correcto para un ID Long generado por Neo4j
 
     var firstName: String = "",
     var lastName: String = "",
