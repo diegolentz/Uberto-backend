@@ -25,7 +25,7 @@ class Passenger : User {
     @Column
     override var balance: Double = 0.0
 
-    @OneToMany
+    @OneToMany(mappedBy = "client", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     override val trips: MutableList<Trip> = mutableListOf()
 
     @Column

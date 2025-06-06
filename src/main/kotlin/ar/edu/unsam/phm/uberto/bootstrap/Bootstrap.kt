@@ -517,72 +517,71 @@ class Bootstrap(
     }
 
     fun createNeoDriver() {
-        val idsDriver = mongoRepoDriver.findAll().map { it.id!! }
-        val driverNeoList = idsDriver.map { drivId ->
-            DriverNeo().apply {
-                driverId = drivId.toString()
+        println("Creating DriverNeo nodes in Neo4j...")
+        val mongoDrivers = mongoRepoDriver.findAll()
+        val driverNeoList = mongoDrivers.mapNotNull { mongoDriver ->
+            mongoDriver.id?.let { driverIdString -> // Asumiendo que Driver.id es el ObjectId de Mongo
+                DriverNeo().apply {
+                    this.driverId = driverIdString.toString()
+                    // Aquí puedes mapear otros campos de mongoDriver a DriverNeo si es necesario
+                    // Ejemplo: this.name = mongoDriver.firstName
+                }
             }
         }
-        driverNeoRepo.saveAll(driverNeoList)
+        if (driverNeoList.isNotEmpty()) {
+            driverNeoRepo.saveAll(driverNeoList)
+            println("Saved ${driverNeoList.size} DriverNeo objects to Neo4j.")
+        } else {
+            println("No DriverNeo objects to create/save in Neo4j.")
+        }
     }
-
     fun createNeoPassenger() {
-        val passengers = passengerRepo.findAll()
-        // 1. Armá todos los PassNeo y DriverNeo en memoria
-        val passNeoList = passengers.map { pass ->
-            PassNeo(
+        val passengersFromDb = passengerRepo.findAll()
+        // 1. Mapea TODOS los PassNeo por id (usa Long)
+        val passNeoMap = passengersFromDb.associate { pass ->
+            pass.id!! to PassNeo(
                 id = pass.id,
                 firstName = pass.firstName,
                 lastName = pass.lastName
             )
         }
-        val passNeoById = passNeoList.associateBy { it.id }
 
-        val driverNeoList = driverNeoRepo.findAll()
-        val driverNeoById = driverNeoList.associateBy { it.driverId }
+        // 2. Mapea todos los DriverNeo por driverId (usa Long!)
+        val allDriverNeoFromDb = driverNeoRepo.findAll()
+        val driverNeoByIdMap = allDriverNeoFromDb
+            .filter { it.driverId != null } // Asegura usar driverId (Long)
+            .associateBy { it.driverId!! }
 
-        // 2. Ahora asigná amigos y drivers a cada PassNeo (sin crear nodos duplicados)
-        passengers.forEach { pass ->
-            val neo = passNeoById[pass.id]
-            // Amigos propios
-            neo?.friends?.addAll(
-                pass.friends.mapNotNull { friend -> passNeoById[friend.id] }
-            )
-            // Drivers propios (por los que viajó)
-            val driverIds = pass.trips.map { it.driverId }
-            neo?.drivers?.addAll(
-                driverIds.mapNotNull { dId -> driverNeoById[dId.toString()] }
-            )
-        }
-
-        passengerNeoRepo.saveAll(passNeoList)
-    }
-
-    private fun getDriversId(passenger: Passenger, driverList: List<String>): MutableList<DriverNeo> {
-        val passengerDriverIds = passenger.trips.map { it.driverId }
-        val matchingDriverIds = passengerDriverIds.filter { it in driverList }
-        // Busca los DriverNeo usando el repositorio (¡asegurate que trae los mismos!)
-        return matchingDriverIds.mapNotNull { driverId -> driverNeoRepo.findByDriverId(driverId) }.toMutableList()
-    }
-
-
-    private fun getFriends(passengers: List<Passenger>): MutableList<PassNeo> {
-        val friendsNeo = mutableListOf<PassNeo>()
-        val friendsLists = mutableListOf<PassNeo>()
-        passengers.forEach { passenger ->
-            val friends = passenger.friends.mapNotNull { friend ->
-                passengerNeoRepo.findById(friend.id!!).orElse(null)
+        passengersFromDb.forEach { pass ->
+            val neo = passNeoMap[pass.id!!]!!
+            // Amigos:
+            pass.friends.forEach { friend ->
+                friend.id?.let { friendId ->
+                    passNeoMap[friendId]?.let { neoFriend ->
+                        if (neoFriend != neo && !neo.friends.contains(neoFriend)) {
+                            neo.friends.add(neoFriend)
+                        }
+                    }
+                }
             }
-            friendsLists.addAll(friends)
+            // Drivers:
+            pass.trips.forEach { trip ->
+                val driverId = trip.driverId
+                if (driverId != null) {
+                    val driverNeo = driverNeoByIdMap[driverId]
+                    if (driverNeo != null) {
+                        if (!neo.drivers.contains(driverNeo)) {
+                            neo.drivers.add(driverNeo)
+                        }
+                    } else {
+                        println("WARNING: No se encontró DriverNeo con id: $driverId")
+                    }
+                }
+            }
         }
-        print(friendsLists)
-        print(friendsLists)
-        print(friendsLists)
-        print(friendsLists)
-        print(friendsLists)
-        return friendsNeo
-    }
 
+        passengerNeoRepo.saveAll(passNeoMap.values)
+    }
 
 
     private fun deleteAnalitycs() {
