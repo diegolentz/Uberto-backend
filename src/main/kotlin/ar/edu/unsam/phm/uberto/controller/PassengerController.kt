@@ -1,6 +1,7 @@
 package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.dto.*
+import ar.edu.unsam.phm.uberto.neo4j.PassNeo
 import ar.edu.unsam.phm.uberto.neo4j.PassNeoService
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import ar.edu.unsam.phm.uberto.services.PassengerService
@@ -57,19 +58,19 @@ class PassengerController(
     }
 
     @DeleteMapping("/friends")
-    fun deleteFriend(request: HttpServletRequest, friendId: Long): ResponseEntity<String> {
+    fun deleteFriend(request: HttpServletRequest, @RequestParam friendId: Long): ResponseEntity<String> {
         val idToken = jwtUtil.getIdFromTokenString(request)
-        return passengerService.deleteFriend(idToken, friendId)
+        return passNeoService.deleteFriend(idToken, friendId)
     }
 
-//    @GetMapping("/friends/search")
-//    fun filter(request: HttpServletRequest, @RequestParam filter: String): List<FriendDto> {
-//        val idToken = jwtUtil.getIdFromTokenString(request)
-//        val nonFriendsPassengers: List<Passenger> = passengerService.searchNonFriends(idToken, filter)
-//        return nonFriendsPassengers.map { friend: Passenger ->
-//            friend.toDTOFriend()
-//        }
-//    }
+    @GetMapping("/friends/search")
+    fun filter(request: HttpServletRequest, @RequestParam filter: String): List<FriendNeoDTO> {
+        val idToken = jwtUtil.getIdFromTokenString(request)
+        val nonFriendsPassengers: List<PassNeo> = passNeoService.searchNonFriends(idToken, filter)
+        return nonFriendsPassengers.map { friend: PassNeo ->
+            friend.toFriendNeoDTO()
+        }
+    }
 
     @GetMapping("/img")
     fun getImg(request: HttpServletRequest): ImgDTO {
