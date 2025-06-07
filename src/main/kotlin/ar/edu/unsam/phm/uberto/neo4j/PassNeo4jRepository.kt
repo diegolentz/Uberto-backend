@@ -11,11 +11,11 @@ interface PassNeo4jRepository : Neo4jRepository<PassNeo, Long> {
     @Query(
         """
         // 1. Identifica al usuario actual (yo) y a sus amigos de amigos (amigoDeAmigo)
-        MATCH (yo:PassNeo {id: ${'$'}currentUserId})-[:FRIEND]->(:PassNeo)-[:FRIEND]->(amigoDeAmigo:PassNeo)
+        MATCH (yo:PassNeo {passengerId: ${'$'}currentUserId})-[:FRIEND]->(:PassNeo)-[:FRIEND]->(amigoDeAmigo:PassNeo)
 
         // 2. Asegura que exista al menos un conductor (driver) en común entre 'yo' y 'amigoDeAmigo'
         // Esta línea es la clave para "cuyos drivers coincidan al menos con 1 mio"
-        MATCH (yo)-[:DRIVER]->(driver:DriverNeo)<-[:DRIVER]-(amigoDeAmigo)
+        MATCH (yo)-[:TRAVEL]->(driver:DriverNeo)<-[:TRAVEL]-(amigoDeAmigo)
 
         // 3. Condiciones para filtrar:
         //    - 'amigoDeAmigo' no debe ser un amigo directo de 'yo'
