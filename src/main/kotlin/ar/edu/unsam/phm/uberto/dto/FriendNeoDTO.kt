@@ -2,7 +2,7 @@ package ar.edu.unsam.phm.uberto.dto
 
 import ar.edu.unsam.phm.uberto.neo4j.PassNeo
 
-data class FriendDTO(
+data class FriendNeoDTO(
     val id: Long,
     val lastname: String,
     val firstname: String,
@@ -10,7 +10,7 @@ data class FriendDTO(
 ) {
 }
 
-fun PassNeo.toFriendDTO() = FriendDTO(
+fun PassNeo.toFriendNeoDTO() = FriendNeoDTO(
     id = passengerId!!,
     lastname = lastName,
     firstname = firstName,

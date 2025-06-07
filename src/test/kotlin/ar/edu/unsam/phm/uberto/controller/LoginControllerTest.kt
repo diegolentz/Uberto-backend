@@ -4,9 +4,6 @@ import ar.edu.unsam.phm.uberto.InvalidCredentialsException
 import ar.edu.unsam.phm.uberto.dto.LoginDTO
 import ar.edu.unsam.phm.uberto.dto.LoginRequest
 import ar.edu.unsam.phm.uberto.factory.TestFactory
-import ar.edu.unsam.phm.uberto.model.Driver
-import ar.edu.unsam.phm.uberto.model.Passenger
-import ar.edu.unsam.phm.uberto.model.Role
 import ar.edu.unsam.phm.uberto.repository.AuthRepository
 import ar.edu.unsam.phm.uberto.repository.MongoDriverRepository
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
@@ -14,13 +11,9 @@ import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import ar.edu.unsam.phm.uberto.services.AuthService
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.PassengerService
-import com.auth0.jwt.interfaces.Claim
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.jsonwebtoken.Claims
-import io.kotest.core.spec.style.AnnotationSpec
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -33,9 +26,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertSame
 

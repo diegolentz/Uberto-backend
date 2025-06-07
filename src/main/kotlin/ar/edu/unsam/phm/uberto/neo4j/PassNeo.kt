@@ -21,4 +21,6 @@ class PassNeo(
     @Relationship(type = "TRAVEL", direction = Relationship.Direction.OUTGOING)
     var drivers: MutableList<DriverNeo> = mutableListOf()
 ) {
+
+
 }

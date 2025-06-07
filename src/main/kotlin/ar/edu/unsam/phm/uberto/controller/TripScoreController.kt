@@ -1,9 +1,6 @@
 package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.dto.TripScoreDTOMongo
-import ar.edu.unsam.phm.uberto.dto.toTripScoreDTOMongo
-import ar.edu.unsam.phm.uberto.dto.toTripScorePassengerDTOMongo
-import ar.edu.unsam.phm.uberto.model.Trip
 import ar.edu.unsam.phm.uberto.model.TripScore
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import ar.edu.unsam.phm.uberto.services.DriverService

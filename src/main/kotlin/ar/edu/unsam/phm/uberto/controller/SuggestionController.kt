@@ -1,7 +1,7 @@
 package ar.edu.unsam.phm.uberto.controller
 
-import ar.edu.unsam.phm.uberto.dto.FriendDTO
-import ar.edu.unsam.phm.uberto.dto.toFriendDTO
+import ar.edu.unsam.phm.uberto.dto.FriendNeoDTO
+import ar.edu.unsam.phm.uberto.dto.toFriendNeoDTO
 import ar.edu.unsam.phm.uberto.neo4j.PassNeoService
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import jakarta.servlet.http.HttpServletRequest
@@ -19,9 +19,9 @@ class SuggestionController(
 ) {
 
     @GetMapping()
-    fun getSuggestions(request: HttpServletRequest): List<FriendDTO> {
+    fun getSuggestions(request: HttpServletRequest): List<FriendNeoDTO> {
         val idToken = jwtUtil.getIdFromTokenString(request)
-        return passNeoService.findSuggestionsById(idToken).map { it.toFriendDTO() }
+        return passNeoService.findSuggestionsById(idToken).map { it.toFriendNeoDTO() }
 
     }
 

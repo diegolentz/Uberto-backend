@@ -27,4 +27,17 @@ interface PassNeo4jRepository : Neo4jRepository<PassNeo, Long> {
     """
     )
     fun findSuggestionsById(@Param("currentUserId") userId: Long): List<PassNeo>
+
+    @Query("""
+        MATCH (p:PassNeo {passengerId: ${'$'}currentPassengerId})-[:FRIEND]->(friend:PassNeo)
+        RETURN friend
+    """)
+    fun findAllFriendsByPassengerId(@Param("currentPassengerId") passengerId: Long): List<PassNeo>
+
+    @Query("""
+        MATCH (p:PassNeo {passengerId: ${'$'}passengerId})
+        OPTIONAL MATCH (p)-[r:FRIEND]->(f:PassNeo)
+        RETURN p, collect(r), collect(f)
+    """)
+    fun findByPassengerId(@Param("passengerId") passengerId: Long): PassNeo
 }

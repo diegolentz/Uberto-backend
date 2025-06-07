@@ -1,7 +1,5 @@
 package ar.edu.unsam.phm.uberto.services
 
-import ar.edu.unsam.phm.uberto.dto.FriendDto
-import ar.edu.unsam.phm.uberto.dto.toDTOFriend
 import ar.edu.unsam.phm.uberto.model.Passenger
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
 import exceptions.NotFoundException
@@ -31,10 +29,10 @@ class PassengerService(val passengerRepository: PassengerRepository) {
         return passenger
     }
 
-    @Transactional(readOnly = true)
-    fun getFriends(passengerId: Long): List<FriendDto> {
-        return getById(passengerId).friends.map { it.toDTOFriend() }
-    }
+//    @Transactional(readOnly = true)
+//    fun getFriends(passengerId: Long): List<FriendDTO> {
+//        return getById(passengerId).friends.map { it.toDTOFriend() }
+//    }
 
 
     fun addBalance(passenger: Passenger, balance: Double): ResponseEntity<String> {
