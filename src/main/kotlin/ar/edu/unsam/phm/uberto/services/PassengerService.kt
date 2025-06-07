@@ -56,31 +56,31 @@ class PassengerService(val passengerRepository: PassengerRepository) {
             .status(HttpStatus.OK).body("Profile succesfully updated")
     }
 
-    fun deleteFriend(passengerId: Long, friendId: Long): ResponseEntity<String> {
-        val currentPassenger = getById(passengerId)
-        val friend = getById(friendId)
-        currentPassenger.removeFriend(friend)
-        friend.removeFriend(currentPassenger)
-        passengerRepository.save(currentPassenger)
-        passengerRepository.save(friend)
-        return ResponseEntity
-            .status(HttpStatus.OK).body("Friend succesfully removed")
-    }
+//    fun deleteFriend(passengerId: Long, friendId: Long): ResponseEntity<String> {
+//        val currentPassenger = getById(passengerId)
+//        val friend = getById(friendId)
+//        currentPassenger.removeFriend(friend)
+//        friend.removeFriend(currentPassenger)
+//        passengerRepository.save(currentPassenger)
+//        passengerRepository.save(friend)
+//        return ResponseEntity
+//            .status(HttpStatus.OK).body("Friend succesfully removed")
+//    }
 
-    fun addFriend(passengerId: Long, friendId: Long): ResponseEntity<String> {
-        val currentPassenger = getById(passengerId)
-        val friend = getById(friendId)
-        currentPassenger.addFriend(friend)
-        friend.addFriend(currentPassenger)
-        passengerRepository.save(currentPassenger)
-        passengerRepository.save(friend)
-        return ResponseEntity
-            .status(HttpStatus.OK).body("You have a new friend!")
-    }
+//    fun addFriend(passengerId: Long, friendId: Long): ResponseEntity<String> {
+//        val currentPassenger = getById(passengerId)
+//        val friend = getById(friendId)
+//        currentPassenger.addFriend(friend)
+//        friend.addFriend(currentPassenger)
+//        passengerRepository.save(currentPassenger)
+//        passengerRepository.save(friend)
+//        return ResponseEntity
+//            .status(HttpStatus.OK).body("You have a new friend!")
+//    }
 
-    @Transactional(readOnly = true)
-    fun searchNonFriends(passengerId: Long, filter: String): List<Passenger> =
-        passengerRepository.findPossibleFriends(passengerId, filter.lowercase())
+//    @Transactional(readOnly = true)
+//    fun searchNonFriends(passengerId: Long, filter: String): List<Passenger> =
+//        passengerRepository.findPossibleFriends(passengerId, filter.lowercase())
 
 
 

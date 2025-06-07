@@ -37,8 +37,8 @@ class Passenger : User {
     @Column(length = 255)
     override var img: String = ""
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    val friends: MutableSet<Passenger> = mutableSetOf()
+//    @ManyToMany(fetch = FetchType.LAZY)
+//    val friends: MutableSet<Passenger> = mutableSetOf()
 
     fun requestTrip(trip: Trip) {
         if (validateTrip(trip)) {
@@ -54,21 +54,21 @@ class Passenger : User {
         this.balance += balance
     }
 
-    fun isFriendOf(passenger: Passenger) = this.friends.contains(passenger)
-
-    fun addFriend(friend: Passenger) {
-        if (this.isFriendOf(friend)) {
-            throw FriendAlreadyExistException()
-        }
-        friends.add(friend)
-    }
-
-    fun removeFriend(friend: Passenger) {
-        if (!this.isFriendOf(friend)) {
-            throw FriendNotExistException()
-        }
-        friends.remove(friend)
-    }
+//    fun isFriendOf(passenger: Passenger) = this.friends.contains(passenger)
+//
+//    fun addFriend(friend: Passenger) {
+//        if (this.isFriendOf(friend)) {
+//            throw FriendAlreadyExistException()
+//        }
+//        friends.add(friend)
+//    }
+//
+//    fun removeFriend(friend: Passenger) {
+//        if (!this.isFriendOf(friend)) {
+//            throw FriendNotExistException()
+//        }
+//        friends.remove(friend)
+//    }
 
     fun scoreTrip(trip: Trip, message: String, scorePoints: Int) {
         validateScoreTrip(message, scorePoints)
