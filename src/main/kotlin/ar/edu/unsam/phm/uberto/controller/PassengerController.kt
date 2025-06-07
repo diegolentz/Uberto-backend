@@ -58,7 +58,7 @@ class PassengerController(
     }
 
     @DeleteMapping("/friends")
-    fun deleteFriend(request: HttpServletRequest, @RequestParam friendId: Long): ResponseEntity<String> {
+    fun deleteFriend(request: HttpServletRequest, friendId: Long): ResponseEntity<String> {
         val idToken = jwtUtil.getIdFromTokenString(request)
         return passNeoService.deleteFriend(idToken, friendId)
     }
