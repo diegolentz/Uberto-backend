@@ -502,11 +502,11 @@ class Bootstrap(
         val valentin = passengerRepo.findById(5).get()
 
 
-        passengerService.addFriend(adrian.id!!, diego.id!!)
-        passengerService.addFriend(diego.id!!, matias.id!!)
-        passengerService.addFriend(matias.id!!, pedro.id!!)
-        passengerService.addFriend(pedro.id!!, valentin.id!!)
-        passengerService.addFriend(valentin.id!!, adrian.id!!)
+//        passengerService.addFriend(adrian.id!!, diego.id!!)
+//        passengerService.addFriend(diego.id!!, matias.id!!)
+//        passengerService.addFriend(matias.id!!, pedro.id!!)
+//        passengerService.addFriend(pedro.id!!, valentin.id!!)
+//        passengerService.addFriend(valentin.id!!, adrian.id!!)
 
 
 //        var all: List<Passenger> = listOf(adrian, diego, matias, pedro, valentin)

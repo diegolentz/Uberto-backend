@@ -43,7 +43,7 @@ interface PassengerRepository : JpaRepository<Passenger, Long> {
 //    @Query("SELECT p FROM Passenger p")
 //    fun findAllWithFriendsTripsAndDrivers(): List<Passenger>
 
-    @EntityGraph(attributePaths = ["friends", "trips"])
+    @EntityGraph(attributePaths = [ "trips"])
     override fun findAll() : List<Passenger>
 
 //    @Query("SELECT f FROM Passenger p JOIN p.friends f WHERE p.id = :passengerId")
