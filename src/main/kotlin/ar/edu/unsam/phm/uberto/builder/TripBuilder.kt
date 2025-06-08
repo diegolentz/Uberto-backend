@@ -10,7 +10,7 @@ class TripBuilder(val newTrip: Trip = Trip()) {
 
     fun driver(driver: Driver): TripBuilder = apply {
         newTrip.driver = driver
-        newTrip.driverId = driver.id!! // Asegúrate de que driver.id nunca sea null
+        newTrip.driverId = driver.id!!
     }
 
     fun passenger(client: Passenger): TripBuilder = apply {

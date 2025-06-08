@@ -6,15 +6,9 @@ import org.springframework.data.neo4j.core.schema.Node
 
 @Node
 class DriverNeo {
-
     @Id
     @GeneratedValue
     var id: Long? = null
-
     var name: String = ""
-
     var driverId: String = ""
-
-
 }
-

@@ -169,50 +169,6 @@ class PassengerControllerSpec(
             .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty)
     }
 
-    @Test
-    @Transactional
-    fun `agregar un amigo a un pasajero`() {
-        val passenger = passengerRepository.findById(1).get()
-        val friend = passengerRepository.findById(2).get()
-
-        assertFalse(passenger.friends.contains(friend))
-
-        passengerRepository.save(friend)
-        passengerRepository.save(passenger)
-
-        val response = mockMvc.perform(
-            MockMvcRequestBuilders.post("/passenger/friends")
-                .param("friendId", friend.id.toString())
-                .header("Authorization", "Bearer $tokenPassenger")
-        ).andExpect(MockMvcResultMatchers.status().isOk)
-            .andReturn()
-
-        val updatedPassengerFriends = passengerRepository.findById(passenger.id!!).get().friends
-        updatedPassengerFriends shouldContain friend
-    }
-
-    @Test
-    @Transactional
-    fun `eliminar un amigo a un pasajero`() {
-        val passenger = passengerRepository.findById(1).get()
-        val friend = passengerRepository.findById(2).get()
-
-        mockMvc.perform(
-            MockMvcRequestBuilders.post("/passenger/friends")
-                .param("friendId", friend.id.toString())
-                .header("Authorization", "Bearer $tokenPassenger")
-        ).andExpect(MockMvcResultMatchers.status().isOk)
-
-        mockMvc.perform(
-            MockMvcRequestBuilders.delete("/passenger/friends")
-                .param("friendId", friend.id.toString())
-                .header("Authorization", "Bearer $tokenPassenger")
-        ).andExpect(MockMvcResultMatchers.status().isOk)
-
-        val updatedPassengerFriends = passengerRepository.findById(1).get().friends
-
-        updatedPassengerFriends shouldNotContain friend
-    }
 
     @Test
     fun `no se puede agregar un amigo que ya lo es`() {

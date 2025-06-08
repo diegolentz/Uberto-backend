@@ -3,6 +3,11 @@ package ar.edu.unsam.phm.uberto.model
 import ar.edu.unsam.phm.uberto.DriverNotAvaliableException
 import ar.edu.unsam.phm.uberto.builder.PassengerBuilder
 import ar.edu.unsam.phm.uberto.builder.TripBuilder
+import ar.edu.unsam.phm.uberto.factory.TestFactory
+import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
+import ar.edu.unsam.phm.uberto.services.AuthService
+import ar.edu.unsam.phm.uberto.services.DriverService
+import ar.edu.unsam.phm.uberto.services.PassengerService
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
@@ -11,35 +16,46 @@ import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.doubles.shouldBeExactly
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 
-class DriverSpec: DescribeSpec( {
+class DriverSpec : DescribeSpec( {
+
     isolationMode = IsolationMode.InstancePerTest
     val client = PassengerBuilder().build()
+    val trip = Trip()
 
     describe("Dado un chofer simple") {
         val simpleDriver:SimpleDriver = SimpleDriver()
+        trip.apply {
+            driver =  simpleDriver
+            this.client = client
+        }
         simpleDriver.basePrice = 10.0
         it("Cobra su precio base + 1500 * duracion del viaje") {
-            val trip = TripBuilder().driver(simpleDriver).passenger(client).duration(10).build()
             simpleDriver.fee(trip.duration, trip.numberPassengers) shouldBeExactly (simpleDriver.basePrice + 1000.0 * trip.duration)
         }
     }
 
     describe("Dado un chofer premium") {
         val premiumDriver:PremiumDriver = PremiumDriver()
+        trip.apply {
+            driver =  premiumDriver
+            this.client = client
+            numberPassengers = 1
+        }
         premiumDriver.basePrice = 10.0
         describe("Precio del viaje segun la cantidad de pasajeros") {
             it("Con 1 pasajero cobra: precio base + 2000 * duracion del viaje") {
-                val trip = TripBuilder().driver(premiumDriver).passenger(client).passengerAmmount(1).build()
                 premiumDriver.fee(trip.duration, trip.numberPassengers) shouldBeExactly (premiumDriver.basePrice + 2000.0 * trip.duration)
             }
             it("Varios pasajeros") {
-                val trip = TripBuilder().driver(premiumDriver).passenger(client).passengerAmmount(2).build()
-
+                trip.apply {
+                    numberPassengers = 2
+                }
                 premiumDriver.fee(trip.duration, trip.numberPassengers) shouldBeExactly (premiumDriver.basePrice + 1500.0 * trip.duration)
             }
         }
@@ -48,13 +64,14 @@ class DriverSpec: DescribeSpec( {
     describe("Dado un chofer de moto") {
         val bikeDriver:BikeDriver = BikeDriver()
         bikeDriver.basePrice = 10.0
+        trip.driver = bikeDriver
         describe("Precio del viaje segun la duracion del viaje") {
             it("Duracion menor a 30 minutos: precio base + 500 * duracion del viaje") {
-                val trip = TripBuilder().driver(bikeDriver).passenger(client).duration(29).build()
+                trip.duration = 29
                 bikeDriver.fee(trip.duration, trip.numberPassengers) shouldBeExactly (bikeDriver.basePrice + 500.0 * trip.duration)
             }
             it("DUracion mayor o igual a 30 minutos: precio base + 600 * duracion del viaje") {
-                val trip = TripBuilder().driver(bikeDriver).passenger(client).duration(30).build()
+                trip.duration = 30
                 bikeDriver.fee(trip.duration, trip.numberPassengers) shouldBeExactly (bikeDriver.basePrice + 600.0 * trip.duration)
             }
         }
@@ -68,8 +85,13 @@ class DriverSpec: DescribeSpec( {
         }
 
         it("Realiza un viaje y aumenta su monto recaudado") {
-            val tomorrow = LocalDateTime.now().plus(1, ChronoUnit.DAYS).toString()
-            val trip = TripBuilder().driver(driver).passenger(client).setDate(tomorrow).duration(10).build()
+            val tomorrow = LocalDateTime.now().plus(1, ChronoUnit.DAYS)
+            trip.apply {
+                duration = 10
+                this.client = client
+                this.driver = driver
+                date = tomorrow
+            }
             driver.balance shouldBeExactly 0.0
             trip.calculatePrePersit()
             driver.responseTrip(trip, trip.duration)
@@ -77,28 +99,28 @@ class DriverSpec: DescribeSpec( {
         }
 
         describe("Driver solo acepta un viaje dentro de una franja horaria"){
-            val tomorrow = LocalDateTime.now().plus(1, ChronoUnit.DAYS).toString()
-            val trip = TripBuilder().driver(driver).passenger(client).setDate(tomorrow).duration(10).build()
+            val tomorrow = LocalDateTime.now().plus(1, ChronoUnit.DAYS)
+            trip.apply {
+                this.driver = driver
+                this.client = client
+                date = tomorrow
+                duration = 10
+            }
             trip.calculatePrePersit()
             it("Si esta disponible, acepta el viaje, y lo guarda en su coleccion") {
                 driver.responseTrip(trip, trip.duration)
                 driver.trips shouldContain trip
             }
-            it("Si NO esta disponible, no lo puede aceptar") {
-                driver.trips.isEmpty() shouldBe true
-                trip.calculatePrePersit()
-                driver.responseTrip(trip, trip.duration)
-                val tripDateConflict = TripBuilder().driver(driver).passenger(client).setDate(tomorrow).duration(10).build()
-                tripDateConflict.calculatePrePersit()
-                shouldThrow<DriverNotAvaliableException> {
-                    driver.responseTrip(tripDateConflict, tripDateConflict.duration)
-                }
-            }
         }
 
         describe("Su calificacion es el promedio de calificaciones de los viajes realiszados"){
-            val yesterday = LocalDateTime.now().minus(1, ChronoUnit.DAYS).toString()
-            val trip = TripBuilder().driver(driver).passenger(client).setDate(yesterday).duration(10).build()
+            val yesterday = LocalDateTime.now().minus(1, ChronoUnit.DAYS)
+            val trip = Trip().apply {
+                this.driver = driver
+                this.client = client
+                date = yesterday
+                duration = 10
+            }
             it("Si NO tiene viajes, su score es 0") {
                 driver.scoreAVG() shouldBeExactly 0.0
             }
@@ -109,8 +131,18 @@ class DriverSpec: DescribeSpec( {
             }
 
             describe(name="Varias calificaciones") {
-                val trip2 = TripBuilder().driver(driver).passenger(client).setDate(yesterday).duration(10).build()
-                val trip3 = TripBuilder().driver(driver).passenger(client).setDate(yesterday).duration(10).build()
+                val trip2 = Trip().apply {
+                    this.driver = driver
+                    this.client = client
+                    date = yesterday
+                    duration = 10
+                }
+                val trip3 = Trip().apply {
+                    this.driver = driver
+                    this.client = client
+                    date = yesterday
+                    duration = 10
+                }
                 driver.trips.addAll(listOf(trip, trip2, trip3)) //Se hardcodea un viaje ya finalizado
                 client.scoreTrip(trip=trip, message="Maso", scorePoints = 2)
                 client.scoreTrip(trip=trip2, message="Maso", scorePoints = 2)

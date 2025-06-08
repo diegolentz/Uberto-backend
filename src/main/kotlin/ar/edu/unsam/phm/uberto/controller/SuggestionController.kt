@@ -2,7 +2,7 @@ package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.dto.FriendNeoDTO
 import ar.edu.unsam.phm.uberto.dto.toFriendNeoDTO
-import ar.edu.unsam.phm.uberto.neo4j.PassNeoService
+import ar.edu.unsam.phm.uberto.services.PassNeoService
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.web.bind.annotation.CrossOrigin

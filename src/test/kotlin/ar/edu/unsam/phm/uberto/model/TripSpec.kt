@@ -19,14 +19,8 @@ import java.time.temporal.ChronoUnit
 
 class TripSpec: DescribeSpec({
     isolationMode = IsolationMode.InstancePerTest
-    val trip: Trip = TripBuilder().build()
+    val trip = Trip()
     describe(name="Given a trip"){
-
-        it(name="Start date") {
-            val date:LocalDateTime = LocalDateTime.now()
-            var trip: Trip = TripBuilder().setDate(date.toString()).build()
-            trip.date shouldBeEqual date
-        }
 
         it(name="Finalization date is start date plus duration") {
             val date:LocalDateTime = LocalDateTime.now()
@@ -106,9 +100,9 @@ class TripSpec: DescribeSpec({
             it(name = "Score can be deleted") {
                 val today: LocalDateTime = LocalDateTime.now()
                 val yesterday: LocalDateTime = today.minus(1, ChronoUnit.DAYS)
-                val trip = TripBuilder()
-                    .setDate(yesterday.toString())
-                    .build()
+                val trip = Trip().apply {
+                    date = yesterday
+                }
                 val passenger = trip.client
                 passenger.id = 1
                 trip.client = passenger

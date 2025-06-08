@@ -8,6 +8,7 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.doubles.shouldBeExactly
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.yield
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -45,45 +46,14 @@ class PassengerSpec : DescribeSpec({
             }
         }
 
-        describe(name="Friends") {
-            val friend:Passenger = PassengerBuilder().build()
-            describe(name="Adding friends"){
-                it(name="Initially not friends, added succesfully"){
-                    passenger.isFriendOf(friend) shouldBe false
-                    passenger.addFriend(friend)
-                    passenger.isFriendOf(friend) shouldBe true
-                }
-
-                it(name="Already friends, cannot be added"){
-                    passenger.addFriend(friend)
-                    passenger.isFriendOf(friend) shouldBe true
-                    shouldThrow<FriendAlreadyExistException> {
-                        passenger.addFriend(friend)
-                    }
-                }
-            }
-
-            describe(name="Deleting friends"){
-                it(name="Succesfully deleted"){
-                    passenger.addFriend(friend)
-                    passenger.isFriendOf(friend) shouldBe true
-                    passenger.removeFriend(friend)
-                    passenger.isFriendOf(friend) shouldBe false
-                }
-
-                it(name="Cannot deleted a non-friend"){
-                    passenger.isFriendOf(friend) shouldBe false
-                    shouldThrow<FriendNotExistException> {
-                        passenger.removeFriend(friend)
-                    }
-                }
-            }
-        }
-
         describe(name="Can book trips") {
             val driver:SimpleDriver = SimpleDriver()
             driver.basePrice = 10.0
-            val trip:Trip = TripBuilder().duration(10).passenger(passenger).driver(driver).build()
+            val trip = Trip().apply {
+                client = passenger
+                this.driver = driver
+                price = 100.00
+            }
             it(name="Succesfully booked. Expends balance"){
                 val balance:Double = 1000000.0
                 passenger.loadBalance(balance)
@@ -106,7 +76,12 @@ class PassengerSpec : DescribeSpec({
             passenger.loadBalance(balance)
             it(name="Can score if trip is finished"){
                 val yesterday: LocalDateTime = LocalDateTime.now().minus(1, ChronoUnit.DAYS)
-                val trip:Trip = TripBuilder().duration(10).passenger(passenger).driver(driver).setDate(yesterday.toString()).build()
+                val trip = Trip().apply {
+                    duration = 10
+                    client = passenger
+                    this.driver = driver
+                    date = yesterday
+                }
                 passenger.requestTrip(trip)
                 trip.finished() shouldBe true
                 passenger.scoreTrip(trip, message = "Score message", scorePoints = 5)
@@ -114,7 +89,12 @@ class PassengerSpec : DescribeSpec({
 
             it(name="Trip not finished, cannot score"){
                 val tomorrow: LocalDateTime = LocalDateTime.now().plus(1, ChronoUnit.DAYS)
-                val trip:Trip = TripBuilder().duration(10).passenger(passenger).driver(driver).setDate(tomorrow.toString()).build()
+                val trip = Trip().apply {
+                    duration = 10
+                    client = passenger
+                    this.driver = driver
+                    date = tomorrow
+                }
                 passenger.requestTrip(trip)
                 trip.finished() shouldBe false
                 shouldThrow<TripNotFinishedException> {

@@ -54,22 +54,6 @@ class Passenger : User {
         this.balance += balance
     }
 
-//    fun isFriendOf(passenger: Passenger) = this.friends.contains(passenger)
-//
-//    fun addFriend(friend: Passenger) {
-//        if (this.isFriendOf(friend)) {
-//            throw FriendAlreadyExistException()
-//        }
-//        friends.add(friend)
-//    }
-//
-//    fun removeFriend(friend: Passenger) {
-//        if (!this.isFriendOf(friend)) {
-//            throw FriendNotExistException()
-//        }
-//        friends.remove(friend)
-//    }
-
     fun scoreTrip(trip: Trip, message: String, scorePoints: Int) {
         validateScoreTrip(message, scorePoints)
         val score = TripScore()

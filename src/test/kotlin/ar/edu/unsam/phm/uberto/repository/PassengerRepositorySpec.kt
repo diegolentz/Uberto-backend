@@ -25,33 +25,4 @@ class PassengerRepositorySpec {
     val notFriend = PassengerBuilder().lastName("JUAN").build()
 
 
-    @Test
-    fun `La busqueda de posibles amigos no trae personas que ya lo son`() {
-        val friend = PassengerBuilder().build()
-
-        passengerRepository.saveAll(listOf(friend, notFriend))
-        passenger.addFriend(friend)
-        passengerRepository.save(passenger)
-
-        passengerRepository.findPossibleFriends(passenger.id!!, "") shouldNotContain friend
-    }
-
-    @Test
-    fun `Me trae una lista de no-amigos`() {
-        var notFriends = mutableListOf<Passenger>()
-        for (i in 1..5) {
-            notFriends.add(PassengerBuilder().build())
-        }
-        passengerRepository.saveAll(notFriends)
-        passengerRepository.save(passenger)
-
-        passengerRepository.findPossibleFriends(passenger.id!!, "") shouldBe notFriends
-    }
-
-    @Test
-    fun `La busqueda no es case-sensitive`() {
-        passengerRepository.saveAll(listOf(notFriend, passenger))
-
-        passengerRepository.findPossibleFriends(passenger.id!!, notFriend.lastName.lowercase()) shouldContain notFriend
-    }
 }
