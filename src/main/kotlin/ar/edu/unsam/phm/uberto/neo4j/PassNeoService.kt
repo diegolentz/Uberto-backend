@@ -21,29 +21,17 @@ open class PassNeoService(
     }
 
     @Transactional
-    fun addFriend(idToken: Long, friendId: Long): ResponseEntity<String> {
-        val currentPassenger = passNeo4jRepository.findByPassengerId(idToken)
-        val friend = passNeo4jRepository.findByPassengerId(friendId)
-        currentPassenger.friends.add(friend)
-        friend.friends.add(currentPassenger)
-        passNeo4jRepository.save(currentPassenger)
-        passNeo4jRepository.save(friend)
+    fun addFriend(currentPassengerId: Long, friendId: Long): ResponseEntity<String> {
+        passNeo4jRepository.addFriendRelationship(currentPassengerId,friendId)
         return ResponseEntity
             .status(HttpStatus.OK).body("You have a new friend!")
     }
 
     @Transactional
-    fun deleteFriend(idToken: Long, friendId: Long): ResponseEntity<String> {
-
-        val currentPassenger = passNeo4jRepository.findByPassengerId(idToken)
-        val friend = passNeo4jRepository.findByPassengerId(friendId)
-        currentPassenger.removeFriend(friend)
-        friend.removeFriend(currentPassenger)
-        passNeo4jRepository.save(currentPassenger)
-        passNeo4jRepository.save(friend)
+    fun deleteFriend(currentPassengerId: Long, friendId: Long): ResponseEntity<String> {
+        passNeo4jRepository.deleteFriendRelationship(currentPassengerId,friendId)
         return ResponseEntity
             .status(HttpStatus.OK).body("Friend succesfully removed")
-
     }
 
     fun searchNonFriends(idToken: Long, filter: String): List<PassNeo> {
