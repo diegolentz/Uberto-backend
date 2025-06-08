@@ -1,6 +1,7 @@
-package ar.edu.unsam.phm.uberto.neo4j
+package ar.edu.unsam.phm.uberto.services
 
-import ar.edu.unsam.phm.uberto.model.Passenger
+import ar.edu.unsam.phm.uberto.neo4j.PassNeo
+import ar.edu.unsam.phm.uberto.neo4j.PassNeo4jRepository
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
