@@ -49,14 +49,16 @@ class DriverController(
                 it.driver.toAvailableDTO(time, numberpassengers, it.averageScore)
             }
         val _passengerId = jwtUtil.getIdFromTokenString(request)
+        val driverCardAndTimeDTO = DriverCardAndTimeDTO(time = time, cardDrivers = availableDriverDTO)
         homeService.saveHome(
         HomeSearch(
             numberPassengers = numberpassengers,
             date = date,
             origin = origin,
             destination = destination,
+            driversPlussTime = driverCardAndTimeDTO
         ).apply { passengerId = _passengerId })
-        return  DriverCardAndTimeDTO(time = time, cardDrivers = availableDriverDTO)
+        return  driverCardAndTimeDTO
     }
 
     @PostMapping()
