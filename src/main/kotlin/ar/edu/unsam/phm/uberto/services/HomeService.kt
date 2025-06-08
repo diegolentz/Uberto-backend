@@ -17,6 +17,6 @@ class HomeService (
     }
 
 fun getHomeByPassengerId(id: Long): HomeSearch {
-    return homeRepo.findById(id).orElse(HomeSearch(null, null, null, null))
+    return homeRepo.findById(id).orElse(HomeSearch(null, null, null, null, null))
     }
 }
