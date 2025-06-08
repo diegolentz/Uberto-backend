@@ -40,6 +40,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-neo4j")
 	implementation("org.neo4j.driver:neo4j-java-driver:5.17.0")
 	implementation("org.springframework:spring-tx")
+	testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.9.2")
+
 
 
 
