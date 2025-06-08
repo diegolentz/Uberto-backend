@@ -1,7 +1,6 @@
 package ar.edu.unsam.phm.uberto.dto
 
 import ar.edu.unsam.phm.uberto.model.Trip
-import ar.edu.unsam.phm.uberto.model.TripScore
 import java.time.LocalDateTime
 
 data class TripScoreDTOMongo(

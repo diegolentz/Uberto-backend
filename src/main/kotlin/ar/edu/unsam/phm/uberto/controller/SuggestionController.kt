@@ -1,5 +1,8 @@
-package ar.edu.unsam.phm.uberto.neo4j
+package ar.edu.unsam.phm.uberto.controller
 
+import ar.edu.unsam.phm.uberto.dto.FriendNeoDTO
+import ar.edu.unsam.phm.uberto.dto.toFriendNeoDTO
+import ar.edu.unsam.phm.uberto.neo4j.PassNeoService
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -16,11 +19,10 @@ class SuggestionController(
 ) {
 
     @GetMapping()
-    fun getSuggestions(request: HttpServletRequest): List<PassNeo> {
+    fun getSuggestions(request: HttpServletRequest): List<FriendNeoDTO> {
         val idToken = jwtUtil.getIdFromTokenString(request)
-        val suggestions = passNeoService.findSuggestionsById(idToken)
+        return passNeoService.findSuggestionsById(idToken).map { it.toFriendNeoDTO() }
 
-        return suggestions
     }
 
 }

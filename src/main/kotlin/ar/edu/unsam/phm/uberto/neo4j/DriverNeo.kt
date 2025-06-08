@@ -11,7 +11,10 @@ class DriverNeo {
     @GeneratedValue
     var id: Long? = null
 
+    var name: String = ""
+
     var driverId: String = ""
+
 
 }
 

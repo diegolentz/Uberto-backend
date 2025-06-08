@@ -11,11 +11,11 @@ interface PassNeo4jRepository : Neo4jRepository<PassNeo, Long> {
     @Query(
         """
         // 1. Identifica al usuario actual (yo) y a sus amigos de amigos (amigoDeAmigo)
-        MATCH (yo:PassNeo {id: ${'$'}currentUserId})-[:FRIEND]->(:PassNeo)-[:FRIEND]->(amigoDeAmigo:PassNeo)
+        MATCH (yo:PassNeo {passengerId: ${'$'}currentUserId})-[:FRIEND]->(:PassNeo)-[:FRIEND]->(amigoDeAmigo:PassNeo)
 
         // 2. Asegura que exista al menos un conductor (driver) en común entre 'yo' y 'amigoDeAmigo'
         // Esta línea es la clave para "cuyos drivers coincidan al menos con 1 mio"
-        MATCH (yo)-[:DRIVER]->(driver:DriverNeo)<-[:DRIVER]-(amigoDeAmigo)
+        MATCH (yo)-[:TRAVEL]->(driver:DriverNeo)<-[:TRAVEL]-(amigoDeAmigo)
 
         // 3. Condiciones para filtrar:
         //    - 'amigoDeAmigo' no debe ser un amigo directo de 'yo'
@@ -27,4 +27,65 @@ interface PassNeo4jRepository : Neo4jRepository<PassNeo, Long> {
     """
     )
     fun findSuggestionsById(@Param("currentUserId") userId: Long): List<PassNeo>
+
+    @Query("""
+        MATCH (p:PassNeo {passengerId: ${'$'}currentPassengerId})-[:FRIEND]->(friend:PassNeo)
+        RETURN friend
+    """)
+    fun findAllFriendsByPassengerId(@Param("currentPassengerId") passengerId: Long): List<PassNeo>
+
+    @Query("""
+        MATCH (p:PassNeo {passengerId: ${'$'}passengerId})
+        OPTIONAL MATCH (p)-[r:FRIEND]->(f:PassNeo)
+        RETURN p, collect(r), collect(f)
+    """)
+    fun findByPassengerId(@Param("passengerId") passengerId: Long): PassNeo
+
+    @Query("""
+        // 1. Identifica al usuario actual y a todos los demás pasajeros (posibles amigos)
+        MATCH (currentUser:PassNeo {passengerId: ${'$'}passengerId})
+        MATCH (potentialFriend:PassNeo)
+
+        // 2. Aplica las condiciones de exclusión y el filtro de búsqueda
+        WHERE
+          // Excluir al propio usuario
+          potentialFriend.passengerId <> ${'$'}passengerId
+          // Excluir a los amigos que ya existen
+          AND NOT (currentUser)-[:FRIEND]->(potentialFriend)
+          // Condición de búsqueda:
+          // O el patrón está vacío (trae todo) O el nombre/apellido coincide con el patrón
+          AND (
+            trim(${'$'}pattern) = '' OR 
+            toLower(potentialFriend.firstName) CONTAINS toLower(${'$'}pattern) OR
+            toLower(potentialFriend.lastName) CONTAINS toLower(${'$'}pattern)
+          )
+
+        // 3. Devuelve los posibles amigos que cumplen las condiciones
+        RETURN potentialFriend
+    """)
+    fun findPossibleFriends(@Param("passengerId")passengerId: Long,@Param("pattern") pattern: String) : List<PassNeo>
+
+    @Query("""
+        MATCH (p1:PassNeo {passengerId: ${'$'}passengerId1})-[r:FRIEND]-(p2:PassNeo {passengerId: ${'$'}passengerId2})
+        DELETE r
+    """)
+    fun deleteFriendRelationship(
+        @Param("passengerId1") passengerId1: Long,
+        @Param("passengerId2") passengerId2: Long
+    )
+
+    @Query("""
+        // 1. Encuentra al pasajero actual (p1) y al futuro amigo (p2)
+        MATCH (p1:PassNeo {passengerId: ${'$'}passengerId1})
+        MATCH (p2:PassNeo {passengerId: ${'$'}passengerId2})
+        
+        // 2. Crea la relación en ambas direcciones si no existen ya
+        MERGE (p1)-[:FRIEND]->(p2)
+        MERGE (p2)-[:FRIEND]->(p1)
+    """)
+    fun addFriendRelationship(
+        @Param("passengerId1") passengerId1: Long,
+        @Param("passengerId2") passengerId2: Long
+    )
+
 }

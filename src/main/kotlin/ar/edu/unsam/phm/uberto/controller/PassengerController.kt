@@ -1,7 +1,8 @@
 package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.dto.*
-import ar.edu.unsam.phm.uberto.model.Passenger
+import ar.edu.unsam.phm.uberto.neo4j.PassNeo
+import ar.edu.unsam.phm.uberto.neo4j.PassNeoService
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import ar.edu.unsam.phm.uberto.services.PassengerService
 import jakarta.servlet.http.HttpServletRequest
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*
 class PassengerController(
     private val passengerService: PassengerService,
     private val jwtUtil: TokenJwtUtil,
+    private val passNeoService: PassNeoService
 ) {
 
     @GetMapping()
@@ -44,29 +46,29 @@ class PassengerController(
     }
 
     @GetMapping("/friends")
-    fun getFriends(request: HttpServletRequest): List<FriendDto> {
+    fun getFriends(request: HttpServletRequest): List<FriendNeoDTO> {
         val idToken = jwtUtil.getIdFromTokenString(request)
-        return passengerService.getFriends(idToken)
+        return passNeoService.getFriends(idToken).map { it.toFriendNeoDTO() }
     }
 
     @PostMapping("/friends")
     fun addFriend(request: HttpServletRequest, @RequestParam friendId: Long): ResponseEntity<String> {
         val idToken = jwtUtil.getIdFromTokenString(request)
-        return passengerService.addFriend(idToken, friendId)
+        return passNeoService.addFriend(idToken, friendId)
     }
 
     @DeleteMapping("/friends")
     fun deleteFriend(request: HttpServletRequest, friendId: Long): ResponseEntity<String> {
         val idToken = jwtUtil.getIdFromTokenString(request)
-        return passengerService.deleteFriend(idToken, friendId)
+        return passNeoService.deleteFriend(idToken, friendId)
     }
 
     @GetMapping("/friends/search")
-    fun filter(request: HttpServletRequest, @RequestParam filter: String): List<FriendDto> {
+    fun filter(request: HttpServletRequest, @RequestParam filter: String): List<FriendNeoDTO> {
         val idToken = jwtUtil.getIdFromTokenString(request)
-        val nonFriendsPassengers: List<Passenger> = passengerService.searchNonFriends(idToken, filter)
-        return nonFriendsPassengers.map { friend: Passenger ->
-            friend.toDTOFriend()
+        val nonFriendsPassengers: List<PassNeo> = passNeoService.searchNonFriends(idToken, filter)
+        return nonFriendsPassengers.map { friend: PassNeo ->
+            friend.toFriendNeoDTO()
         }
     }
 

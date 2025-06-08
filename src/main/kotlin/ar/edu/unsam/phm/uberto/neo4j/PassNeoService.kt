@@ -1,5 +1,8 @@
 package ar.edu.unsam.phm.uberto.neo4j
 
+import ar.edu.unsam.phm.uberto.model.Passenger
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -12,4 +15,27 @@ open class PassNeoService(
     fun findSuggestionsById(id : Long): List<PassNeo> {
         return passNeo4jRepository.findSuggestionsById(id)
     }
+
+    fun getFriends(idToken: Long): List<PassNeo> {
+        return passNeo4jRepository.findAllFriendsByPassengerId(idToken)
+    }
+
+    @Transactional
+    fun addFriend(currentPassengerId: Long, friendId: Long): ResponseEntity<String> {
+        passNeo4jRepository.addFriendRelationship(currentPassengerId,friendId)
+        return ResponseEntity
+            .status(HttpStatus.OK).body("You have a new friend!")
+    }
+
+    @Transactional
+    fun deleteFriend(currentPassengerId: Long, friendId: Long): ResponseEntity<String> {
+        passNeo4jRepository.deleteFriendRelationship(currentPassengerId,friendId)
+        return ResponseEntity
+            .status(HttpStatus.OK).body("Friend succesfully removed")
+    }
+
+    fun searchNonFriends(idToken: Long, filter: String): List<PassNeo> {
+        return passNeo4jRepository.findPossibleFriends(idToken, filter.lowercase())
+    }
+
 }

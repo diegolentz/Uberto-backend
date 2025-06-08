@@ -12,13 +12,11 @@ import ar.edu.unsam.phm.uberto.neo4j.DriverNeo
 import ar.edu.unsam.phm.uberto.neo4j.DriverNeoRepository
 import ar.edu.unsam.phm.uberto.neo4j.PassNeo
 import ar.edu.unsam.phm.uberto.neo4j.PassNeo4jRepository
-import ar.edu.unsam.phm.uberto.neo4j.PassNeoService
 import ar.edu.unsam.phm.uberto.repository.*
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import ar.edu.unsam.phm.uberto.services.AuthService
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.PassengerService
-import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -504,11 +502,11 @@ class Bootstrap(
         val valentin = passengerRepo.findById(5).get()
 
 
-        passengerService.addFriend(adrian.id!!, diego.id!!)
-        passengerService.addFriend(diego.id!!, matias.id!!)
-        passengerService.addFriend(matias.id!!, pedro.id!!)
-        passengerService.addFriend(pedro.id!!, valentin.id!!)
-        passengerService.addFriend(valentin.id!!, adrian.id!!)
+//        passengerService.addFriend(adrian.id!!, diego.id!!)
+//        passengerService.addFriend(diego.id!!, matias.id!!)
+//        passengerService.addFriend(matias.id!!, pedro.id!!)
+//        passengerService.addFriend(pedro.id!!, valentin.id!!)
+//        passengerService.addFriend(valentin.id!!, adrian.id!!)
 
 
 //        var all: List<Passenger> = listOf(adrian, diego, matias, pedro, valentin)
@@ -518,15 +516,13 @@ class Bootstrap(
     fun createNeoDriver() {
         println("Creating DriverNeo nodes in Neo4j...")
         val mongoDrivers = mongoRepoDriver.findAll()
-        val driverNeoList = mongoDrivers.mapNotNull { mongoDriver ->
-            mongoDriver.id?.let { driverIdString -> // Asumiendo que Driver.id es el ObjectId de Mongo
-                DriverNeo().apply {
-                    this.driverId = driverIdString.toString()
-                    // Aquí puedes mapear otros campos de mongoDriver a DriverNeo si es necesario
-                    // Ejemplo: this.name = mongoDriver.firstName
-                }
+        val driverNeoList = mongoDrivers.map {
+            DriverNeo().apply {
+                driverId = it.id!!
+                name = it.firstName + " " + it.lastName
             }
         }
+
         if (driverNeoList.isNotEmpty()) {
             driverNeoRepo.saveAll(driverNeoList)
             println("Saved ${driverNeoList.size} DriverNeo objects to Neo4j.")
@@ -545,7 +541,7 @@ class Bootstrap(
         val valentin = passengers.first { it.firstName == "Valentin" }
 
         val allDrivers = mongoRepoDriver.findAll()
-        var driverNeo = driverNeoRepo.findAll()
+        val driverNeo = driverNeoRepo.findAll()
 
         val toreto = allDrivers.first { it.firstName == "Dominic" }
         val colapinto = allDrivers.first { it.firstName == "Franco" }
@@ -562,6 +558,9 @@ class Bootstrap(
             lastName = adrian.lastName
             friends = mutableListOf()
             drivers = mutableListOf()
+            passengerId = adrian.id
+            img = adrian.img
+
         }
 
         var neoMatias = PassNeo().apply {
@@ -569,6 +568,9 @@ class Bootstrap(
             lastName = matias.lastName
             friends = mutableListOf()
             drivers = mutableListOf()
+            passengerId = matias.id
+            img = matias.img
+
         }
 
         var neoValentin = PassNeo().apply {
@@ -576,6 +578,9 @@ class Bootstrap(
             lastName = valentin.lastName
             friends = mutableListOf()
             drivers = mutableListOf()
+            passengerId = valentin.id
+            img = valentin.img
+
         }
 
         var neoPedro = PassNeo().apply {
@@ -583,6 +588,9 @@ class Bootstrap(
             lastName = pedro.lastName
             friends = mutableListOf()
             drivers = mutableListOf()
+            passengerId = pedro.id
+            img = pedro.img
+
         }
 
         var neoDiego = PassNeo().apply {
@@ -590,6 +598,8 @@ class Bootstrap(
             lastName = diego.lastName
             friends = mutableListOf()
             drivers = mutableListOf()
+            passengerId = diego.id
+            img = diego.img
         }
 
         neoAdrian.friends.addAll(listOf(neoDiego, neoValentin))

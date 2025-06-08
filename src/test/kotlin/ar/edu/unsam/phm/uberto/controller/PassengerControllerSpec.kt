@@ -2,7 +2,6 @@ package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.builder.PassengerBuilder
 import ar.edu.unsam.phm.uberto.dto.UpdatedPassengerDTO
-import ar.edu.unsam.phm.uberto.dto.toDTOFriend
 import ar.edu.unsam.phm.uberto.factory.TestFactory
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
@@ -10,7 +9,6 @@ import ar.edu.unsam.phm.uberto.services.AuthService
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.PassengerService
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.jayway.jsonpath.JsonPath
@@ -18,7 +16,6 @@ import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.shouldBe
-import io.mockk.InternalPlatformDsl.toStr
 import jakarta.transaction.Transactional
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.DisplayName
@@ -26,13 +23,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 @SpringBootTest
 @AutoConfigureMockMvc
