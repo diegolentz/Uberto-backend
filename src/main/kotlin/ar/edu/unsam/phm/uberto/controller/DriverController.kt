@@ -56,7 +56,7 @@ class DriverController(
             date = date,
             origin = origin,
             destination = destination,
-            driversPlussTime = driverCardAndTimeDTO
+            driversPlusTime = driverCardAndTimeDTO
         ).apply { passengerId = _passengerId })
         return  driverCardAndTimeDTO
     }

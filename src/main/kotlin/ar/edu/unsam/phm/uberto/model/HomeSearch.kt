@@ -14,7 +14,7 @@ data class HomeSearch (
     var date: LocalDateTime?,
     var origin: String?,
     var destination: String?,
-    var driversPlussTime: DriverCardAndTimeDTO?
+    var driversPlusTime: DriverCardAndTimeDTO?
 )
 {
     @Id
