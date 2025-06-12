@@ -5,11 +5,19 @@ import ar.edu.unsam.phm.uberto.model.UserAuthCredentials
 import ar.edu.unsam.phm.uberto.utils.AuthRepositoryUtil
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.SpringBootConfiguration
+import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import kotlin.test.assertEquals
 
-@DataJpaTest
+@DataJpaTest()
 class AuthRepositoryTest {
+
+    @SpringBootConfiguration
+    @EnableJpaRepositories(basePackageClasses = [AuthRepository::class])
+    @EntityScan(basePackageClasses = [UserAuthCredentials::class])
+    internal class TestConfig {}
 
     @Autowired
     lateinit var authRepository: AuthRepository
