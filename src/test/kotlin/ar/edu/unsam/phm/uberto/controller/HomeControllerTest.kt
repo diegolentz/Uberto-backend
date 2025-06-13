@@ -5,10 +5,7 @@ import ar.edu.unsam.phm.uberto.dto.DriverCardAndTimeDTO
 import ar.edu.unsam.phm.uberto.dto.DriverCardDTO
 import ar.edu.unsam.phm.uberto.factory.TestFactory
 import ar.edu.unsam.phm.uberto.model.HomeSearch
-import ar.edu.unsam.phm.uberto.repository.MongoDriverRepository
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
-import ar.edu.unsam.phm.uberto.repository.TripScoreRepository
-import ar.edu.unsam.phm.uberto.repository.TripsRepository
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import ar.edu.unsam.phm.uberto.services.AuthService
 import ar.edu.unsam.phm.uberto.services.DriverService
@@ -23,10 +20,8 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import java.math.BigDecimal
 import java.time.LocalDateTime
 
 @SpringBootTest

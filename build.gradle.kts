@@ -38,7 +38,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 	runtimeOnly("org.postgresql:postgresql")
 	implementation("org.springframework.boot:spring-boot-starter-data-neo4j")
-	implementation("org.neo4j.driver:neo4j-java-driver:5.17.0")
+	//implementation("org.neo4j.driver:neo4j-java-driver:5.17.0")
 	implementation("org.springframework:spring-tx")
 	testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.9.2")
 
@@ -67,6 +67,12 @@ dependencies {
 	testImplementation("com.h2database:h2")
 	testImplementation("org.mockito:mockito-inline:5.2.0")
 	testImplementation("org.springframework.security:spring-security-test")
+	//testImplementation("org.neo4j.test:neo4j-harness")
+	testImplementation("org.neo4j.test:neo4j-harness:5.17.0"){
+		exclude(group = "org.slf4j", module = "slf4j-nop") // Excluye la implementación NOP
+		exclude(group = "org.slf4j", module = "slf4j-simple") // Excluye también la simple por si acaso
+	}
+
 
 }
 
