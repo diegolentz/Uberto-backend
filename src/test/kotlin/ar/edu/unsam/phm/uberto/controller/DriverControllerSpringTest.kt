@@ -1,7 +1,15 @@
 package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.dto.DriverDTO
+import ar.edu.unsam.phm.uberto.factory.TestFactory
+import ar.edu.unsam.phm.uberto.repository.MongoDriverRepository
+import ar.edu.unsam.phm.uberto.repository.PassengerRepository
+import ar.edu.unsam.phm.uberto.repository.TripsRepository
+import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
+import ar.edu.unsam.phm.uberto.services.AuthService
 import ar.edu.unsam.phm.uberto.services.DriverService
+import ar.edu.unsam.phm.uberto.services.PassengerService
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,15 +19,6 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import ar.edu.unsam.phm.uberto.factory.TestFactory
-import ar.edu.unsam.phm.uberto.repository.MongoDriverRepository
-import ar.edu.unsam.phm.uberto.repository.PassengerRepository
-import ar.edu.unsam.phm.uberto.repository.TripScoreRepository
-import ar.edu.unsam.phm.uberto.repository.TripsRepository
-import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
-import ar.edu.unsam.phm.uberto.services.AuthService
-import ar.edu.unsam.phm.uberto.services.PassengerService
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDateTime
 
@@ -29,7 +28,6 @@ import java.time.LocalDateTime
 @ActiveProfiles("test")
 @DisplayName("Dado un controller de Driver")
 class DriverControllerSpringTest(
-    @Autowired private var tripScoreRepository: TripScoreRepository,
     @Autowired private var passengerRepository: PassengerRepository,
     @Autowired var mockMvc: MockMvc,
     @Autowired var driverService: DriverService,
@@ -41,15 +39,16 @@ class DriverControllerSpringTest(
 ) {
 
 
-    val testFactory = TestFactory(authService, passengerService, driverService ,jwtUtil)
+    val testFactory = TestFactory(authService, passengerService, driverService, jwtUtil)
     val tokenDriver = testFactory.generateTokenDriverTest("simple")
     val tokenPassenger = testFactory.generateTokenPassengerTest("adrian")
     val invalidToken = testFactory.generateInvalidToken("simple")
 
     @Test
     fun `busco un driver cuyo id no existe`() {
-        mockMvc.perform(MockMvcRequestBuilders.get("/driver")
-            .header("Authorization", "Bearer $invalidToken")
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/driver")
+                .header("Authorization", "Bearer $invalidToken")
         ).andExpect(MockMvcResultMatchers.status().is4xxClientError)
     }
 
@@ -64,8 +63,10 @@ class DriverControllerSpringTest(
 
     @Test
     fun `obtengo la img de un driver existente`() {
-        mockMvc.perform(MockMvcRequestBuilders.get("/driver/img?driverid=1")
-            .header("Authorization", "Bearer $tokenDriver"))
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/driver/img?driverid=1")
+                .header("Authorization", "Bearer $tokenDriver")
+        )
             .andExpect(MockMvcResultMatchers.status().isOk)
     }
 
@@ -86,7 +87,7 @@ class DriverControllerSpringTest(
     @Test
     fun `creo un viaje y lo agrego, el chofer no estará disponible esa fecha`() {
         // Me creo el viaje
-        val driver = driverRepository.findById("1").get()
+        val driver = driverRepository.findAll().first()
         val passenger = passengerRepository.findById(1).get()
         val trip = testFactory.createTrip(passenger, driver)
 
@@ -97,14 +98,7 @@ class DriverControllerSpringTest(
             date = LocalDateTime.now().plusDays(15) // El viaje es en 15 días
             duration = 10
         }
-
-//        passenger.scoreTrip(trip, scoreMock.message, scoreMock.scorePoints)
-
-        // Guardo el viaje
         tripRepository.save(trip)
-
-
-        // Verifico que el chofer no esté disponible en esa fecha
         mockMvc.perform(
             MockMvcRequestBuilders.get("/driver/available")
                 .header("Authorization", "Bearer $tokenPassenger")
@@ -115,9 +109,6 @@ class DriverControllerSpringTest(
 
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
-
-
-//            .andExpect(MockMvcResultMatchers.jsonPath("$[?(@.id == ${driver.id})]").doesNotExist()) // El chofer no debe estar disponible
     }
 
     @Test
@@ -131,8 +122,6 @@ class DriverControllerSpringTest(
             2020,
             100.0
         )
-
-        // Convertir el objeto a JSON
         val objectMapper = ObjectMapper()
         val updateInfoJson = objectMapper.writeValueAsString(updateInfo)
 
@@ -152,6 +141,4 @@ class DriverControllerSpringTest(
             .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(updateInfo.price))
 
     }
-
-
 }

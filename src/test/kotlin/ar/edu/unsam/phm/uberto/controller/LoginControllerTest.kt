@@ -46,40 +46,41 @@ class LoginControllerTest(
     @Autowired var driverService: DriverService,
 ) {
 
-    val testFactory = TestFactory(authService, passengerService, driverService ,jwtUtil)
+    val testFactory = TestFactory(authService, passengerService, driverService, jwtUtil)
     val tokenDriver = testFactory.generateTokenDriverTest("simple")
     val tokenPassenger = testFactory.generateTokenPassengerTest("adrian")
 
-    private fun perform(mockMvcRequestBuilder: MockHttpServletRequestBuilder): ResultActions{
+    private fun perform(mockMvcRequestBuilder: MockHttpServletRequestBuilder): ResultActions {
         return mockMvc.perform(mockMvcRequestBuilder)
     }
 
-    private fun mockPost(uriPath:String): MockHttpServletRequestBuilder{
+    private fun mockPost(uriPath: String): MockHttpServletRequestBuilder {
         return MockMvcRequestBuilders.post(uriPath)
     }
 
-    private fun toJson(objectToParse:Any):String{
+    private fun toJson(objectToParse: Any): String {
         return ObjectMapper().writeValueAsString(objectToParse)
     }
 
-    private fun validCredentials():Map<String, String>{
+    private fun validCredentials(): Map<String, String> {
         return mapOf("username" to "adrian", "password" to "adrian")
     }
 
-    private fun invalidCredentials():Map<String, String>{
+    private fun invalidCredentials(): Map<String, String> {
         return mapOf("username" to "invalid_username", "password" to "invalid_password")
     }
 
-    private fun parseToLoginResponse(json:String): LoginDTO{
+    private fun parseToLoginResponse(json: String): LoginDTO {
         val mapper = ObjectMapper().registerKotlinModule()
         return mapper.readValue(json, LoginDTO::class.java)
     }
 
 
     @Test
-    fun loginWithoutRequestBody(){
-        this.perform( mockMvcRequestBuilder =
-            this.mockPost("/login")
+    fun loginWithoutRequestBody() {
+        this.perform(
+            mockMvcRequestBuilder =
+                this.mockPost("/login")
         ).andExpect {
             assertEquals(expected = HttpStatus.BAD_REQUEST.value(), actual = it.response.status)
             assertEquals(expected = HttpMessageNotReadableException::class, actual = it.resolvedException!!::class)
@@ -87,15 +88,16 @@ class LoginControllerTest(
     }
 
     @Test
-    fun loginWithInvalidUsername(){
+    fun loginWithInvalidUsername() {
         val loginRequest: LoginRequest = LoginRequest(
             username = this.invalidCredentials()["username"]!!,
             password = "" // No me interesa el password en este caso, ya que no pasa del username
         )
-        this.perform( mockMvcRequestBuilder =
-            this.mockPost("/login")
-                .contentType("application/json")
-                .content(this.toJson(objectToParse = loginRequest))
+        this.perform(
+            mockMvcRequestBuilder =
+                this.mockPost("/login")
+                    .contentType("application/json")
+                    .content(this.toJson(objectToParse = loginRequest))
         ).andExpect {
             assertEquals(expected = HttpStatus.UNAUTHORIZED.value(), actual = it.response.status)
             assertSame(expected = InvalidCredentialsException()::class, actual = it.resolvedException!!::class)
@@ -103,15 +105,16 @@ class LoginControllerTest(
     }
 
     @Test
-    fun loginWithInvalidPassword(){
+    fun loginWithInvalidPassword() {
         val loginRequest: LoginRequest = LoginRequest(
             username = this.validCredentials()["username"]!!,
             password = this.invalidCredentials()["password"]!!
         )
-        this.perform( mockMvcRequestBuilder =
-            this.mockPost("/login")
-                .contentType("application/json")
-                .content(this.toJson(objectToParse = loginRequest))
+        this.perform(
+            mockMvcRequestBuilder =
+                this.mockPost("/login")
+                    .contentType("application/json")
+                    .content(this.toJson(objectToParse = loginRequest))
         ).andExpect {
             assertEquals(expected = HttpStatus.UNAUTHORIZED.value(), actual = it.response.status)
             assertSame(expected = InvalidCredentialsException()::class, actual = it.resolvedException!!::class)
@@ -119,12 +122,13 @@ class LoginControllerTest(
     }
 
     @Test
-    fun sucessfullLoginDriver(){
-        val loginRequest: LoginRequest = LoginRequest(username="premium", password="premium")
-        this.perform( mockMvcRequestBuilder =
-            this.mockPost("/login")
-                .contentType("application/json")
-                .content(this.toJson(objectToParse = loginRequest))
+    fun sucessfullLoginDriver() {
+        val loginRequest: LoginRequest = LoginRequest(username = "premium", password = "premium")
+        this.perform(
+            mockMvcRequestBuilder =
+                this.mockPost("/login")
+                    .contentType("application/json")
+                    .content(this.toJson(objectToParse = loginRequest))
         ).andExpect {
             val parsedLoginResponse: LoginDTO = this.parseToLoginResponse(it.response.contentAsString)
             assertNotNull(actual = parsedLoginResponse.token)
@@ -135,17 +139,19 @@ class LoginControllerTest(
 
         }
     }
-//
+
+    //
     @Test
-    fun sucessfullLoginPassenger(){
+    fun sucessfullLoginPassenger() {
         val loginRequest: LoginRequest = LoginRequest(
             username = this.validCredentials()["username"]!!,
             password = this.validCredentials()["password"]!!
         )
-        this.perform( mockMvcRequestBuilder =
-            this.mockPost("/login")
-                .contentType("application/json")
-                .content(this.toJson(objectToParse = loginRequest))
+        this.perform(
+            mockMvcRequestBuilder =
+                this.mockPost("/login")
+                    .contentType("application/json")
+                    .content(this.toJson(objectToParse = loginRequest))
         ).andExpect {
             val parsedLoginResponse: LoginDTO = this.parseToLoginResponse(it.response.contentAsString)
             assertNotNull(actual = parsedLoginResponse.token)
