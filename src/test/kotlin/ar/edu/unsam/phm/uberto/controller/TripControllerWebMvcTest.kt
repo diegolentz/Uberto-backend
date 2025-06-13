@@ -2,8 +2,6 @@ package ar.edu.unsam.phm.uberto.controller
 
 
 import ar.edu.unsam.phm.uberto.factory.TestFactory
-import ar.edu.unsam.phm.uberto.model.Passenger
-import ar.edu.unsam.phm.uberto.model.PremiumDriver
 import ar.edu.unsam.phm.uberto.model.Trip
 import ar.edu.unsam.phm.uberto.repository.MongoDriverRepository
 import ar.edu.unsam.phm.uberto.repository.PassengerRepository
@@ -13,17 +11,12 @@ import ar.edu.unsam.phm.uberto.services.AuthService
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.PassengerService
 import ar.edu.unsam.phm.uberto.services.TripService
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -52,8 +45,10 @@ class TripControllerWebMvcTest(
 
     @Test
     fun `Pido los trip de un pasajero que no existe - no tiene pendientes`() {
-        mockMvc.perform(MockMvcRequestBuilders.get("/trip/passenger")
-            .header("Authorization", "Bearer $invalidToken"))
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/trip/passenger")
+                .header("Authorization", "Bearer $invalidToken")
+        )
             .andExpect(MockMvcResultMatchers.status().isForbidden)
     }
 
@@ -73,8 +68,10 @@ class TripControllerWebMvcTest(
         }
         tripRepository.save(trip)
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.get("/trip/passenger")
-            .header("Authorization", "Bearer $tokenPassenger"))
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/trip/passenger")
+                .header("Authorization", "Bearer $tokenPassenger")
+        )
             .andExpect(MockMvcResultMatchers.jsonPath("$[6].origin").value("origen"))
             .andExpect(MockMvcResultMatchers.jsonPath("$[6].destination").value("destino"))
             .andExpect(MockMvcResultMatchers.jsonPath("$[6].numberPassengers").value(2))

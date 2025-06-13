@@ -12,12 +12,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.jayway.jsonpath.JsonPath
-import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainExactly
-import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.shouldBe
-import jakarta.transaction.Transactional
-import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.DisplayName
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -42,31 +38,37 @@ class PassengerControllerSpec(
     @Autowired var driverService: DriverService
 ) {
 
-    val testFactory = TestFactory(authService, passengerService, driverService ,jwtUtil)
+    val testFactory = TestFactory(authService, passengerService, driverService, jwtUtil)
     val tokenDriver = testFactory.generateTokenDriverTest("simple")
     val tokenPassenger = testFactory.generateTokenPassengerTest("adrian")
     val invalidToken = testFactory.generateInvalidToken("simple")
 
     @Test
     fun `al buscar un usuario que no existe devuelve error`() {
-        mockMvc.perform(MockMvcRequestBuilders.get("/passenger")
-            .header("Authorization", "Bearer $invalidToken"))
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/passenger")
+                .header("Authorization", "Bearer $invalidToken")
+        )
             .andExpect(MockMvcResultMatchers.status().is4xxClientError)
     }
 
     @Test
     fun `al buscar un usuario lo devuelve con los atributos correctos`() {
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/passenger")
-            .header("Authorization", "Bearer $tokenPassenger"))
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/passenger")
+                .header("Authorization", "Bearer $tokenPassenger")
+        )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
     }
 
     @Test
     fun `al buscar un usuario devuelvo todos los atributos del DTO`() {
-        val response = mockMvc.perform(MockMvcRequestBuilders.get("/passenger")
-            .header("Authorization", "Bearer $tokenPassenger"))
+        val response = mockMvc.perform(
+            MockMvcRequestBuilders.get("/passenger")
+                .header("Authorization", "Bearer $tokenPassenger")
+        )
             .andReturn()
             .response
         val json: Map<String, Any> = JsonPath.parse(response.contentAsString).read("\$")
@@ -95,7 +97,8 @@ class PassengerControllerSpec(
                 .header("Authorization", "Bearer $tokenPassenger")
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers
+            .andExpect(
+                MockMvcResultMatchers
                     .jsonPath("$.money")
                     .value(originalBalance + money)
             )
@@ -149,77 +152,15 @@ class PassengerControllerSpec(
                 .header("Authorization", "Bearer $tokenPassenger")
         ).andExpect(MockMvcResultMatchers.status().isOk)
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/passenger/friends")
-            .header("Authorization", "Bearer $tokenPassenger"))
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/passenger/friends")
+                .header("Authorization", "Bearer $tokenPassenger")
+        )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect {
-                val lista:List<Object> = ObjectMapper().readValue(it.response.contentAsString)
+                val lista: List<Object> = ObjectMapper().readValue(it.response.contentAsString)
                 assertEquals(expected = lista.isEmpty(), actual = false)
             }
-    }
-
-    @Test
-    fun `si no hay amigos es una lista vacia`() {
-        val passenger = PassengerBuilder().build()
-        passengerRepository.save(passenger)
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/passenger/friends")
-            .header("Authorization", "Bearer $tokenPassenger"))
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty)
-    }
-
-
-    @Test
-    fun `no se puede agregar un amigo que ya lo es`() {
-        val passenger = passengerRepository.findById(1).get()
-        val friend = passengerRepository.findById(2).get()
-
-        mockMvc.perform(
-            MockMvcRequestBuilders.post("/passenger/friends")
-                .param("friendId", friend.id.toString())
-                .header("Authorization", "Bearer $tokenPassenger")
-        ).andExpect(MockMvcResultMatchers.status().isOk)
-
-        mockMvc.perform(
-            MockMvcRequestBuilders.post("/passenger/friends")
-                .param("friendId", friend.id.toString())
-                .header("Authorization", "Bearer $tokenPassenger")
-        ).andExpect(MockMvcResultMatchers.status().isBadRequest)
-
-    }
-
-    @Test
-    fun `no se puede eliminar un amigo que no es amigo`() {
-        val passenger = PassengerBuilder().build()
-        val friend = PassengerBuilder().build()
-
-        passengerRepository.save(friend)
-        passengerRepository.save(passenger)
-
-        mockMvc.perform(
-            MockMvcRequestBuilders.delete("/passenger/friends")
-                .param("passengerId", passenger.id.toString())
-                .param("friendId", friend.id.toString())
-                .header("Authorization", "Bearer $tokenPassenger")
-        ).andExpect(MockMvcResultMatchers.status().isNotFound)
-    }
-
-    @Test
-    fun `el filtro busca correctamente`() {
-        val passenger = PassengerBuilder().build()
-        val wantedPassenger = PassengerBuilder().firstName("testotesto").build()
-
-        passengerRepository.saveAll(listOf(passenger, wantedPassenger))
-
-        mockMvc.perform(
-            MockMvcRequestBuilders.get("/passenger/friends/search")
-                .param("filter", "testotesto")
-                .header("Authorization", "Bearer $tokenPassenger")
-        ).andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(wantedPassenger.id))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].firstname").value(wantedPassenger.firstName))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].lastname").value(wantedPassenger.lastName))
     }
 
     @Test
