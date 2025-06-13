@@ -30,6 +30,17 @@ class TripService(
 
     @Transactional
     fun createTrip(trip: TripCreateDTO, client: Passenger, driver: Driver): ResponseEntity<String> {
+        // AGREGADO: Print para ver el balance recibido por el service
+        println("Balance del pasajero en service antes de crear viaje: ${client.balance}")
+
+        // SUPONIENDO UN PRECIO FIJO, O calculá en base a duración, distancia, etc.
+        val precioDelViaje = 100.0 // Cambia esto por tu lógica real
+
+        // AGREGADO: Validación de saldo
+        if (client.balance < precioDelViaje) {
+            println("Saldo insuficiente: balance=${client.balance}, precio=$precioDelViaje")
+            return ResponseEntity("Insufficient balance.", HttpStatus.BAD_REQUEST)
+        }
 
         val newTrip = Trip().apply {
             duration = trip.duration
@@ -42,7 +53,7 @@ class TripService(
             driverId = driver.id!!
         }
 
-        if(!checkAvailableDriver( driver, newTrip)){//Valida en postgres
+        if(!checkAvailableDriver(driver, newTrip)){//Valida en postgres
             throw BusinessException("Driver no disponible en este momento")
         }
 
@@ -50,22 +61,20 @@ class TripService(
         client.requestTrip(newTrip)
         driver.responseTrip(newTrip, trip.duration)
 
-        try{
+        try {
             tripRepo.save(newTrip)
-        }catch (e: DataAccessException){
+        } catch (e: DataAccessException) {
             throw FailSaveException("Error en la creación del viaje")
         }
 
-        try{
+        try {
             driver.tripsDTO.add(newTrip.toTripDriverDTO())
             driverRepo.save(driver)
-        }catch (e: DataAccessException){
+        } catch (e: DataAccessException) {
             throw FailSaveException("Error al asignar viaje al chofer ")
         }
 
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body("Se reserva de viaje exitosamente")
+        return ResponseEntity.status(HttpStatus.OK).body("Se reserva de viaje exitosamente")
     }
 
     fun getAllByPassenger(id: Long): List<Long> {
