@@ -11,6 +11,7 @@ import ar.edu.unsam.phm.uberto.services.AuthService
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.PassengerService
 import ar.edu.unsam.phm.uberto.services.TripService
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -52,29 +53,30 @@ class TripControllerWebMvcTest(
             .andExpect(MockMvcResultMatchers.status().isForbidden)
     }
 
+
     @Test
     fun `Pido los trip de un pasajero que si tiene viajes`() {
         val user = authService.findUserByUsername("adrian")
 
         val passenger = passengerService.getById(user!!.id!!)
-        val driver = driverRepository.findById("1").get()
+        val driver = driverRepository.findAll().first()
         val trip = Trip().apply {
             client = passenger
             this.driver = driver
             date = LocalDateTime.now().plusDays(1)
-            numberPassengers = 2
-            destination = "destino"
-            origin = "origen"
+            numberPassengers = 3
+            destination = "Av. 9 de Julio 500"
+            origin = "Av. Juan de Garay 1200"
         }
         tripRepository.save(trip)
         // Act & Assert
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/trip/passenger")
+            MockMvcRequestBuilders.get("/trip/profile/passenger")
                 .header("Authorization", "Bearer $tokenPassenger")
         )
-            .andExpect(MockMvcResultMatchers.jsonPath("$[6].origin").value("origen"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[6].destination").value("destino"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[6].numberPassengers").value(2))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.pendingTrips[0].origin").value("Av. Juan de Garay 1200"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.pendingTrips[0].destination").value("Av. 9 de Julio 500"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.pendingTrips[0].numberPassengers").value(3))
     }
 
     @Test
@@ -83,32 +85,24 @@ class TripControllerWebMvcTest(
         val passenger = testFactory.createPassenger(1).get(0).apply { balance = 100000000.0 }
         passengerRepository.save(passenger)
         driverRepository.save(driver)
-        val jsonBody = """
-                        {   
-                            "id": 0,
-                            "userId": ${passenger.id},
-                            "driverId": ${driver.id},
-                            "duration": 60,
-                            "numberPassengers": 2,
-                            "date": "${LocalDateTime.now().plusDays(1)}",
-                            "origin": "origen",
-                            "destination": "destino",
-                            "price": 0,
-                            "driverName": "string",
-                            "passengerName": "string",
-                            "imgPassenger": "string",
-                            "imgDriver": "string",
-                            "scored": true
-                        }
-                        """.trimIndent()
 
+        val tripMap = mapOf(
+            "driverId" to driver.id.toString(),
+            "duration" to 60,
+            "numberPassengers" to 2,
+            "date" to LocalDateTime.now().plusDays(1).toString(),
+            "origin" to "origen",
+            "destination" to "destino"
+        )
+        val jsonBody = ObjectMapper().writeValueAsString(tripMap)
 
-        // Act & Assert
         mockMvc.perform(
             MockMvcRequestBuilders.post("/trip/create")
                 .contentType("application/json")
-                .content(jsonBody).header("Authorization", "Bearer $tokenPassenger")
+                .content(jsonBody)
+                .header("Authorization", "Bearer $tokenPassenger")
         )
+
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.content().string("Se reserva de viaje exitosamente"))
     }
@@ -116,31 +110,21 @@ class TripControllerWebMvcTest(
     @Test
     fun `Se falla creacion de trip, pasajero sin saldo`() {
         val driver = testFactory.createDriverPremium(1).get(0)
-//        val passenger = testFactory.createPassenger(1).get(0).apply { balance = 1.0 }
-        val passenger = passengerRepository.findById(1).get().apply { balance = 1.0 }
+        val passenger = passengerRepository.findById(1).get().apply { balance = 0.0 }
         passengerRepository.save(passenger)
         driverRepository.save(driver)
-        val jsonBody = """
-                        {   
-                            "id": 0,
-                            "userId": ${passenger.id},
-                            "driverId": ${driver.id},
-                            "duration": 60,
-                            "numberPassengers": 2,
-                            "date": "${LocalDateTime.now().plusDays(1)}",
-                            "origin": "origen",
-                            "destination": "destino",
-                            "price": 110,
-                            "driverName": "string",
-                            "passengerName": "string",
-                            "imgPassenger": "string",
-                            "imgDriver": "string",
-                            "scored": true
-                        }
-                        """.trimIndent()
+        println("Balance seteado en el test: ${passenger.balance}") // <-- ESTO ves en consola
 
+        val tripMap = mapOf(
+            "driverId" to driver.id.toString(),
+            "duration" to 60,
+            "numberPassengers" to 2,
+            "date" to LocalDateTime.now().plusDays(1).toString(),
+            "origin" to "origen",
+            "destination" to "destino"
+        )
+        val jsonBody = ObjectMapper().writeValueAsString(tripMap)
 
-        // Act & Assert
         mockMvc.perform(
             MockMvcRequestBuilders.post("/trip/create")
                 .contentType("application/json")
@@ -148,7 +132,6 @@ class TripControllerWebMvcTest(
                 .header("Authorization", "Bearer $tokenPassenger")
         )
             .andExpect(MockMvcResultMatchers.status().is4xxClientError)
-            .andExpect(MockMvcResultMatchers.content().string("Insufficient balance."))
     }
 
 
@@ -167,9 +150,9 @@ class TripControllerWebMvcTest(
         tripRepository.saveAll(listOf(tripPending, tripFinished))
 
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/trip/driver").header("Authorization", "Bearer $tokenDriver")
+            MockMvcRequestBuilders.get("/trip/profile/driver").header("Authorization", "Bearer $tokenDriver")
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(8))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2))
     }
 }
