@@ -17,3 +17,9 @@ spring:
       format_sql: true
       ddl-auto: create-drop
       pool_size: 50
+
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 4.0.2
