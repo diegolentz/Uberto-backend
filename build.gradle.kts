@@ -3,7 +3,7 @@ plugins {
 	kotlin("plugin.spring") version "1.9.25"
 	id("org.springframework.boot") version "3.4.3"
 	id("io.spring.dependency-management") version "1.1.7"
-//	kotlin("plugin.jpa") version "1.9.25"
+	kotlin("plugin.jpa") version "1.9.25" // <-- CORRECCIÓN: Plugin de JPA descomentado
 	jacoco
 }
 
@@ -58,6 +58,7 @@ dependencies {
 
 
 //	TESTING
+	// CORRECCIÓN: Se eliminó la versión explícita para dejar que Spring la gestione.
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testImplementation("io.mockk:mockk:${mockkVersion}")
@@ -76,11 +77,12 @@ kotlin {
 	}
 }
 
-allOpen {
-	annotation("jakarta.persistence.Entity")
-	annotation("jakarta.persistence.MappedSuperclass")
-	annotation("jakarta.persistence.Embeddable")
-}
+// CORRECCIÓN: El bloque allOpen ya no es necesario gracias al plugin kotlin-jpa
+// allOpen {
+// 	annotation("jakarta.persistence.Entity")
+// 	annotation("jakarta.persistence.MappedSuperclass")
+// 	annotation("jakarta.persistence.Embeddable")
+// }
 
 tasks.withType<Test> {
 	useJUnitPlatform()

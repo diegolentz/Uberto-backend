@@ -22,4 +22,5 @@ de:
   flapdoodle:
     mongodb:
       embedded:
+        # Usamos una versión compatible con la librería de test
         version: 4.0.2
