@@ -40,7 +40,6 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-neo4j")
 	implementation("org.neo4j.driver:neo4j-java-driver:5.17.0")
 	implementation("org.springframework:spring-tx")
-	testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.9.2")
 
 
 
@@ -51,7 +50,6 @@ dependencies {
 	implementation("io.jsonwebtoken:jjwt-api:0.12.6")
 	implementation("io.jsonwebtoken:jjwt-impl:0.12.6")
 	implementation("com.auth0:java-jwt:4.4.0")
-
 	implementation("io.jsonwebtoken:jjwt-jackson:0.12.6")
 
 // REDIS
@@ -68,6 +66,8 @@ dependencies {
 	testImplementation("com.h2database:h2")
 	testImplementation("org.mockito:mockito-inline:5.2.0")
 	testImplementation("org.springframework.security:spring-security-test")
+	testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.9.2")
+
 
 }
 
