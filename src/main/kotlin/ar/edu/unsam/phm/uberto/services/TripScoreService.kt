@@ -20,10 +20,10 @@ class TripScoreService(
 ) {
 
     @Transactional
-    fun create(trip : Trip , score: TripScore) : ResponseEntity<String> {
+    fun create(trip: Trip, score: TripScore): ResponseEntity<String> {
         val passenger = passengerRepo.findById(trip.client.id!!).get()
         val driver = driverRepo.findById(trip.driverId).get()
-        passenger.scoreTrip(trip,score.message,score.scorePoints)
+        passenger.scoreTrip(trip, score.message, score.scorePoints)
 
         try {
             val savedTrip = tripRepo.save(trip)
@@ -40,12 +40,12 @@ class TripScoreService(
     }
 
     @Transactional
-    fun delete( trip: Trip ) : ResponseEntity<String> {
+    fun delete(trip: Trip): ResponseEntity<String> {
         trip.deleteScore(trip.client)
         try {
             val driver = driverRepo.findById(trip.driverId).get()
-            driver.tripsDTO.find {it.id == trip.id }?.rating = 0
-            driver.tripsScoreDTO.removeIf {it.tripId == trip.id }
+            driver.tripsDTO.find { it.id == trip.id }?.rating = 0
+            driver.tripsScoreDTO.removeIf { it.tripId == trip.id }
             driverRepo.save(driver)
             tripRepo.save(trip)
         } catch (e: Exception) {

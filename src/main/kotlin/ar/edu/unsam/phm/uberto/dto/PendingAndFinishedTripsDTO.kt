@@ -1,4 +1,3 @@
-
 package ar.edu.unsam.phm.uberto.dto
 
 data class PendingAndFinishedTripsDTO(

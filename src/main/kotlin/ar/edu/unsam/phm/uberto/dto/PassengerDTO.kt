@@ -22,19 +22,6 @@ fun Passenger.toDTOProfile() = PassengerProfileDto(
     img = img
 )
 
-//data class FriendDto(
-//    val id: Long,
-//    val firstname: String,
-//    val lastname: String,
-//    val img: String,
-//)
-//
-//fun Passenger.toDTOFriend() = FriendDto(
-//    id = id!!,
-//    firstname = firstName,
-//    lastname = lastName,
-//    img = img
-//)
 
 data class UpdatedPassengerDTO(
     val firstName: String?,

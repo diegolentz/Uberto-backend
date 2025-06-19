@@ -1,7 +1,10 @@
 package ar.edu.unsam.phm.uberto.model
-import ar.edu.unsam.phm.uberto.*
-import jakarta.persistence.*
 
+import ar.edu.unsam.phm.uberto.BalanceAmmountNotValidException
+import ar.edu.unsam.phm.uberto.IncorrectValuesException
+import ar.edu.unsam.phm.uberto.InsufficientBalanceException
+import ar.edu.unsam.phm.uberto.IsEmptyException
+import jakarta.persistence.*
 import java.time.LocalDate
 import java.time.Period
 
@@ -36,9 +39,6 @@ class Passenger : User {
 
     @Column(length = 255)
     override var img: String = ""
-
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    val friends: MutableSet<Passenger> = mutableSetOf()
 
     fun requestTrip(trip: Trip) {
         if (validateTrip(trip)) {

@@ -28,20 +28,25 @@ interface PassNeo4jRepository : Neo4jRepository<PassNeo, Long> {
     )
     fun findSuggestionsById(@Param("currentUserId") userId: Long): List<PassNeo>
 
-    @Query("""
+    @Query(
+        """
         MATCH (p:PassNeo {passengerId: ${'$'}currentPassengerId})-[:FRIEND]->(friend:PassNeo)
         RETURN friend
-    """)
+    """
+    )
     fun findAllFriendsByPassengerId(@Param("currentPassengerId") passengerId: Long): List<PassNeo>
 
-    @Query("""
+    @Query(
+        """
         MATCH (p:PassNeo {passengerId: ${'$'}passengerId})
         OPTIONAL MATCH (p)-[r:FRIEND]->(f:PassNeo)
         RETURN p, collect(r), collect(f)
-    """)
+    """
+    )
     fun findByPassengerId(@Param("passengerId") passengerId: Long): PassNeo
 
-    @Query("""
+    @Query(
+        """
         // 1. Identifica al usuario actual y a todos los demás pasajeros (posibles amigos)
         MATCH (currentUser:PassNeo {passengerId: ${'$'}passengerId})
         MATCH (potentialFriend:PassNeo)
@@ -62,19 +67,23 @@ interface PassNeo4jRepository : Neo4jRepository<PassNeo, Long> {
 
         // 3. Devuelve los posibles amigos que cumplen las condiciones
         RETURN potentialFriend
-    """)
-    fun findPossibleFriends(@Param("passengerId")passengerId: Long,@Param("pattern") pattern: String) : List<PassNeo>
+    """
+    )
+    fun findPossibleFriends(@Param("passengerId") passengerId: Long, @Param("pattern") pattern: String): List<PassNeo>
 
-    @Query("""
+    @Query(
+        """
         MATCH (p1:PassNeo {passengerId: ${'$'}passengerId1})-[r:FRIEND]-(p2:PassNeo {passengerId: ${'$'}passengerId2})
         DELETE r
-    """)
+    """
+    )
     fun deleteFriendRelationship(
         @Param("passengerId1") passengerId1: Long,
         @Param("passengerId2") passengerId2: Long
     )
 
-    @Query("""
+    @Query(
+        """
         // 1. Encuentra al pasajero actual (p1) y al futuro amigo (p2)
         MATCH (p1:PassNeo {passengerId: ${'$'}passengerId1})
         MATCH (p2:PassNeo {passengerId: ${'$'}passengerId2})
@@ -82,7 +91,8 @@ interface PassNeo4jRepository : Neo4jRepository<PassNeo, Long> {
         // 2. Crea la relación en ambas direcciones si no existen ya
         MERGE (p1)-[:FRIEND]->(p2)
         MERGE (p2)-[:FRIEND]->(p1)
-    """)
+    """
+    )
     fun addFriendRelationship(
         @Param("passengerId1") passengerId1: Long,
         @Param("passengerId2") passengerId2: Long

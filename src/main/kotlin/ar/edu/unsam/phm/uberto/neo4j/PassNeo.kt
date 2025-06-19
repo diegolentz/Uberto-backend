@@ -15,7 +15,7 @@ class PassNeo(
     var lastName: String = "",
     var img: String = "",
 
-    @Relationship(type = "FRIEND", direction = Relationship.Direction.OUTGOING )
+    @Relationship(type = "FRIEND", direction = Relationship.Direction.OUTGOING)
     var friends: MutableList<PassNeo> = mutableListOf(),
 
     @Relationship(type = "TRAVEL", direction = Relationship.Direction.OUTGOING)

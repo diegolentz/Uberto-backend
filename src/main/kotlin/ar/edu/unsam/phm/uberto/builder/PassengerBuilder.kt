@@ -7,8 +7,8 @@ import java.time.LocalDate
 class PassengerBuilder(val newPassenger: Passenger = Passenger()) {
 
     fun userId(id: Long): PassengerBuilder = apply {
-        if(newPassenger.credentials == null) newPassenger.credentials = UserAuthCredentials()
-        newPassenger.credentials!!.id = id 
+        if (newPassenger.credentials == null) newPassenger.credentials = UserAuthCredentials()
+        newPassenger.credentials!!.id = id
     }
 
     fun firstName(name: String): PassengerBuilder = apply {

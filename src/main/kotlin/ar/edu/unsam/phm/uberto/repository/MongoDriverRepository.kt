@@ -5,12 +5,12 @@ import ar.edu.unsam.phm.uberto.dto.TripScoreDTOMongo
 import ar.edu.unsam.phm.uberto.model.Driver
 import org.springframework.data.mongodb.repository.Aggregation
 import org.springframework.data.mongodb.repository.MongoRepository
-import java.time.LocalDateTime
 import org.springframework.data.mongodb.repository.Query
 import java.time.Instant
+import java.time.LocalDateTime
 
 
-interface MongoDriverRepository: MongoRepository<Driver,String> {
+interface MongoDriverRepository : MongoRepository<Driver, String> {
 
 
     fun findByCredentialsId(id: Long): Driver
@@ -28,7 +28,7 @@ interface MongoDriverRepository: MongoRepository<Driver,String> {
         ]
     )
     fun findByPassengerIdPendingTripsDTO(passengerId: Long, finisherdDate: LocalDateTime): List<Driver>
-  
+
     @Aggregation(
         pipeline = [
             "{ '\$match': { 'tripsDTO.passengerId': ?0 } }",
@@ -44,45 +44,46 @@ interface MongoDriverRepository: MongoRepository<Driver,String> {
     fun findByPassengerIdFinishedTripsDTO(passengerId: Long, date: LocalDateTime): List<Driver>
 
 
+    @Aggregation(
+        pipeline = [
+            "{ '\$match': { '\$or': [ " +
+                    "{ 'tripsDTO': { '\$exists': false } }, " +
+                    "{ 'tripsDTO': { '\$size': 0 } }, " +
+                    "{ 'tripsDTO': { '\$not': { '\$elemMatch': { " +
+                    "'date': { '\$lt': ?1 }, " +
+                    "'finishedDateTime': { '\$gt': ?0 } " +
+                    "} } } }" +
+                    "] } }",
 
-    @Aggregation(pipeline = [
-        "{ '\$match': { '\$or': [ " +
-                "{ 'tripsDTO': { '\$exists': false } }, " +
-                "{ 'tripsDTO': { '\$size': 0 } }, " +
-                "{ 'tripsDTO': { '\$not': { '\$elemMatch': { " +
-                "'date': { '\$lt': ?1 }, " +
-                "'finishedDateTime': { '\$gt': ?0 } " +
-                "} } } }" +
-                "] } }",
+            "{ '\$addFields': { " +
+                    "'averageScore': { " +
+                    "'\$avg': { " +
+                    "'\$map': { " +
+                    "'input': { '\$filter': { 'input': '\$tripsDTO', 'as': 't', 'cond': { '\$gt': ['\$\$t.rating', 0] } } }, " +
+                    "'as': 't', " +
+                    "'in': '\$\$t.rating' " +
+                    "} " +
+                    "} " +
+                    "} " +
+                    "} }",
 
-        "{ '\$addFields': { " +
-                "'averageScore': { " +
-                "'\$avg': { " +
-                "'\$map': { " +
-                "'input': { '\$filter': { 'input': '\$tripsDTO', 'as': 't', 'cond': { '\$gt': ['\$\$t.rating', 0] } } }, " +
-                "'as': 't', " +
-                "'in': '\$\$t.rating' " +
-                "} " +
-                "} " +
-                "} " +
-                "} }",
-
-        "{ '\$project': { " +
-                "'_id': 1, " +
-                "'firstName': 1, " +
-                "'lastName': 1, " +
-                "'balance': 1, " +
-                "'credentialsId': 1, " +
-                "'img': 1, " +
-                "'model': 1, " +
-                "'brand': 1, " +
-                "'serial': 1, " +
-                "'basePrice': 1, " +
-                "'tripsDTO': 1, " +
-                "'averageScore': { '\$ifNull': [ '\$averageScore', 0 ] }, " +
-                "'_class': 1 " +
-                "} }"
-    ])
+            "{ '\$project': { " +
+                    "'_id': 1, " +
+                    "'firstName': 1, " +
+                    "'lastName': 1, " +
+                    "'balance': 1, " +
+                    "'credentialsId': 1, " +
+                    "'img': 1, " +
+                    "'model': 1, " +
+                    "'brand': 1, " +
+                    "'serial': 1, " +
+                    "'basePrice': 1, " +
+                    "'tripsDTO': 1, " +
+                    "'averageScore': { '\$ifNull': [ '\$averageScore', 0 ] }, " +
+                    "'_class': 1 " +
+                    "} }"
+        ]
+    )
     fun getAvailable(start: Instant, end: Instant): List<Driverwithscorage>
 
     @Query(value = "{ '_id': ?0 }", fields = "{ 'tripsScoreDTO': 1, '_id': 0 }")

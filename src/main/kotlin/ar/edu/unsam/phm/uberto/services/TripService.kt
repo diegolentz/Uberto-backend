@@ -53,7 +53,7 @@ class TripService(
             driverId = driver.id!!
         }
 
-        if(!checkAvailableDriver(driver, newTrip)){//Valida en postgres
+        if (!checkAvailableDriver(driver, newTrip)) {//Valida en postgres
             throw BusinessException("Driver no disponible en este momento")
         }
 
@@ -105,11 +105,12 @@ class TripService(
         destination: String,
         numberPassenger: Int,
         name: String,
-        driverId: String): List<Trip> {
+        driverId: String
+    ): List<Trip> {
         return tripRepo.searchByForm(origin, destination, numberPassenger, name, driverId)
     }
 
-    fun checkAvailableDriver(driver: Driver, trip: Trip): Boolean{
+    fun checkAvailableDriver(driver: Driver, trip: Trip): Boolean {
         return tripRepo.checkAvailableDriver(driver.id!!, trip.date, trip.finalizationDate()).isEmpty()
     }
 

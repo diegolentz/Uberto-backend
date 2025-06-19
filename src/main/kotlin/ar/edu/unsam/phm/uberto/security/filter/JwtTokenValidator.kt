@@ -27,7 +27,7 @@ class JwtTokenValidator(
         @NotNull filterChain: FilterChain
     ) {
         val authHeader = request.getHeader(HttpHeaders.AUTHORIZATION)
-        if(authHeader != null && authHeader.startsWith("Bearer ")){
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
             val jwtToken = authHeader.substring(7)
             val decodedJWT = jwtUtils.validateToken(jwtToken)
             val userRole = jwtUtils.getSpecificClaim(decodedJWT, "rol")
@@ -43,16 +43,16 @@ class JwtTokenValidator(
                 .map { SimpleGrantedAuthority(it) }
 
             val userCredentials = UserAuthCredentials().apply {
-                this.username=username
-                this.role= Role.valueOf(userRole)
+                this.username = username
+                this.role = Role.valueOf(userRole)
             }
 
             val newToken = jwtUtils.generate(userCredentials, userId.asString())
             response.setHeader("refresh-token", newToken)
             response.setHeader("Access-Control-Expose-Headers", "refresh-token")
 
-            val context :  SecurityContext = SecurityContextHolder.getContext()
-            val authentication : Authentication = UsernamePasswordAuthenticationToken(username, null, roles)
+            val context: SecurityContext = SecurityContextHolder.getContext()
+            val authentication: Authentication = UsernamePasswordAuthenticationToken(username, null, roles)
             context.authentication = authentication
             SecurityContextHolder.setContext(context)
         }

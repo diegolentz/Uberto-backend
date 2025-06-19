@@ -60,6 +60,7 @@ data class DriverAvailableDto(
     val driver: Driver,
     val averageScore: Double
 )
+
 data class Driverwithscorage(
     val _id: String?,
     val credentialsId: Long?,
@@ -108,6 +109,7 @@ data class DriverCardAndTimeDTO(
 )
 
 data class DriverImg(var img: String)
+
 fun Driver.toImgDTO() = DriverImg(
     img = img
 )

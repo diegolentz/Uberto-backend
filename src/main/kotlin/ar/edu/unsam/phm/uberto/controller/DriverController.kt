@@ -33,6 +33,7 @@ class DriverController(
         val idToken = jwtUtil.getIdDriverFromTokenString(request)
         return driverService.getDriverData(idToken).toImgDTO()
     }
+
     @GetMapping("/available")
     fun getDriversAvailable(
         @RequestParam date: LocalDateTime,
@@ -42,23 +43,23 @@ class DriverController(
         request: HttpServletRequest
     ): DriverCardAndTimeDTO {
 
-        val time = timeTripsService.getTime()["time"] 
+        val time = timeTripsService.getTime()["time"]
             ?: throw BusinessException("Failure in the time calculation system")
         val drivers = driverService.getAvailableDrivers(date, time)
         val availableDriverDTO = drivers.map {
-                it.driver.toAvailableDTO(time, numberpassengers, it.averageScore)
-            }
+            it.driver.toAvailableDTO(time, numberpassengers, it.averageScore)
+        }
         val _passengerId = jwtUtil.getIdFromTokenString(request)
         val driverCardAndTimeDTO = DriverCardAndTimeDTO(time = time, cardDrivers = availableDriverDTO)
         homeService.saveHome(
-        HomeSearch(
-            numberPassengers = numberpassengers,
-            date = date,
-            origin = origin,
-            destination = destination,
-            driversPlusTime = driverCardAndTimeDTO
-        ).apply { passengerId = _passengerId })
-        return  driverCardAndTimeDTO
+            HomeSearch(
+                numberPassengers = numberpassengers,
+                date = date,
+                origin = origin,
+                destination = destination,
+                driversPlusTime = driverCardAndTimeDTO
+            ).apply { passengerId = _passengerId })
+        return driverCardAndTimeDTO
     }
 
     @PostMapping()

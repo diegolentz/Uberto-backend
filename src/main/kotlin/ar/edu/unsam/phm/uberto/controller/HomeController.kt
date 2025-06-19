@@ -18,7 +18,7 @@ class HomeController(
 ) {
 
     @GetMapping()
-    fun getDataHome(request: HttpServletRequest): HomeSearch{
+    fun getDataHome(request: HttpServletRequest): HomeSearch {
         val passengerId = jwtUtil.getIdFromTokenString(request)
         return homeService.getHomeByPassengerId(passengerId)
     }

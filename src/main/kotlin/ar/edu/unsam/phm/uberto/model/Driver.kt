@@ -1,6 +1,9 @@
 package ar.edu.unsam.phm.uberto.model
 
-import ar.edu.unsam.phm.uberto.dto.*
+import ar.edu.unsam.phm.uberto.dto.DriverDTO
+import ar.edu.unsam.phm.uberto.dto.TripDriver
+import ar.edu.unsam.phm.uberto.dto.TripScoreDTOMongo
+import ar.edu.unsam.phm.uberto.dto.toTripDriverDTO
 import jakarta.persistence.PrePersist
 import jakarta.persistence.PreUpdate
 import org.springframework.data.annotation.Id
@@ -10,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 
 
 @Document(collection = "driver")
-abstract class Driver():User {
+abstract class Driver() : User {
 
     @Id
     var id: String? = null
@@ -35,13 +38,13 @@ abstract class Driver():User {
 
     override lateinit var img: String
 
-    var model:Int = 0
+    var model: Int = 0
 
-    lateinit var brand:String
+    lateinit var brand: String
 
-    lateinit var serial:String
+    lateinit var serial: String
 
-    var basePrice:Double = 0.0
+    var basePrice: Double = 0.0
 
     @PrePersist
     @PreUpdate
@@ -50,30 +53,30 @@ abstract class Driver():User {
     }
 
     override fun getScores(): List<TripScore> {
-        return this.getScoredTrips().map{ it.score!! }
+        return this.getScoredTrips().map { it.score!! }
     }
 
-    abstract fun plusBasePrice(time: Int, numberPassengers: Int):Double
+    abstract fun plusBasePrice(time: Int, numberPassengers: Int): Double
 
-    private fun getScoredTrips():List<Trip>{
+    private fun getScoredTrips(): List<Trip> {
         return this.trips.filter { it.score != null }
     }
 
-    fun scoreAVG():Double{
+    fun scoreAVG(): Double {
         val avg = getScoredTrips().map { it.score!!.scorePoints }.average()
-        return if(avg.isNaN()) 0.0 else avg
+        return if (avg.isNaN()) 0.0 else avg
     }
 
-    fun fee(time: Int, numberPassenger: Int):Double{
+    fun fee(time: Int, numberPassenger: Int): Double {
         return this.basePrice + this.plusBasePrice(time, numberPassenger) * time
     }
 
-    fun addTrip(trip:Trip) {
+    fun addTrip(trip: Trip) {
         this.trips.add(trip)
         acceditTrip(trip.price)
     }
 
-    fun acceditTrip(price: Double){
+    fun acceditTrip(price: Double) {
         this.balance += price
     }
 
@@ -94,16 +97,17 @@ abstract class Driver():User {
 }
 
 @TypeAlias("motorbiker")
-class BikeDriver(): Driver() {
-    private val reference:Double = 500.0
+class BikeDriver() : Driver() {
+    private val reference: Double = 500.0
     override fun plusBasePrice(time: Int, numberPassengers: Int): Double {
-        return if(time < 30) reference else reference + 100.0
+        return if (time < 30) reference else reference + 100.0
     }
+
     override fun toString() = "Motorbiker"
 }
 
 @TypeAlias("simple")
-class SimpleDriver(): Driver() {
+class SimpleDriver() : Driver() {
     override fun plusBasePrice(time: Int, numberPassengers: Int): Double {
         return 1000.0
     }
@@ -112,11 +116,11 @@ class SimpleDriver(): Driver() {
 }
 
 @TypeAlias("premium")
-class PremiumDriver(): Driver() {
-    private val reference:Double = 1500.0
+class PremiumDriver() : Driver() {
+    private val reference: Double = 1500.0
 
     override fun plusBasePrice(time: Int, numberPassengers: Int): Double {
-        return if(numberPassengers > 1) reference else reference + 500.0
+        return if (numberPassengers > 1) reference else reference + 500.0
     }
 
     override fun toString() = "Premium Driver"

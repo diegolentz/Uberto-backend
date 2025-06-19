@@ -2,7 +2,9 @@ package ar.edu.unsam.phm.uberto.controller
 
 import ar.edu.unsam.phm.uberto.dto.*
 import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
-import ar.edu.unsam.phm.uberto.services.*
+import ar.edu.unsam.phm.uberto.services.DriverService
+import ar.edu.unsam.phm.uberto.services.PassengerService
+import ar.edu.unsam.phm.uberto.services.TripService
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -15,7 +17,8 @@ class TripsController(
     private val tripService: TripService,
     private val passengerService: PassengerService,
     private val driverService: DriverService,
-    private val jwtUtil: TokenJwtUtil) {
+    private val jwtUtil: TokenJwtUtil
+) {
 
     @PostMapping("/create")
     fun createTrip(@RequestBody trip: TripCreateDTO, request: HttpServletRequest): ResponseEntity<String> {
@@ -48,10 +51,11 @@ class TripsController(
     fun getProfilePassenger(request: HttpServletRequest): PendingAndFinishedTripsDTO {
         val idToken = jwtUtil.getIdFromTokenString(request)
         val driverWithFinishedTrips = tripService.getDriverFinishedTripByPassenger(idToken)
-        val  driverWithPendingTrips = tripService.getDriverPendingTripByPassenger(idToken)
+        val driverWithPendingTrips = tripService.getDriverPendingTripByPassenger(idToken)
         return PendingAndFinishedTripsDTO(
             listDriverToListDriverGenericDTO(driverWithPendingTrips),
-            listDriverToListDriverGenericDTO(driverWithFinishedTrips))
+            listDriverToListDriverGenericDTO(driverWithFinishedTrips)
+        )
     }
 
     @GetMapping("/profile/driver")
@@ -59,7 +63,7 @@ class TripsController(
         val idToken = jwtUtil.getIdDriverFromTokenString(request)
         val finishedTrips = tripService.getFinishedTripDriver(idToken)
         val pendingTrips = listOf<TripGenericDTO>()
-        return PendingAndFinishedTripsDTO( pendingTrips, finishedTrips.map { it.toPassengerGenericDTO() })
+        return PendingAndFinishedTripsDTO(pendingTrips, finishedTrips.map { it.toPassengerGenericDTO() })
     }
 
 }

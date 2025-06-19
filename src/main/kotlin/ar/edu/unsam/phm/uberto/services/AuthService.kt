@@ -15,26 +15,26 @@ import org.springframework.stereotype.Service
 class AuthService(
     val authRepository: AuthRepository,
     val passwordEncoder: PasswordEncoder
-): UserDetailsService {
+) : UserDetailsService {
 
     override fun loadUserByUsername(username: String?): UserDetails? {
-        if(username == null) throw InvalidCredentialsException("Usuario o Contraseña Incorrecta 0")
-        val user = this.findUserByUsername(username=username)
+        if (username == null) throw InvalidCredentialsException("Usuario o Contraseña Incorrecta 0")
+        val user = this.findUserByUsername(username = username)
             ?: throw InvalidCredentialsException("Usuario o Contraseña Incorrecta 1")
-    return  user
+        return user
     }
 
     fun findUserByUsername(username: String): UserAuthCredentials? {
         return authRepository.findByUsername(username)
     }
 
-    fun validPassword(password: String, user: UserDetails){
-        if(!passwordEncoder.matches(password, user.password)){
+    fun validPassword(password: String, user: UserDetails) {
+        if (!passwordEncoder.matches(password, user.password)) {
             throw InvalidCredentialsException("Usuario o contraseña incorrecta 2")
         }
     }
 
-    fun authenticate(user: UserAuthCredentials) : Authentication{
+    fun authenticate(user: UserAuthCredentials): Authentication {
         return UsernamePasswordAuthenticationToken(user.username, user.password)
     }
 

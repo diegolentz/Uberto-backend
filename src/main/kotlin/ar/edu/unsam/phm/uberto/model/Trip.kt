@@ -11,7 +11,7 @@ import kotlin.jvm.Transient
 
 @Entity
 class Trip(
-){
+) {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,34 +42,38 @@ class Trip(
     @Column(name = "driverMongoId")
     lateinit var driverId: String
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL],  orphanRemoval = true )
+    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     @JoinColumn(name = "tripscore_id", referencedColumnName = "id")
     var score: TripScore? = null
 
-    @Column(name= "end_date")
+    @Column(name = "end_date")
     var finishedDateTime: LocalDateTime = LocalDateTime.now()
 
     @Column(name = "price")
     var price: Double = 0.0
 
 
-    fun addScore(newScore: TripScore){
-        if(!this.finished()) throw TripNotFinishedException()
-        if(this.scored()) throw ScoredTripException()
+    fun addScore(newScore: TripScore) {
+        if (!this.finished()) throw TripNotFinishedException()
+        if (this.scored()) throw ScoredTripException()
         this.score = newScore
     }
 
-    fun deleteScore(passenger: Passenger){
+    fun deleteScore(passenger: Passenger) {
         validateDeleteScore(passenger)
         score = null
     }
 
     private fun validateDeleteScore(passenger: Passenger) {
-        if (!canDeleteScore(passenger.id!!)) { throw BusinessException("User has no ratings to delete") }
-        if (!scored()){ throw BusinessException("The trip has no score") }
+        if (!canDeleteScore(passenger.id!!)) {
+            throw BusinessException("User has no ratings to delete")
+        }
+        if (!scored()) {
+            throw BusinessException("The trip has no score")
+        }
     }
 
-    fun scored():Boolean = (this.score != null)
+    fun scored(): Boolean = (this.score != null)
 
     fun canDeleteScore(userId: Long): Boolean {
         return userId == client.id
@@ -82,8 +86,8 @@ class Trip(
         price = this.driver.fee(duration, numberPassengers)
     }
 
-    fun finalizationDate() : LocalDateTime = date.plus(duration.toLong(), ChronoUnit.MINUTES)
-    fun finished() : Boolean  {
+    fun finalizationDate(): LocalDateTime = date.plus(duration.toLong(), ChronoUnit.MINUTES)
+    fun finished(): Boolean {
         return finalizationDate() < LocalDateTime.now()
     }
 

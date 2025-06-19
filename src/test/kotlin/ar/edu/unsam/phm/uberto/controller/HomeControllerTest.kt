@@ -80,7 +80,7 @@ class HomeControllerTest(
             date = LocalDateTime.now(),
             origin = "origin",
             destination = "destination",
-            driversPlusTime =  driverCardAndTimeDTO
+            driversPlusTime = driverCardAndTimeDTO
         ).apply { passengerId = 1 }
 
         homeService.saveHome(home)
@@ -90,9 +90,10 @@ class HomeControllerTest(
                 .header("Authorization", "Bearer $tokenPassenger")
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers
-                .jsonPath("$.numberPassengers")
-                .value(1)
+            .andExpect(
+                MockMvcResultMatchers
+                    .jsonPath("$.numberPassengers")
+                    .value(1)
             )
     }
 }

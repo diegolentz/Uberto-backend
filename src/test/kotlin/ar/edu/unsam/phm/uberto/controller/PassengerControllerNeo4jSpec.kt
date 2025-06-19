@@ -4,6 +4,7 @@ import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import ar.edu.unsam.phm.uberto.services.AuthService
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.PassengerService
+import org.hamcrest.Matchers
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -37,7 +38,7 @@ class PassengerControllerNeo4jSpec(
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].firstname").value("Valentin"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[*].firstname", Matchers.hasItem("Diego")))
     }
 
     @Test

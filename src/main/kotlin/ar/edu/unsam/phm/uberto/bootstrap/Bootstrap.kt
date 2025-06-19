@@ -502,17 +502,8 @@ class Bootstrap(
         val valentin = passengerRepo.findById(5).get()
 
 
-//        passengerService.addFriend(adrian.id!!, diego.id!!)
-//        passengerService.addFriend(diego.id!!, matias.id!!)
-//        passengerService.addFriend(matias.id!!, pedro.id!!)
-//        passengerService.addFriend(pedro.id!!, valentin.id!!)
-//        passengerService.addFriend(valentin.id!!, adrian.id!!)
-
-
-//        var all: List<Passenger> = listOf(adrian, diego, matias, pedro, valentin)
-
-
     }
+
     fun createNeoDriver() {
         println("Creating DriverNeo nodes in Neo4j...")
         val mongoDrivers = mongoRepoDriver.findAll()
@@ -612,11 +603,7 @@ class Bootstrap(
         neoDiego.drivers.addAll(listOf(toretoNeo, colapintoNeo))
         neoMatias.drivers.addAll(listOf(colapintoNeo, laudaNeo))
         neoPedro.drivers.addAll(listOf(colapintoNeo))
-        neoValentin.drivers.addAll(listOf(toretoNeo,laudaNeo, chanoNeo))
-
-
-
-
+        neoValentin.drivers.addAll(listOf(toretoNeo, laudaNeo, chanoNeo))
 
 
         var all = listOf(neoAdrian, neoMatias, neoValentin, neoPedro, neoDiego)

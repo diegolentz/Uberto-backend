@@ -1,6 +1,9 @@
 package ar.edu.unsam.phm.uberto.services
 
-import ar.edu.unsam.phm.uberto.dto.*
+import ar.edu.unsam.phm.uberto.dto.DriverAvailableDto
+import ar.edu.unsam.phm.uberto.dto.DriverDTO
+import ar.edu.unsam.phm.uberto.dto.TripScoreDTOMongo
+import ar.edu.unsam.phm.uberto.dto.toAvailableDto
 import ar.edu.unsam.phm.uberto.model.Driver
 import ar.edu.unsam.phm.uberto.repository.MongoDriverRepository
 import exceptions.NotFoundException
@@ -16,8 +19,9 @@ class DriverService(
     private val mongoDriverRepo: MongoDriverRepository,
 ) {
 
-    fun getDriverData(userID: String):Driver{
-        val driver = mongoDriverRepo.findById(userID).orElseThrow { NotFoundException("Driver with id $userID not found") }
+    fun getDriverData(userID: String): Driver {
+        val driver =
+            mongoDriverRepo.findById(userID).orElseThrow { NotFoundException("Driver with id $userID not found") }
         return driver
     }
 
@@ -29,7 +33,7 @@ class DriverService(
         mongoDriverRepo.getScoreByDriverID(driverId)?.tripsScoreDTO ?: emptyList()
 
     @Transactional
-    fun updateProfile(dto : DriverDTO, id: String) : ResponseEntity<String> {
+    fun updateProfile(dto: DriverDTO, id: String): ResponseEntity<String> {
         try {
             val driver = getDriverData(id)
             val update = driver.update(dto)
@@ -48,7 +52,8 @@ class DriverService(
         val start = start.atZone(ZoneOffset.UTC).toInstant()
         val endTime = start.plusSeconds(end.toLong())
         var driversFromRepository = mongoDriverRepo.getAvailable(start, endTime)
-        return driversFromRepository.map {it.toAvailableDto()
+        return driversFromRepository.map {
+            it.toAvailableDto()
 
         }
     }

@@ -20,10 +20,10 @@ class TripScoreController(
     private val passengerService: PassengerService,
     private val driverService: DriverService,
     private val jwtUtil: TokenJwtUtil
-){
+) {
 
     @GetMapping("/passenger")
-    fun getScorePassenger(request: HttpServletRequest): List<TripScoreDTOMongo>{
+    fun getScorePassenger(request: HttpServletRequest): List<TripScoreDTOMongo> {
         val idToken = jwtUtil.getIdFromTokenString(request)
         val trips = tripService.getAllByPassenger(idToken)
 
@@ -31,14 +31,14 @@ class TripScoreController(
     }
 
     @GetMapping("/driver")
-    fun getScoreDriver(request: HttpServletRequest): List<TripScoreDTOMongo>{
+    fun getScoreDriver(request: HttpServletRequest): List<TripScoreDTOMongo> {
         val idToken = jwtUtil.getIdDriverFromTokenString(request)
         val driver = driverService.getScoreByDriverID(idToken)
         return driver
     }
 
     @GetMapping("/confirmation")
-    fun getScoreConfirmation( @RequestParam driverId: String): List<TripScoreDTOMongo>{
+    fun getScoreConfirmation(@RequestParam driverId: String): List<TripScoreDTOMongo> {
         val driver = driverService.getScoreByDriverID(driverId)
         return driver
     }
@@ -49,11 +49,11 @@ class TripScoreController(
         val score = TripScore()
         score.message = tripScore.message
         score.scorePoints = tripScore.scorePoints
-        return tripScoreService.create(trip,score)
+        return tripScoreService.create(trip, score)
     }
 
     @DeleteMapping()
-    fun delete(request: HttpServletRequest , @RequestParam tripId: Long): ResponseEntity<String>{
+    fun delete(request: HttpServletRequest, @RequestParam tripId: Long): ResponseEntity<String> {
         val idToken = jwtUtil.getIdFromTokenString(request)
         val trip = tripService.getWithPassengerByIdAndPassengerId(tripId, idToken)
         return tripScoreService.delete(trip)

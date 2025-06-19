@@ -13,7 +13,7 @@ open class PassNeoService(
     private val passNeo4jRepository: PassNeo4jRepository
 ) {
 
-    fun findSuggestionsById(id : Long): List<PassNeo> {
+    fun findSuggestionsById(id: Long): List<PassNeo> {
         return passNeo4jRepository.findSuggestionsById(id)
     }
 
@@ -23,14 +23,14 @@ open class PassNeoService(
 
     @Transactional
     fun addFriend(currentPassengerId: Long, friendId: Long): ResponseEntity<String> {
-        passNeo4jRepository.addFriendRelationship(currentPassengerId,friendId)
+        passNeo4jRepository.addFriendRelationship(currentPassengerId, friendId)
         return ResponseEntity
             .status(HttpStatus.OK).body("You have a new friend!")
     }
 
     @Transactional
     fun deleteFriend(currentPassengerId: Long, friendId: Long): ResponseEntity<String> {
-        passNeo4jRepository.deleteFriendRelationship(currentPassengerId,friendId)
+        passNeo4jRepository.deleteFriendRelationship(currentPassengerId, friendId)
         return ResponseEntity
             .status(HttpStatus.OK).body("Friend succesfully removed")
     }

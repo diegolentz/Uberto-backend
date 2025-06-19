@@ -4,14 +4,14 @@ import ar.edu.unsam.phm.uberto.model.Trip
 import java.time.LocalDateTime
 
 data class TripScoreDTOMongo(
-    val tripId: Long ,
+    val tripId: Long,
     val name: String,
     val date: LocalDateTime,
     val scorePoints: Int,
     val message: String,
     val avatarUrlImg: String,
-    val isDeleted : Boolean,
-    val isEditMode : Boolean
+    val isDeleted: Boolean,
+    val isEditMode: Boolean
 )
 
 fun Trip.toTripScoreDTOMongo() = TripScoreDTOMongo(
@@ -22,7 +22,7 @@ fun Trip.toTripScoreDTOMongo() = TripScoreDTOMongo(
     message = score!!.message,
     avatarUrlImg = client.img,
     isDeleted = this.canDeleteScore(client.id!!),
-    isEditMode =  this.scored()
+    isEditMode = this.scored()
 )
 
 fun Trip.toTripScorePassengerDTOMongo() = TripScoreDTOMongo(
@@ -33,5 +33,5 @@ fun Trip.toTripScorePassengerDTOMongo() = TripScoreDTOMongo(
     message = score!!.message,
     avatarUrlImg = driver.img,
     isDeleted = this.canDeleteScore(client.id!!),
-    isEditMode =  !this.canDeleteScore(client.id!!)
+    isEditMode = !this.canDeleteScore(client.id!!)
 )
