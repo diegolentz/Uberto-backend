@@ -38,7 +38,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 	runtimeOnly("org.postgresql:postgresql")
 	implementation("org.springframework.boot:spring-boot-starter-data-neo4j")
-	implementation("org.neo4j.driver:neo4j-java-driver:5.17.0")
+	//implementation("org.neo4j.driver:neo4j-java-driver:5.17.0")
 	implementation("org.springframework:spring-tx")
 
 
@@ -66,7 +66,9 @@ dependencies {
 	testImplementation("com.h2database:h2")
 	testImplementation("org.mockito:mockito-inline:5.2.0")
 	testImplementation("org.springframework.security:spring-security-test")
+
 	testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.9.2")
+
 
 
 }
