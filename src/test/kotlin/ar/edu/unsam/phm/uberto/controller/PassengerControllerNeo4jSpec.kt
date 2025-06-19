@@ -4,8 +4,7 @@ import ar.edu.unsam.phm.uberto.security.TokenJwtUtil
 import ar.edu.unsam.phm.uberto.services.AuthService
 import ar.edu.unsam.phm.uberto.services.DriverService
 import ar.edu.unsam.phm.uberto.services.PassengerService
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -18,36 +17,46 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @DisplayName("Dado un controller de Passenger Neo4j")
+@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 class PassengerControllerNeo4jSpec(
-
-    @Autowired
-    var jwtUtil: TokenJwtUtil,
-
-    @Autowired
-    var mockMvc: MockMvc,
-
+    @Autowired var jwtUtil: TokenJwtUtil,
+    @Autowired var mockMvc: MockMvc,
     @Autowired var driverService: DriverService,
-
-    @Autowired
-    var authService: AuthService,
-
-    @Autowired
-    var passengerService: PassengerService,
-
+    @Autowired var authService: AuthService,
+    @Autowired var passengerService: PassengerService,
 ) {
-
     val testFactory = TestFactory(authService, passengerService, driverService, jwtUtil)
-
-    // Adaptado para Neo4j, asumiendo que TestFactory puede recibir driverService como null
     val tokenPassenger = testFactory.generateTokenPassengerTest("adrian")
 
     @Test
-    fun `la busqueda por titulo funciona correctamente, no importan mayusculas`() {
+    @Order(1)
+    fun `se buscan amigos de adrian`() {
         mockMvc.perform(
             MockMvcRequestBuilders.get("/passenger/friends")
                 .header("Authorization", "Bearer $tokenPassenger")
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
-        // Aquí puedes agregar los asserts necesarios sobre el contenido JSON
+            .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].firstname").value("Valentin"))
+    }
+
+    @Test
+    @Order(2)
+    fun `se elimina un amigo a adrian`() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("/passenger/friends")
+                .header("Authorization", "Bearer $tokenPassenger").param("friendId", "5")
+        )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+    }
+
+    @Test
+    fun `se agrega un amigo a adrian`() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/passenger/friends")
+                .header("Authorization", "Bearer $tokenPassenger").param("friendId", "2")
+        )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect { MockMvcResultMatchers.jsonPath("$[0].firstname").value("Diego") }
     }
 }
