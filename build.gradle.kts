@@ -3,7 +3,7 @@ plugins {
 	kotlin("plugin.spring") version "1.9.25"
 	id("org.springframework.boot") version "3.4.3"
 	id("io.spring.dependency-management") version "1.1.7"
-//	kotlin("plugin.jpa") version "1.9.25"
+	kotlin("plugin.jpa") version "1.9.25" // <-- CORRECCIÓN: Plugin de JPA descomentado
 	jacoco
 }
 
@@ -40,7 +40,6 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-neo4j")
 	//implementation("org.neo4j.driver:neo4j-java-driver:5.17.0")
 	implementation("org.springframework:spring-tx")
-	testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.9.2")
 
 
 
@@ -51,13 +50,13 @@ dependencies {
 	implementation("io.jsonwebtoken:jjwt-api:0.12.6")
 	implementation("io.jsonwebtoken:jjwt-impl:0.12.6")
 	implementation("com.auth0:java-jwt:4.4.0")
-
 	implementation("io.jsonwebtoken:jjwt-jackson:0.12.6")
 
 // REDIS
 
 
 //	TESTING
+	// CORRECCIÓN: Se eliminó la versión explícita para dejar que Spring la gestione.
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testImplementation("io.mockk:mockk:${mockkVersion}")
@@ -67,11 +66,9 @@ dependencies {
 	testImplementation("com.h2database:h2")
 	testImplementation("org.mockito:mockito-inline:5.2.0")
 	testImplementation("org.springframework.security:spring-security-test")
-	//testImplementation("org.neo4j.test:neo4j-harness")
-	testImplementation("org.neo4j.test:neo4j-harness:5.17.0"){
-		exclude(group = "org.slf4j", module = "slf4j-nop") // Excluye la implementación NOP
-		exclude(group = "org.slf4j", module = "slf4j-simple") // Excluye también la simple por si acaso
-	}
+
+	testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.9.2")
+
 
 
 }
@@ -82,11 +79,12 @@ kotlin {
 	}
 }
 
-allOpen {
-	annotation("jakarta.persistence.Entity")
-	annotation("jakarta.persistence.MappedSuperclass")
-	annotation("jakarta.persistence.Embeddable")
-}
+// CORRECCIÓN: El bloque allOpen ya no es necesario gracias al plugin kotlin-jpa
+// allOpen {
+// 	annotation("jakarta.persistence.Entity")
+// 	annotation("jakarta.persistence.MappedSuperclass")
+// 	annotation("jakarta.persistence.Embeddable")
+// }
 
 tasks.withType<Test> {
 	useJUnitPlatform()
