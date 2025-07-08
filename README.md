@@ -1,14 +1,40 @@
 # Aplicación Backend en Kotlin
 
-Este proyecto es una aplicación backend desarrollada en Kotlin, diseñada para gestionar eventos, usuarios y recomendaciones dentro de un entorno colaborativo. Forma parte del desarrollo del grupo 3 para la materia Programación con Tipado Estático (2025), UNSAM.
+# Uberto-backend
 
-## 🚀 Características Principales
+Este repositorio contiene el código del backend para **Uberto**, una plataforma diseñada para la gestión eficiente de servicios de transporte bajo demanda. El backend se encarga de administrar usuarios, viajes, conductores, pagos y toda la lógica central necesaria para brindar una experiencia fluida, segura y escalable tanto a pasajeros como a conductores.
 
-- ✅ Backend desarrollado con Kotlin.
-- ✅ Arquitectura modular con separación clara entre controladores, servicios y modelos.
-- ✅ Uso de DTOs para la transferencia de datos.
-- ✅ Control de acceso basado en tipos de usuario.
-- ✅ Soporte para recomendaciones y puntuaciones entre usuarios.
+## Propósito del Proyecto
+
+El objetivo principal de **Uberto-backend** es ofrecer una API robusta y escalable que permita gestionar todos los procesos relacionados con un servicio de transporte: desde la solicitud de viajes y asignación de conductores hasta el procesamiento de pagos y la gestión de historial de usuarios.
+
+---
+
+## Características Principales
+
+1. **Gestión de Usuarios y Autenticación**
+   - Registro y autenticación segura de pasajeros y conductores.
+   - Manejo de roles y permisos diferenciados.
+
+2. **Administración de Viajes**
+   - Creación, seguimiento y finalización de viajes en tiempo real.
+   - Asignación automática de conductores y cálculo de rutas.
+
+3. **Gestión de Conductores**
+   - Registro, verificación y administración de perfiles de conductores.
+   - Monitoreo de estado y ubicación de los conductores activos.
+
+4. **Pagos y Facturación**
+   - Procesamiento seguro de pagos y generación de facturas.
+   - Soporte para diferentes métodos de pago.
+
+5. **Notificaciones**
+   - Envío de notificaciones automáticas sobre el estado de los viajes y actualizaciones relevantes.
+
+6. **API RESTful**
+   - Endpoints bien definidos para integración con aplicaciones móviles o web.
+
+---
 
 ## 📦 Requisitos Previos
 
